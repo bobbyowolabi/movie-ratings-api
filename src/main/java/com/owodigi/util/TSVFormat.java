@@ -18,6 +18,8 @@ public abstract class TSVFormat {
      
     /**
      * Specifies the format of a TSV file and parses input.
+     * 
+     * Header line will be skipped.
      *
      * @return
      */

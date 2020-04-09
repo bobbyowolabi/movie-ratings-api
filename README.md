@@ -7,6 +7,7 @@ The Internet Movie Database (IMDB) provides access to their [datasets][imdb-data
 * Maven 3.5.3+
 
 ## Dependencies
+http://commons.apache.org/proper/commons-csv/index.html
 
 # Design
 
@@ -30,12 +31,15 @@ Return the persisted title via query by title name.
 ### Data Model
 
 #### Titles
-| imdb_id | title | rating | cast_list |
-|---------|-------|--------|-----------|
+| tconst | title | rating | cast_list |
+|--------|-------|--------|-----------|
 
-#### Sub Titles
-| parent_imdb_id | imdb_id | title | rating |  
-|----------------|---------|-------|--------|  
+#### Episodes
+| parent_tconst | tconst | title | rating |  
+|---------------|--------|-------|--------|  
+
+
+
 
 ### Components
 #### Ratings Source (IMDB impl)
@@ -48,6 +52,6 @@ Return the persisted title via query by title name.
 * The cast_list could be better modeled, especially if this would need to be queried in the future.
 
 # Improvements
-
+- Ability to account for interrupted downloads
 
 [imdb-datasets]: https://www.imdb.com/interfaces 
