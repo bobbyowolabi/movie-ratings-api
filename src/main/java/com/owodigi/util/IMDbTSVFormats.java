@@ -1,31 +1,42 @@
 package com.owodigi.util;
 
-
-
 /**
  * Utilities to parse the datasets found at: https://www.imdb.com/interfaces/
  */
 public class IMDbTSVFormats {  
-    /**
-     * Utility to parse dataset found at https://datasets.imdbws.com/title.akas.tsv.gz
-     */
-//    public static final TSVFormat<TITLE_AKAS_HEADERS> TITLE_AKAS_FORMAT = new TSVFormat<>();
-    
-    /**
-     * Utility to parse dataset found at https://datasets.imdbws.com/title.basics.tsv.gz
-     */
-//    public static final TSVFormat<TITLE_BASICS_HEADERS> TITLE_BASICS_FORMAT = new TSVFormat<>();
     
     /**
      * Utility to parse dataset found at https://datasets.imdbws.com/title.episode.tsv.gz
      */
-//    public static final TSVFormat<TITLE_EPISODE_HEADERS> TITLE_EPISODE_FORMAT = new TSVFormat<>();
-    
-    /**
-     * Utility to parse dataset found at https://datasets.imdbws.com/title.ratings.tsv.gz
-     */
-//    public static final TSVFormat<TITLE_RATINGS_HEADERS> TITLE_RATINGS_FORMAT = new TSVFormat<>();
+    public static class TitleEpisodeFormat extends TSVFormat {
+        /**
+         * Headers for dataset that contains the tv episode information
+         */
+        public enum header {
+            /**
+             * (string) - alphanumeric identifier of episode
+             */
+            tconst,
+            /**
+             * (string) - alphanumeric identifier of the parent TV Series
+             */
+            parentTconst,
+            /**
+             * (integer) – season number the episode belongs to
+             */
+            seasonNumber,
+            /**
+             * (integer) – episode number of the tconst in the TV series
+             */
+            episodeNumber
+        }
 
+        @Override
+        public Class<? extends Enum<?>> headerClass() {
+            return header.class;
+        }
+    }
+    
     /**
      * Utility to parse dataset found at https://datasets.imdbws.com/name.basics.tsv.gz
      */
@@ -64,6 +75,9 @@ public class IMDbTSVFormats {
         }        
     }
     
+    /**
+     * Utility to parse dataset found at https://datasets.imdbws.com/title.principals.tsv.gz
+     */    
     public static class TitlePrincipalsFormat extends TSVFormat {
 
         /**
@@ -105,6 +119,9 @@ public class IMDbTSVFormats {
         }        
     }
     
+    /**
+     * Utility to parse dataset found at https://datasets.imdbws.com/title.ratings.tsv.gz
+     */    
     public static class TitleRatingsFormat extends TSVFormat {
         /**
          * Headers of the dataset that contains the IMDb rating and votes
@@ -130,15 +147,57 @@ public class IMDbTSVFormats {
             return headers.class;
         }
     }
-        
-        
-    
-//    public static final TSVFormat NAME_BASICS_FORMAT = new TSVFormat<>(NAME_BASICS_HEADERS);
-    
-    /**
-     * Utility to parse dataset found at https://datasets.imdbws.com/title.principals.tsv.gz
-     */
-//    public static final TSVFormat<TITLE_PRINCIPALS_HEADERS> TITLE_PRINCIPALS_FORMAT = new TSVFormat<>();    
-    
 
+    /**
+     * Utility to parse dataset found at https://datasets.imdbws.com/title.basics.tsv.gz
+     */    
+    public static class TitleBasicsFormat extends TSVFormat {
+        public enum header {
+            /**
+             * (string) - alphanumeric unique identifier of the title
+             */
+            tconst,
+            /**
+             * (string) – the type/format of the title (e.g. movie, short,
+             * tvseries, tvepisode, video, etc)
+             */
+            titleType,
+            /**
+             * (string) – the more popular title / the title used by the
+             * filmmakers on promotional materials at the point of release
+             */
+            primaryTitle,
+            /**
+             * (string) - original title, in the original language
+             */
+            originalTitle,
+            /**
+             * (boolean) - 0: non-adult title; 1: adult title
+             */
+            isAdult,
+            /**
+             * (YYYY) – represents the release year of a title. In the case of
+             * TV Series, it is the series start year
+             */
+            startYear,
+            /**
+             * (YYYY) – TV Series end year. ‘\N’ for all other title types
+             */
+            endYear,
+            /**
+             * primary runtime of the title, in minutes
+             */
+            runtimeMinutes,
+            /**
+             * (string array) – includes up to three genres associated with the
+             * title
+             */
+            genres
+        }
+
+        @Override
+        public Class<? extends Enum<?>> headerClass() {
+            return header.class;
+        }
+    }
 }

@@ -25,6 +25,7 @@ Return the persisted title via query by title name.
 | startYear     | title.basics.tsv.gz     | Likely won't need to persist. but will use to filter only titles for  2019.  This makes sense for movies, but how do you determine the release date of the TV show episode? |
 | averageRating | title.ratings.tsv.gz    | How do individual episodes tie into this table?                                                                                                                             |
 | *             | title.principals.tsv.gz |  Need to map nconst to tconst       |
+| primaryName   | name.basics.tsv.gz |      |
 
 ### Data Model
 
