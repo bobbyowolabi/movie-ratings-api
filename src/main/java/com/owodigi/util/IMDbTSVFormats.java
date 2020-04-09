@@ -64,6 +64,47 @@ public class IMDbTSVFormats {
         }        
     }
     
+    public static class TitlePrincipalsFormat extends TSVFormat {
+
+        /**
+         * Headers of the dataset that contains the principal cast/crew for
+         * titles
+         */
+        public enum headers {
+            /**
+             * (string) - alphanumeric unique identifier of the title
+             */
+            tconst,
+            /**
+             * (integer) – a number to uniquely identify rows for a given
+             * titleId
+             */
+            ordering,
+            /**
+             * alphanumeric unique identifier of the name/person
+             */
+            nconst,
+            /**
+             * (string) - the category of job that person was in
+             */
+            category,
+            /**
+             * (string) - the specific job title if applicable, else '\N'
+             */
+            job,
+            /**
+             * (string) - the name of the character played if applicable, else
+             * '\N'
+             */
+            characters
+        }
+        
+        @Override
+        public Class<? extends Enum<?>> headerClass() {
+            return headers.class;
+        }        
+    }
+    
     public static class TitleRatingsFormat extends TSVFormat {
         /**
          * Headers of the dataset that contains the IMDb rating and votes

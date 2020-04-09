@@ -1,7 +1,9 @@
 package com;
 
 import com.owodigi.util.IMDbTSVFormats.NameBasicFormat;
+import com.owodigi.util.IMDbTSVFormats.TitlePrincipalsFormat;
 import com.owodigi.util.IMDbTSVFormats.TitleRatingsFormat;
+import com.owodigi.util.TSVFormat;
 import java.io.IOException;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
@@ -61,6 +63,15 @@ public class IMDbTSVFormatsTest {
         } 
     }
     
+    public void test(final List<List<String>> expected, final String input, final TSVFormat expectedFormat) {
+        try (final Reader reader = Files.newBufferedReader(Paths.get(input), StandardCharsets.UTF_8);
+             final CSVParser actual = expectedFormat.format().parse(reader)) {
+            assertEquals(expected, actual);
+        } catch (final IOException ex) {
+            Assert.fail("Unable to parse " + input + " due to " + ex);
+        }
+    }      
+    
     @Test
     public void nameBaiscsTSV() {
         final String input = TEST_RESOURCES_DIR + "name.basics-sample.tsv";
@@ -69,12 +80,7 @@ public class IMDbTSVFormatsTest {
             Arrays.asList("nm0000002", "Lauren Bacall", "1924", "2014", "actress,soundtrack", "tt0071877,tt0038355,tt0037382,tt0117057"),
             Arrays.asList("nm0000003", "Brigitte Bardot", "1934", "\\N", "actress,soundtrack,producer", "tt0049189,tt0057345,tt0054452,tt0059956")
         );
-        try (final Reader reader = Files.newBufferedReader(Paths.get(input), StandardCharsets.UTF_8);
-             final CSVParser actual = new NameBasicFormat().format().parse(reader)) {
-            assertEquals(expected, actual);
-        } catch (final IOException ex) {
-            Assert.fail("Unable to parse " + input + " due to " + ex);
-        }
+        test(expected, input, new NameBasicFormat());
     }
     
     @Test
@@ -85,13 +91,20 @@ public class IMDbTSVFormatsTest {
             Arrays.asList("tt0000002", "6.0", "195"),
             Arrays.asList("tt0000003", "6.5", "1266")
         );
-        try (final Reader reader = Files.newBufferedReader(Paths.get(input), StandardCharsets.UTF_8);
-             final CSVParser actual = new TitleRatingsFormat().format().parse(reader)) {
-            assertEquals(expected, actual);
-        } catch (final IOException ex) {
-            Assert.fail("Unable to parse " + input + " due to " + ex);
-        }
+        test(expected, input, new TitleRatingsFormat());
     }    
+    
+    @Test
+    public void titlePrincipalsTSV() {
+        final String input = TEST_RESOURCES_DIR + "title.principals-sample.tsv";
+        final List<List<String>> expected = asList(
+            Arrays.asList("tt0000001", "1", "nm1588970", "self", "\\N", "[\"Self\"]"),
+            Arrays.asList("tt0000001", "2", "nm0005690", "director", "\\N", "\\N"),
+            Arrays.asList("tt0000001", "3", "nm0374658", "cinematographer", "director of photography", "\\N"),
+            Arrays.asList("tt0000005", "1", "nm0443482",	 "actor", "\\N", "[\"Blacksmith\"]")
+        );
+        test(expected, input, new TitlePrincipalsFormat());
+    }     
     
     /**
      * 

@@ -101,54 +101,6 @@ public class IMDbTSVHeaders {
         episodeNumber
     }
     
-    /**
-     * Headers of the dataset that contains the principal cast/crew for titles
-     */
-    public enum TITLE_PRINCIPALS_HEADERS {
-        /**
-         * (string) - alphanumeric unique identifier of the title
-         */
-        tconst, 
-        /**
-         * (integer) – a number to uniquely identify rows for a given titleId
-         */
-        ordering, 
-        /**
-         * alphanumeric unique identifier of the name/person
-         */
-        nconst, 
-        /**
-         * (string) - the category of job that person was in
-         */
-        category, 
-        /**
-         * (string) - the specific job title if applicable, else '\N'
-         */
-        job, 
-        /**
-         * (string) - the name of the character played if applicable, else '\N'
-         */
-        characters
-    }
-    
-    /**
-     * Headers of the dataset that contains the IMDb rating and votes information for titles
-     */
-    public enum TITLE_RATINGS_HEADERS {
-        /**
-         * (string) - alphanumeric unique identifier of the title
-         */
-        tconst,
-        /**
-         *  weighted average of all the individual user ratings
-         */
-        averageRating,
-        /**
-         * number of votes the title has received        
-         */
-        numVotes
-    }
-    
     public static enum NAME_BASICS_HEADERS {
         /**
          * (string) - alphanumeric unique identifier of the name/person
