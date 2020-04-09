@@ -1,6 +1,7 @@
 package com;
 
 import com.owodigi.util.IMDbTSVFormats.NameBasicFormat;
+import com.owodigi.util.IMDbTSVFormats.TitleRatingsFormat;
 import java.io.IOException;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
@@ -75,6 +76,22 @@ public class IMDbTSVFormatsTest {
             Assert.fail("Unable to parse " + input + " due to " + ex);
         }
     }
+    
+    @Test
+    public void titleRatingsTSV() {
+        final String input = TEST_RESOURCES_DIR + "title.ratings-sample.tsv";
+        final List<List<String>> expected = asList(
+            Arrays.asList("tt0000001", "5.6", "1593"),
+            Arrays.asList("tt0000002", "6.0", "195"),
+            Arrays.asList("tt0000003", "6.5", "1266")
+        );
+        try (final Reader reader = Files.newBufferedReader(Paths.get(input), StandardCharsets.UTF_8);
+             final CSVParser actual = new TitleRatingsFormat().format().parse(reader)) {
+            assertEquals(expected, actual);
+        } catch (final IOException ex) {
+            Assert.fail("Unable to parse " + input + " due to " + ex);
+        }
+    }    
     
     /**
      * 

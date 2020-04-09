@@ -63,6 +63,32 @@ public class IMDbTSVFormats {
             return headers.class;
         }        
     }
+    
+    public static class TitleRatingsFormat extends TSVFormat {
+        /**
+         * Headers of the dataset that contains the IMDb rating and votes
+         * information for titles
+         */
+        public enum headers {
+            /**
+             * (string) - alphanumeric unique identifier of the title
+             */
+            tconst,
+            /**
+             * weighted average of all the individual user ratings
+             */
+            averageRating,
+            /**
+             * number of votes the title has received
+             */
+            numVotes
+        }
+        
+        @Override
+        public Class<? extends Enum<?>> headerClass() {
+            return headers.class;
+        }
+    }
         
         
     
