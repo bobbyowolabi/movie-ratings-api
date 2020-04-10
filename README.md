@@ -28,17 +28,64 @@ Return the persisted title via query by title name.
 | *             | title.principals.tsv.gz |  Need to map nconst to tconst       |
 | primaryName   | name.basics.tsv.gz |      |
 
+### Aggregating
+<pre>
+For All records in title.basics.tsv.gz 
+	SKIP
+		startYear != 2019
+	IF titleType == "tvEpisode"
+		STORE in Episodes_Store
+			tconst
+			primaryTitle
+	STORE in TITLES_STORE
+		tconst
+		titleType
+		primaryTitle
+</pre>
+<pre>
+For All records in title.ratings.tsv.gz	
+	STORE in TITLES_STORE
+		averageRating
+		WHERE
+			tconst MATCHES
+	STORE in EPISODES_STORE
+		averageRating
+		WHERE
+			tconst MATCHES
+</pre>
+<pre>
+For All records in title.principals.tsv.gz
+	STORE in TITLES_STORE
+		nconst in castList
+		WHERE
+			tconst MATCHES
+	STORE in EPISODES_STORE
+		nconst in castList
+		WHERE
+			tconst MACTHES
+</pre>
+<pre>
+For All records in name.basics.tsv.gz
+	STORE in PRINCIPALS_STORE
+		primaryName
+		WHERE
+			nconst MATCHES
+</pre>
+
+
 ### Data Model
 
 #### Titles
-| tconst | title | rating | cast_list |
-|--------|-------|--------|-----------|
+| tconst | primaryTitle | averageRating | castList |
+|--------|--------------|---------------|----------|
 
 #### Episodes
-| parent_tconst | tconst | title | rating |  
-|---------------|--------|-------|--------|  
+| parent_tconst | tconst | primaryTitle | averageRating | castList | 
+|---------------|--------|--------------|---------------|----------|  
 
-
+#### Principals
+| nconst | primaryName | 
+|--------|-------------|
 
 
 ### Components
