@@ -54,4 +54,24 @@ public class TitleRecord {
     public List<String> nConstList() {
         return nconstList;
     }
+
+    public void setTconst(String tconst) {
+        this.tconst = tconst;
+    }
+
+    public void setTitleType(String titleType) {
+        this.titleType = titleType;
+    }
+
+    public void setPrimaryTitle(String primaryTitle) {
+        this.primaryTitle = primaryTitle;
+    }
+
+    public void setAverageRating(String averageRating) {
+        this.averageRating = averageRating;
+    }
+
+    public void setNconstList(List<String> nconstList) {
+        this.nconstList = nconstList;
+    }
 }

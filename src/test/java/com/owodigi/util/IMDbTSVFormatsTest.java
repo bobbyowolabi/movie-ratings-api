@@ -5,7 +5,6 @@ import com.owodigi.util.IMDbTSVFormats.TitleBasicsFormat;
 import com.owodigi.util.IMDbTSVFormats.TitleEpisodeFormat;
 import com.owodigi.util.IMDbTSVFormats.TitlePrincipalsFormat;
 import com.owodigi.util.IMDbTSVFormats.TitleRatingsFormat;
-import com.owodigi.util.TSVFormat;
 import java.io.IOException;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;

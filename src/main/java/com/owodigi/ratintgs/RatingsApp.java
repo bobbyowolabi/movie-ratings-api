@@ -31,7 +31,7 @@ public class RatingsApp {
                     if (titleType.equals("tvEpisode")) {
                         episodeStore.add(tconst, primaryTitle);
                     } else {
-                        titleStore.add(tconst, titleType, primaryTitle);
+//                        titleStore.add(tconst, titleType, primaryTitle);
                     }
                 }
             }
