@@ -2,6 +2,7 @@ package com.owodigi.util;
 
 import com.owodigi.util.IMDbTSVFormats.TitleBasicsFormat;
 import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -42,7 +43,8 @@ public class IMDbDatasetDownloaderTest {
             Arrays.asList("tt0000003", "short", "Pauvre Pierrot", "Pauvre Pierrot", "0", "1892", "\\N", "4", "Animation,Comedy,Romance")
         );
         final Iterator<List<String>> expectedIterator = expected.iterator();
-        IMDbDatasetDownloader.read("http://localhost:" + mockServerRule.getPort(), new TitleBasicsFormat(), new IMDbDownloaderCallback() {
+        final URL url = new URL("http://localhost:" + mockServerRule.getPort());
+        IMDbDatasetDownloader.read(url, new TitleBasicsFormat(), new IMDbDownloaderCallback() {
             
             @Override
             public void read(final CSVRecord actual) {

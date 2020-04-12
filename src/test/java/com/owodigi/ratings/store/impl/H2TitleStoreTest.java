@@ -17,22 +17,37 @@ public class H2TitleStoreTest {
     private static final String PASSWORD = "changeit";
     private static final Path DB_DIRECTORY = Paths.get("./target/test-data");
 
+    private void assertEquals(final TitleRecord expected, final TitleRecord actual) throws AssertionError {
+        Assert.assertEquals("averageRating", expected.averageRating(), actual.averageRating());
+        Assert.assertEquals("nConstList", expected.nConstList(), actual.nConstList());
+        Assert.assertEquals("primaryTitle", expected.primaryTitle(), actual.primaryTitle());
+        Assert.assertEquals("tconst", expected.tconst(), actual.tconst());
+        Assert.assertEquals("titleType", expected.titleType(), actual.titleType());
+    }
+        
     @Test
     public void add() throws IOException {
         if (Files.exists(DB_DIRECTORY) == false) {
             Files.createDirectory(DB_DIRECTORY);
         }
         final TitleStore store = new H2TitleStore(USER_NAME, PASSWORD, DB_DIRECTORY.resolve("test-h2"));
-        final String expectedTconst = "tt0000001";
-        final String expectedTitleType = "short";
-        final String expectedPrimaryTitle = "Animation Film Title";
-        store.add(expectedTconst, expectedTitleType, expectedPrimaryTitle);
-        final TitleRecord record = store.title("Animation Film Title");
-        Assert.assertEquals("averageRating", null, record.averageRating());
-        Assert.assertEquals("nConstList", null, record.nConstList());
-        Assert.assertEquals("primaryTitle", expectedPrimaryTitle, record.primaryTitle());
-        Assert.assertEquals("tconst", expectedTconst, record.tconst());
-        Assert.assertEquals("titleType", expectedTitleType, record.titleType());
+        testAdd(newTitleRecord("tt0000001", "short", "Animation Film Title"), store);
+        testAdd(newTitleRecord("tt0000002", "short2", "Animation Film Title2"), store);
     }
+    
+    private void testAdd(final TitleRecord expected, final TitleStore store) throws IOException {
+        store.add(expected.tconst(), expected.titleType(), expected.primaryTitle());
+        TitleRecord actual = store.title(expected.primaryTitle());
+        assertEquals(expected, actual);
+    }
+    
     // dir does not existx
+    
+    private TitleRecord newTitleRecord(final String tcosnt, final String titleType, final String primaryTitle) {
+        final TitleRecord record = new TitleRecord();
+        record.setTconst(tcosnt);
+        record.setTitleType(titleType);
+        record.setPrimaryTitle(primaryTitle);
+        return record;
+    }
 }

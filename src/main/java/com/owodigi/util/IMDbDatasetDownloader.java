@@ -13,8 +13,16 @@ import org.apache.commons.csv.CSVRecord;
  */
 public class IMDbDatasetDownloader {
 
-    public static <E extends TSVFormat> void read(final String url, E tsvFormat, final IMDbDownloaderCallback callback) throws IOException {
-        try (final CSVParser parser = tsvFormat.format().parse(new InputStreamReader(new GZIPInputStream(new BufferedInputStream(toURL(url).openStream()))))) {
+    /**
+     * 
+     * @param <E>
+     * @param url
+     * @param tsvFormat
+     * @param callback
+     * @throws IOException 
+     */
+    public static <E extends TSVFormat> void read(final URL url, E tsvFormat, final IMDbDownloaderCallback callback) throws IOException {
+        try (final CSVParser parser = tsvFormat.format().parse(new InputStreamReader(new GZIPInputStream(new BufferedInputStream(url.openStream()))))) {
             for (final CSVRecord record : parser) {
                 callback.read(record);
             }
@@ -22,18 +30,4 @@ public class IMDbDatasetDownloader {
             throw new IOException("Unable to download " + url + " due to " + ex.getMessage(), ex);
         }
     }
-    
-    /**
-     * 
-     * @param urlString
-     * @return
-     * @throws IOException 
-     */
-    private static URL toURL(final String urlString) throws IOException {
-        try {
-            return new URL(urlString);
-        } catch (final IOException ex) {
-            throw new IOException("Invalid URL " + urlString, ex);
-        }        
-    }    
 }
