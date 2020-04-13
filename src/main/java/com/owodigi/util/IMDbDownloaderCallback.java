@@ -1,5 +1,6 @@
 package com.owodigi.util;
 
+import java.io.IOException;
 import org.apache.commons.csv.CSVRecord;
 
 /**
@@ -7,5 +8,5 @@ import org.apache.commons.csv.CSVRecord;
  */
 public interface IMDbDownloaderCallback {
 
-    public void read(final CSVRecord record);
+    public void read(final CSVRecord record) throws IOException;
 }

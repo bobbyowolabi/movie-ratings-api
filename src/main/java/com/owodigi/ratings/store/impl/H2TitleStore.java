@@ -13,6 +13,7 @@ import com.owodigi.ratings.store.impl.util.ResultCallback;
 import com.owodigi.ratings.store.impl.util.StatementCallback;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  *
@@ -79,9 +80,15 @@ public class H2TitleStore implements TitleStore {
         executeUpdate(CREATE_TABLE_SQL, NO_OP_RESULT_CALLBACK);
     }
     
+    /**
+     * 
+     * @param databasePath
+     * @return
+     * @throws IOException 
+     */
     private boolean databaseExists(final Path databasePath) throws IOException {
-        final Path dataBaseFile = databasePath.resolve(".mv.db");
-        return Files.exists(dataBaseFile) == false || Files.size(dataBaseFile) == 0L;
+        final Path dataBaseFile = Paths.get(databasePath.toString() + ".mv.db");
+        return Files.exists(dataBaseFile) ? Files.size(dataBaseFile) > 0L : false;
     }
     
     private void execute(final String sql) throws IOException {

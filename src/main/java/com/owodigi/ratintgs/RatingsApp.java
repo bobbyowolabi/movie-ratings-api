@@ -22,8 +22,9 @@ public class RatingsApp {
         
         /* Read & Load title.basics.tsv.gz */
         IMDbDatasetDownloader.read(RatingsAppProperties.titleBasicsURL(), new TitleBasicsFormat(), new IMDbDownloaderCallback() {
+            
             @Override
-            public void read(CSVRecord record) {
+            public void read(CSVRecord record) throws IOException {
                 final String year = record.get(TitleBasicsFormat.header.startYear);
                 if (year.equals(RatingsAppProperties.titleYearInclude())) {
                     final String tconst = record.get(TitleBasicsFormat.header.tconst);
@@ -32,7 +33,7 @@ public class RatingsApp {
                     if (titleType.equals("tvEpisode")) {
                         episodeStore.add(tconst, primaryTitle);
                     } else {
-//                        titleStore.add(tconst, titleType, primaryTitle);
+                        titleStore.add(tconst, titleType, primaryTitle);
                     }
                 }
             }

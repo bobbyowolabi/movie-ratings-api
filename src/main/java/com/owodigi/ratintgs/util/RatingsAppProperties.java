@@ -16,7 +16,7 @@ public final class RatingsAppProperties {
     private static final String DATABASE_PATH = "ratings.db.path";
     private static final String DATABASE_USERNAME = "ratings.db.username";
     private static final String DATABASE_PASSWORD = "ratings.db.password";
-    private static final String IMDB_TITLE_BASICS_URL = "imdb.title.baiscs.url";
+    private static final String IMDB_TITLE_BASICS_URL = "imdb.title.basics.url";
     private static final String TITLE_YEAR_INCLUDE = "title.year.include";
     private static final Properties PROPERTIES = new Properties();
     
@@ -29,7 +29,7 @@ public final class RatingsAppProperties {
      * @return 
      */
     public static Path databasePath() {
-       return Paths.get(requiredProperty(PROPERTIES.getProperty(DATABASE_PATH)));
+       return Paths.get(requiredProperty(DATABASE_PATH));
     }
     
     /**

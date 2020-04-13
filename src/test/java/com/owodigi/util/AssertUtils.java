@@ -1,5 +1,6 @@
 package com.owodigi.util;
 
+import com.owodigi.ratings.domain.TitleRecord;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -21,6 +22,20 @@ public class AssertUtils {
     public static <E> List<List<E>> asList(final List<E>...list) {
         return Arrays.asList(list);
     }
+    
+    /**
+     * 
+     * @param expected
+     * @param actual
+     * @throws AssertionError 
+     */
+    public static void assertEquals(final TitleRecord expected, final TitleRecord actual) throws AssertionError {
+        Assert.assertEquals("averageRating", expected.averageRating(), actual.averageRating());
+        Assert.assertEquals("nConstList", expected.nConstList(), actual.nConstList());
+        Assert.assertEquals("primaryTitle", expected.primaryTitle(), actual.primaryTitle());
+        Assert.assertEquals("tconst", expected.tconst(), actual.tconst());
+        Assert.assertEquals("titleType", expected.titleType(), actual.titleType());
+    }    
     
     /**
      * 
@@ -52,6 +67,29 @@ public class AssertUtils {
             Assert.fail("Unable to parse TSV File due to " + ex);
         } 
     }
+    
+    public static TitleRecord newTitleRecord(final String tcosnt, final String titleType, final String primaryTitle) {
+        final TitleRecord record = new TitleRecord();
+        record.setTconst(tcosnt);
+        record.setTitleType(titleType);
+        record.setPrimaryTitle(primaryTitle);
+        return record;
+    }    
+    
+    public static TitleRecord newTitleRecord (
+            final String averageRating, 
+            final List<String> nConstList, 
+            final String primaryTitle, 
+            final String tconst, 
+            final String titleType) {
+        final TitleRecord record = new TitleRecord();
+        record.setAverageRating(averageRating);
+        record.setNconstList(nConstList);
+        record.setPrimaryTitle(primaryTitle);
+        record.setTconst(tconst);
+        record.setTitleType(titleType); 
+        return record;
+    }    
     
     /**
      *
