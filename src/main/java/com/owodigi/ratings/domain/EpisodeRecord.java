@@ -39,7 +39,7 @@ public class EpisodeRecord {
     /**
      * (string) - List of alphanumeric unique identifier of the name/person
      */
-    private List<String> castList;
+    private List<String> nconstList;
     
     public String parentConst() {
         return parentTconst;
@@ -57,8 +57,8 @@ public class EpisodeRecord {
         return averageRating;
     }
 
-    public List<String> castList() {
-        return castList;
+    public List<String> nConstList() {
+        return nconstList;
     }
 
     public String seasonNumber() {
@@ -85,8 +85,8 @@ public class EpisodeRecord {
         this.averageRating = averageRating;
     }
 
-    public void setCastList(List<String> castList) {
-        this.castList = castList;
+    public void setNconstList(List<String> nconstList) {
+        this.nconstList = nconstList;
     }
 
     public void setSeasonNumber(String seasonNumber) {
@@ -96,6 +96,4 @@ public class EpisodeRecord {
     public void setEpisodeNumber(String episodeNumber) {
         this.episodeNumber = episodeNumber;
     }
-    
-    
 }

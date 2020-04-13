@@ -43,8 +43,14 @@ public class AssertUtils {
      * @param expected
      * @param actual 
      */
-    public static void assertEquals(EpisodeRecord expected, EpisodeRecord actual) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public static void assertEquals(final EpisodeRecord expected, final EpisodeRecord actual) {
+        Assert.assertEquals("tconst", expected.tconst(), actual.tconst());
+        Assert.assertEquals("parentConst", expected.parentConst(), actual.parentConst());  
+        Assert.assertEquals("primaryTitle", expected.primaryTitle(), actual.primaryTitle());
+        Assert.assertEquals("averageRating", expected.averageRating(), actual.averageRating());
+        Assert.assertEquals("episodeNumber", expected.episodeNumber(), actual.episodeNumber());        
+        Assert.assertEquals("seasonNumber", expected.seasonNumber(), actual.seasonNumber());             
+        Assert.assertEquals("nConstList", expected.nConstList(), actual.nConstList());
     }    
     
     /**
@@ -108,7 +114,10 @@ public class AssertUtils {
      * @return 
      */
     public static EpisodeRecord newEpisodeRecord(final String tconst, final String primaryTitle) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        final EpisodeRecord record = new EpisodeRecord();
+        record.setTconst(tconst);
+        record.setPrimaryTitle(primaryTitle);
+        return record;
     }    
     
     /**

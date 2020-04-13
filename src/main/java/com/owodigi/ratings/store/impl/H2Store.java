@@ -1,5 +1,6 @@
 package com.owodigi.ratings.store.impl;
 
+import com.owodigi.ratings.store.impl.util.ColumnConfig;
 import com.owodigi.ratings.store.impl.util.ResultCallback;
 import static com.owodigi.ratings.store.impl.util.ResultCallback.NO_OP_RESULT_CALLBACK;
 import com.owodigi.ratings.store.impl.util.StatementCallback;

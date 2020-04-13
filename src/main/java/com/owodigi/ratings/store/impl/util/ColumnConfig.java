@@ -1,4 +1,4 @@
-package com.owodigi.ratings.store.impl;
+package com.owodigi.ratings.store.impl.util;
 
 /**
  *

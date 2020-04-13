@@ -1,5 +1,6 @@
 package com.owodigi.ratings.store.impl;
 
+import com.owodigi.ratings.store.impl.util.ColumnConfig;
 import com.owodigi.ratings.domain.TitleRecord;
 import com.owodigi.ratings.store.TitleStore;
 import java.io.IOException;
@@ -15,7 +16,7 @@ import java.util.List;
  */
 public class H2TitleStore extends H2Store implements TitleStore {
     private static final String TABLE_NAME = "TITLE_STORE";
-    private enum columns {tconst, primaryTitle, averageRating, titleType, nconstSet}
+    private enum columns {tconst, primaryTitle, averageRating, titleType, nconstList}
     
     /**
      * 
@@ -47,7 +48,7 @@ public class H2TitleStore extends H2Store implements TitleStore {
             new ColumnConfig(columns.primaryTitle.toString(), "VARCHAR(255)"),
             new ColumnConfig(columns.titleType.toString(), "VARCHAR(255)"),
             new ColumnConfig(columns.averageRating.toString(), "VARCHAR(255)"),
-            new ColumnConfig(columns.nconstSet.toString(), "VARCHAR(255)")
+            new ColumnConfig(columns.nconstList.toString(), "VARCHAR(255)")
         );
     }
 
@@ -65,8 +66,8 @@ public class H2TitleStore extends H2Store implements TitleStore {
             @Override
             public void process(final ResultSet result) throws SQLException {
                 record.setAverageRating(result.getString(columns.averageRating.name()));
-                final String nConstSet = result.getString(columns.nconstSet.name());
-                record.setNconstList(nConstSet == null ? null : Arrays.asList(nConstSet.split("[,]")));
+                final String nconstList = result.getString(columns.nconstList.name());
+                record.setNconstList(nconstList == null ? null : Arrays.asList(nconstList.split("[,]")));
                 record.setPrimaryTitle(result.getString(columns.primaryTitle.name()));
                 record.setTitleType(result.getString(columns.titleType.name()));
                 record.setTconst(result.getString(columns.tconst.name()));
