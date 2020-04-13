@@ -28,7 +28,7 @@ Return the persisted title via query by title name.
 | *             | title.principals.tsv.gz |  Need to map nconst to tconst       |
 | primaryName   | name.basics.tsv.gz |      |
 
-### Aggregating
+### Approach to Aggregating the Data
 <pre>
 For All records in title.basics.tsv.gz 
 	SKIP
