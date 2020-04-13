@@ -2,6 +2,7 @@ package com.owodigi.ratintgs;
 
 import com.owodigi.ratings.store.EpisodeStore;
 import com.owodigi.ratings.store.TitleStore;
+import com.owodigi.ratings.store.impl.H2EpisodeStore;
 import com.owodigi.ratings.store.impl.H2TitleStore;
 import com.owodigi.ratintgs.util.RatingsAppProperties;
 import com.owodigi.util.IMDbDatasetDownloader;
@@ -17,7 +18,7 @@ public class RatingsApp {
     
     public static void main(final String[] args) throws IOException {
         final TitleStore titleStore = new H2TitleStore(RatingsAppProperties.databaseUserName(), RatingsAppProperties.databaseUserPassword(), RatingsAppProperties.databasePath());
-        final EpisodeStore episodeStore = null; //new H2EpisodeStore();
+        final EpisodeStore episodeStore = new H2EpisodeStore(RatingsAppProperties.databaseUserName(), RatingsAppProperties.databaseUserPassword(), RatingsAppProperties.databasePath());
         
         
         /* Read & Load title.basics.tsv.gz */
