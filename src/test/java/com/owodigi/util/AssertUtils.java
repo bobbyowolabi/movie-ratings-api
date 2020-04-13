@@ -1,5 +1,6 @@
 package com.owodigi.util;
 
+import com.owodigi.ratings.domain.EpisodeRecord;
 import com.owodigi.ratings.domain.TitleRecord;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,6 +36,15 @@ public class AssertUtils {
         Assert.assertEquals("primaryTitle", expected.primaryTitle(), actual.primaryTitle());
         Assert.assertEquals("tconst", expected.tconst(), actual.tconst());
         Assert.assertEquals("titleType", expected.titleType(), actual.titleType());
+    }    
+    
+    /**
+     * 
+     * @param expected
+     * @param actual 
+     */
+    public static void assertEquals(EpisodeRecord expected, EpisodeRecord actual) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }    
     
     /**
@@ -89,6 +99,16 @@ public class AssertUtils {
         record.setTconst(tconst);
         record.setTitleType(titleType); 
         return record;
+    }    
+    
+    /**
+     * 
+     * @param tconst
+     * @param primaryTitle
+     * @return 
+     */
+    public static EpisodeRecord newEpisodeRecord(final String tconst, final String primaryTitle) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }    
     
     /**

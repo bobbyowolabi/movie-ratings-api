@@ -69,11 +69,11 @@ public class RatingsAppTest {
     
     @Test
     public void testGetRatingOfEpisode() {
-        Assert.fail();
+        Assert.fail("Not Implemented");
     }
     
     @Test
     public void testGetRatingOfTVShow() {
-        Assert.fail();
+        Assert.fail("Not Implemented");
     }
 }
