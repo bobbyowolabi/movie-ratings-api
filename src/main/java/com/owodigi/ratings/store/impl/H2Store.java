@@ -188,4 +188,20 @@ public abstract class H2Store {
      * @return 
      */
     protected abstract String tableName();
+    
+    /**
+     * 
+     * @param column
+     * @param value
+     * @param conditionColumn
+     * @param conditionValue
+     * @return 
+     */
+    protected String updateSql(final String column, final String value, final String conditionColumn, final String conditionValue) {
+        final StringBuilder statement = new StringBuilder();
+        statement.append("UPDATE ").append(tableName()).append(" ")
+            .append("SET ").append(column).append(" = ").append("'").append(value).append("'")
+            .append("WHERE ").append(conditionColumn).append(" = ").append("'").append(conditionValue).append("';");
+        return statement.toString();
+    }
 }

@@ -13,6 +13,7 @@ public interface TitleStore {
      * @param tconst
      * @param titleType
      * @param primaryTitle 
+     * @throws java.io.IOException 
      */
     public void add(String tconst, String titleType, String primaryTitle) throws IOException;
     
@@ -20,6 +21,14 @@ public interface TitleStore {
      * 
      * @param title
      * @return 
+     * @throws java.io.IOException 
      */
-    public TitleRecord title(final String title) throws IOException;
+    public TitleRecord title(String title) throws IOException;
+
+    /**
+     * 
+     * @param tconst
+     * @param averageRating 
+     */
+    public void updateRating(String tconst, String averageRating) throws IOException;
 }

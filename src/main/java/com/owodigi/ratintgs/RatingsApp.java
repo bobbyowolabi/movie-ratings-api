@@ -8,6 +8,7 @@ import com.owodigi.ratintgs.util.RatingsAppProperties;
 import com.owodigi.util.IMDbDatasetDownloader;
 import com.owodigi.util.IMDbDownloaderCallback;
 import com.owodigi.util.IMDbTSVFormats.TitleBasicsFormat;
+import com.owodigi.util.IMDbTSVFormats.TitleRatingsFormat;
 import java.io.IOException;
 import org.apache.commons.csv.CSVRecord;
 
@@ -25,7 +26,7 @@ public class RatingsApp {
         IMDbDatasetDownloader.read(RatingsAppProperties.titleBasicsURL(), new TitleBasicsFormat(), new IMDbDownloaderCallback() {
             
             @Override
-            public void read(CSVRecord record) throws IOException {
+            public void read(final CSVRecord record) throws IOException {
                 final String year = record.get(TitleBasicsFormat.header.startYear);
                 if (year.equals(RatingsAppProperties.titleYearInclude())) {
                     final String tconst = record.get(TitleBasicsFormat.header.tconst);
@@ -37,6 +38,17 @@ public class RatingsApp {
                         titleStore.add(tconst, titleType, primaryTitle);
                     }
                 }
+            }
+        });
+        
+        /* Read & Load title.ratings.tsv.gz */
+        IMDbDatasetDownloader.read(RatingsAppProperties.titleRatingsURL(), new TitleRatingsFormat(), new IMDbDownloaderCallback() {
+            
+            @Override
+            public void read(final CSVRecord record) throws IOException {
+                final String tconst = record.get(TitleRatingsFormat.headers.tconst);
+                final String averageRating = record.get(TitleRatingsFormat.headers.averageRating);
+                titleStore.updateRating(tconst, averageRating);
             }
         });
     }

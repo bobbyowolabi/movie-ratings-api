@@ -41,16 +41,8 @@ public class RatingsAppTest {
     @Test
     public void testGetRating() throws IOException {
         mockServerClient.bind(8080);
-        mockServerClient
-            .when(
-                request()
-                    .withPath("/title.basics.tsv.gz")
-            )
-            .respond(
-                response()
-                    .withStatusCode(200)
-                    .withBody(Files.readAllBytes(Paths.get("src/test/resources/title.basics.tsv.gz")))
-            );
+        whenRequest("/title.basics.tsv.gz", "src/test/resources/title.basics.tsv.gz");
+        whenRequest("/title.ratings.tsv.gz", "src/test/resources/title.ratings.tsv.gz");
         System.setProperty(RatingsAppProperties.SYSTEM_PROPERTIES_FILE, "src/test/resources/ratings-app.properties");
         RatingsApp.main(new String[0]); 
         final TitleStore store = new H2TitleStore(
@@ -75,5 +67,18 @@ public class RatingsAppTest {
     @Test
     public void testGetRatingOfTVShow() {
         Assert.fail("Not Implemented");
+    }
+    
+    private void whenRequest(final String requestPath, final String responsePath) throws IOException {
+        mockServerClient
+            .when(
+                request()
+                    .withPath(requestPath)
+            )
+            .respond(
+                response()
+                    .withStatusCode(200)
+                    .withBody(Files.readAllBytes(Paths.get(responsePath)))
+            );
     }
 }

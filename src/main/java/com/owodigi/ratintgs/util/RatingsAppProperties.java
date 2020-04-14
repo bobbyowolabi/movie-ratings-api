@@ -17,6 +17,7 @@ public final class RatingsAppProperties {
     private static final String DATABASE_USERNAME = "ratings.db.username";
     private static final String DATABASE_PASSWORD = "ratings.db.password";
     private static final String IMDB_TITLE_BASICS_URL = "imdb.title.basics.url";
+    private static final String IMBD_TITLE_RATINGS_URL = "imdb.title.ratings.url";
     private static final String TITLE_YEAR_INCLUDE = "title.year.include";
     private static final Properties PROPERTIES = new Properties();
     
@@ -86,6 +87,10 @@ public final class RatingsAppProperties {
     public static URL titleBasicsURL() throws IOException {
         return toURL(requiredProperty(IMDB_TITLE_BASICS_URL));
     }
+    
+    public static URL titleRatingsURL() throws IOException {
+        return toURL(requiredProperty(IMBD_TITLE_RATINGS_URL));
+    }    
     
     /**
      * 

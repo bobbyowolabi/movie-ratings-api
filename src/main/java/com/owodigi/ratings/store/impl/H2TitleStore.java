@@ -16,6 +16,7 @@ import java.util.List;
  */
 public class H2TitleStore extends H2Store implements TitleStore {
     private static final String TABLE_NAME = "TITLE_STORE";
+
     private enum columns {tconst, primaryTitle, averageRating, titleType, nconstList}
     
     /**
@@ -74,5 +75,11 @@ public class H2TitleStore extends H2Store implements TitleStore {
             }
         });
         return record;
+    }
+    
+    @Override
+    public void updateRating(final String tconst, final String averageRating) throws IOException {
+        final String sql = updateSql(columns.averageRating.toString(), averageRating, columns.tconst.toString(), tconst);
+        executeUpdate(sql);
     }
 }
