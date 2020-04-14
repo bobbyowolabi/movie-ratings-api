@@ -1,6 +1,7 @@
 package com.owodigi.util;
 
 import com.owodigi.util.IMDbTSVFormats.TitleBasicsFormat;
+import com.owodigi.util.IMDbTSVFormats.TitleRatingsFormat;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
@@ -31,7 +32,7 @@ public class IMDbDatasetDownloaderTest {
             Arrays.asList("tt0000002", "short", 	"Le clown et ses chiens", "Le clown et ses chiens", "0", "1892", "\\N", "5", "Animation,Short"),
             Arrays.asList("tt0000003", "short", "Pauvre Pierrot", "Pauvre Pierrot", "0", "1892", "\\N", "4", "Animation,Comedy,Romance")
         );
-        testDownload(fileName, expected);
+        testDownload(fileName, new TitleBasicsFormat(), expected);
     }
 
     @Test
@@ -42,7 +43,7 @@ public class IMDbDatasetDownloaderTest {
             Arrays.asList("tt0000002", "6.0", "195"),
             Arrays.asList("tt0000003", "6.5", "1266")
         );
-        testDownload(fileName, expected);
+        testDownload(fileName, new TitleRatingsFormat(), expected);
     }
 
     /**
@@ -51,7 +52,7 @@ public class IMDbDatasetDownloaderTest {
      * @param expected
      * @throws IOException
      */
-    private void testDownload(final String fileName, final List<List<String>> expected) throws IOException {
+    private <E extends TSVFormat> void testDownload(final String fileName, final E tsvFormat, final List<List<String>> expected) throws IOException {
         mockServerClient
             .when(
                 request("/" + fileName)
@@ -63,7 +64,7 @@ public class IMDbDatasetDownloaderTest {
             );
         final Iterator<List<String>> expectedIterator = expected.iterator();
         final URL url = new URL("http://localhost:" + mockServerRule.getPort() + "/" + fileName);
-        IMDbDatasetDownloader.read(url, new TitleBasicsFormat(), new IMDbDownloaderCallback() {
+        IMDbDatasetDownloader.read(url, tsvFormat, new IMDbDownloaderCallback() {
 
             @Override
             public void read(final CSVRecord actual) {

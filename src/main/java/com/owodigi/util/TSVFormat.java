@@ -27,6 +27,8 @@ public abstract class TSVFormat {
         return CSVFormat
                 .TDF
                 .withHeader(headerClass())
-                .withSkipHeaderRecord();
+                .withAllowMissingColumnNames(false)
+                .withAllowDuplicateHeaderNames(false)
+                .withFirstRecordAsHeader();
     }
 }
