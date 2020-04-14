@@ -48,19 +48,23 @@ public class H2EpisodeStore extends H2Store implements EpisodeStore {
     @Override
     protected List<ColumnConfig> columnConfigs() {
         return Arrays.asList(
-            new ColumnConfig(columns.tconst.toString(), "VARCHAR(255)"),
-            new ColumnConfig(columns.parentTconst.toString(), "VARCHAR(255)"),
-            new ColumnConfig(columns.primaryTitle.toString(), "VARCHAR(255)"),            
-            new ColumnConfig(columns.averageRating.toString(), "VARCHAR(255)"),
-            new ColumnConfig(columns.seasonNumber.toString(), "VARCHAR(255)"),
-            new ColumnConfig(columns.episodeNumber.toString(), "VARCHAR(255)"),
-            new ColumnConfig(columns.nconstList.toString(), "VARCHAR(255)")
+            new ColumnConfig(columns.tconst.name(), "VARCHAR(255)"),
+            new ColumnConfig(columns.parentTconst.name(), "VARCHAR(255)"),
+            new ColumnConfig(columns.primaryTitle.name(), "VARCHAR(255)"),            
+            new ColumnConfig(columns.averageRating.name(), "VARCHAR(255)"),
+            new ColumnConfig(columns.seasonNumber.name(), "VARCHAR(255)"),
+            new ColumnConfig(columns.episodeNumber.name(), "VARCHAR(255)"),
+            new ColumnConfig(columns.nconstList.name(), "VARCHAR(255)")
         );
     }
 
-    @Override
-    public EpisodeRecord title(final String title) throws IOException {
-        final String sql = selectAllSql(columns.primaryTitle.toString(), title);
+    /**
+     * 
+     * @param sql
+     * @return
+     * @throws IOException 
+     */
+    private EpisodeRecord executeQuery(final String sql) throws IOException {
         final EpisodeRecord record = new EpisodeRecord();
         executeQuery(sql, new ResultCallback() {
             
@@ -74,14 +78,31 @@ public class H2EpisodeStore extends H2Store implements EpisodeStore {
                 record.setSeasonNumber(result.getString(columns.seasonNumber.name()));
                 final String nconstList = result.getString(columns.nconstList.name());
                 record.setNconstList(nconstList == null ? null : Arrays.asList(nconstList.split("[,]")));
-                
             }
         });
-        return record;
+        return record;        
+    }
+    
+    @Override
+    public EpisodeRecord tconst(final String tconst) throws IOException {
+        final String sql = selectAllSql(columns.tconst.name(), tconst);
+        return executeQuery(sql);
+    }    
+    
+    @Override
+    public EpisodeRecord title(final String title) throws IOException {
+        final String sql = selectAllSql(columns.primaryTitle.name(), title);
+        return executeQuery(sql);
     }    
     
     @Override
     protected String tableName() {
         return TABLE_NAME;
     }
+    
+    @Override
+    public void updateRating(final String tconst, final String averageRating) throws IOException {
+        final String sql = updateSql(columns.averageRating.name(), averageRating, columns.tconst.name(), tconst);
+        executeUpdate(sql);
+    }    
 }

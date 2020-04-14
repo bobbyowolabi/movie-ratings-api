@@ -1,5 +1,7 @@
 package com.owodigi.ratintgs;
 
+import com.owodigi.ratings.domain.EpisodeRecord;
+import com.owodigi.ratings.domain.TitleRecord;
 import com.owodigi.ratings.store.EpisodeStore;
 import com.owodigi.ratings.store.TitleStore;
 import com.owodigi.ratings.store.impl.H2EpisodeStore;
@@ -20,9 +22,11 @@ public class RatingsApp {
     public static void main(final String[] args) throws IOException {
         final TitleStore titleStore = new H2TitleStore(RatingsAppProperties.databaseUserName(), RatingsAppProperties.databaseUserPassword(), RatingsAppProperties.databasePath());
         final EpisodeStore episodeStore = new H2EpisodeStore(RatingsAppProperties.databaseUserName(), RatingsAppProperties.databaseUserPassword(), RatingsAppProperties.databasePath());
-        
-        
-        /* Read & Load title.basics.tsv.gz */
+        processTitleBasicsDataset(titleStore, episodeStore);
+        processTitleRatingsDataset(titleStore, episodeStore);
+    }
+    
+    private static void processTitleBasicsDataset(final TitleStore titleStore, final EpisodeStore episodeStore) throws IOException {
         IMDbDatasetDownloader.read(RatingsAppProperties.titleBasicsURL(), new TitleBasicsFormat(), new IMDbDownloaderCallback() {
             
             @Override
@@ -40,16 +44,26 @@ public class RatingsApp {
                 }
             }
         });
-        
-        /* Read & Load title.ratings.tsv.gz */
+    }
+    
+    private static void processTitleRatingsDataset(final TitleStore titleStore, final EpisodeStore episodeStore) throws IOException {
         IMDbDatasetDownloader.read(RatingsAppProperties.titleRatingsURL(), new TitleRatingsFormat(), new IMDbDownloaderCallback() {
             
             @Override
             public void read(final CSVRecord record) throws IOException {
                 final String tconst = record.get(TitleRatingsFormat.headers.tconst);
                 final String averageRating = record.get(TitleRatingsFormat.headers.averageRating);
-                titleStore.updateRating(tconst, averageRating);
+                final TitleRecord titleRecord = titleStore.tconst(tconst);
+                if (titleRecord == null) {
+                    final EpisodeRecord episodeRecord = episodeStore.tconst(tconst);
+                    if (episodeRecord == null) {
+                        throw new IllegalStateException("Encountered record not found in both the TitleStore and EpisodeStore: " + record);
+                    }
+                    episodeStore.updateRating(tconst, averageRating);
+                } else {
+                    titleStore.updateRating(tconst, averageRating);
+                }
             }
-        });
+        });        
     }
 }

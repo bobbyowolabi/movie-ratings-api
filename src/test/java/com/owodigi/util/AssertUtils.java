@@ -32,10 +32,10 @@ public class AssertUtils {
      */
     public static void assertEquals(final TitleRecord expected, final TitleRecord actual) throws AssertionError {
         Assert.assertEquals("averageRating", expected.averageRating(), actual.averageRating());
-        Assert.assertEquals("nConstList", expected.nConstList(), actual.nConstList());
         Assert.assertEquals("primaryTitle", expected.primaryTitle(), actual.primaryTitle());
         Assert.assertEquals("tconst", expected.tconst(), actual.tconst());
         Assert.assertEquals("titleType", expected.titleType(), actual.titleType());
+        Assert.assertEquals("nConstList", expected.nConstList(), actual.nConstList());
     }    
     
     /**

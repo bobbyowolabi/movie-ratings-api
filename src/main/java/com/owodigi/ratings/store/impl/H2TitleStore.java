@@ -16,7 +16,6 @@ import java.util.List;
  */
 public class H2TitleStore extends H2Store implements TitleStore {
     private static final String TABLE_NAME = "TITLE_STORE";
-
     private enum columns {tconst, primaryTitle, averageRating, titleType, nconstList}
     
     /**
@@ -45,22 +44,21 @@ public class H2TitleStore extends H2Store implements TitleStore {
     @Override
     protected List<ColumnConfig> columnConfigs() {
         return Arrays.asList(
-            new ColumnConfig(columns.tconst.toString(), "VARCHAR(255)"),
-            new ColumnConfig(columns.primaryTitle.toString(), "VARCHAR(255)"),
-            new ColumnConfig(columns.titleType.toString(), "VARCHAR(255)"),
-            new ColumnConfig(columns.averageRating.toString(), "VARCHAR(255)"),
-            new ColumnConfig(columns.nconstList.toString(), "VARCHAR(255)")
+            new ColumnConfig(columns.tconst.name(), "VARCHAR(255)"),
+            new ColumnConfig(columns.primaryTitle.name(), "VARCHAR(255)"),
+            new ColumnConfig(columns.titleType.name(), "VARCHAR(255)"),
+            new ColumnConfig(columns.averageRating.name(), "VARCHAR(255)"),
+            new ColumnConfig(columns.nconstList.name(), "VARCHAR(255)")
         );
     }
 
-    @Override
-    protected String tableName() {
-        return TABLE_NAME;
-    }
-    
-    @Override
-    public TitleRecord title(final String title) throws IOException {
-        final String sql = selectAllSql(columns.primaryTitle.toString(), title);
+    /**
+     * 
+     * @param sql
+     * @return
+     * @throws IOException 
+     */
+    private TitleRecord executeQuery(final String sql) throws IOException {
         final TitleRecord record = new TitleRecord();
         executeQuery(sql, new ResultCallback() {
             
@@ -74,12 +72,29 @@ public class H2TitleStore extends H2Store implements TitleStore {
                 record.setTconst(result.getString(columns.tconst.name()));
             }
         });
-        return record;
+        return record;        
+    }
+    
+    @Override
+    protected String tableName() {
+        return TABLE_NAME;
+    }
+    
+    @Override
+    public TitleRecord tconst(final String tconst) throws IOException {
+        final String sql = selectAllSql(columns.tconst.name(), tconst);
+        return executeQuery(sql);
+    }    
+    
+    @Override
+    public TitleRecord title(final String title) throws IOException {
+        final String sql = selectAllSql(columns.primaryTitle.name(), title);
+        return executeQuery(sql);
     }
     
     @Override
     public void updateRating(final String tconst, final String averageRating) throws IOException {
-        final String sql = updateSql(columns.averageRating.toString(), averageRating, columns.tconst.toString(), tconst);
+        final String sql = updateSql(columns.averageRating.name(), averageRating, columns.tconst.name(), tconst);
         executeUpdate(sql);
     }
 }

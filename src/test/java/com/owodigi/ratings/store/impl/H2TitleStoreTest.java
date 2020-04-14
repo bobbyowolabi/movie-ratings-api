@@ -37,6 +37,8 @@ public class H2TitleStoreTest extends H2StoreTest {
         store.add(expected.tconst(), expected.titleType(), expected.primaryTitle());
         TitleRecord actual = store.title(expected.primaryTitle());
         AssertUtils.assertEquals(expected, actual);
+        actual = store.tconst(expected.tconst());
+        AssertUtils.assertEquals(expected, actual);
     }
     
     @Test

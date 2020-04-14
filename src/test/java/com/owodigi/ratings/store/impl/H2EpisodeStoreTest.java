@@ -25,6 +25,16 @@ public class H2EpisodeStoreTest extends H2StoreTest {
     }
 
     @Test
+    public void update() throws IOException {
+        final EpisodeStore store = new H2EpisodeStore(userName(), password(), databasePath());
+        final EpisodeRecord originalRecord = newEpisodeRecord("tt0000001", "Animation Film Title");
+        testAdd(originalRecord, store);
+        store.updateRating(originalRecord.tconst(), "5.5");
+        final EpisodeRecord updatedRecord = store.title(originalRecord.primaryTitle());
+        Assert.assertEquals("averageRating", "5.5", updatedRecord.averageRating());
+    }    
+    
+    @Test
     public void dbDirectoryDoesNotExist() throws IOException {
         final Path databasePath = Paths.get("./target/test-data3/foo");
         final Path databaseFile = Paths.get(databasePath.toString() + DATABASE_FILE_SUFFIX);
@@ -48,7 +58,9 @@ public class H2EpisodeStoreTest extends H2StoreTest {
      */
     private void testAdd(final EpisodeRecord expected, final EpisodeStore store) throws IOException {
         store.add(expected.tconst(), expected.primaryTitle());
-        final EpisodeRecord actual = store.title(expected.primaryTitle());
+        EpisodeRecord actual = store.title(expected.primaryTitle());
+        AssertUtils.assertEquals(expected, actual);
+        actual = store.tconst(expected.tconst());
         AssertUtils.assertEquals(expected, actual);
     }
 }
