@@ -28,7 +28,7 @@ public class RatingsApp {
             @Override
             public void read(final CSVRecord record) throws IOException {
                 final String year = record.get(TitleBasicsFormat.header.startYear);
-                if (year.equals(RatingsAppProperties.titleYearInclude())) {
+                if (RatingsAppProperties.titleIncludeYears().contains(year)) {
                     final String tconst = record.get(TitleBasicsFormat.header.tconst);
                     final String titleType = record.get(TitleBasicsFormat.header.titleType);
                     final String primaryTitle = record.get(TitleBasicsFormat.header.primaryTitle);

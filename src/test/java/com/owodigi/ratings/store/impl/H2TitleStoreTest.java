@@ -8,33 +8,29 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import org.junit.Before;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
  *
  */
-public class H2TitleStoreTest {
-    private static final String USER_NAME = "test_user";
-    private static final String PASSWORD = "changeit";
-    private static final Path DB_PATH = Paths.get("./target/test-data/test-h2");
-    private static final Path TEST_DB_PATH = Paths.get("./target/test-data/test-h2.mv.db");
-    private static final Path TEST_DB_TRACE_PATH = Paths.get("./target/test-data/test-h2.trace.db");
-    
-    @Before
-    public void setupTest() throws IOException {
-        Files.deleteIfExists(TEST_DB_PATH);
-        Files.deleteIfExists(TEST_DB_TRACE_PATH);
-    }
+public class H2TitleStoreTest extends H2StoreTest {
        
     @Test
     public void add() throws IOException {
-        if (Files.exists(DB_PATH) == false) {
-            Files.createDirectory(DB_PATH);
-        }
-        final TitleStore store = new H2TitleStore(USER_NAME, PASSWORD, DB_PATH);
+        final TitleStore store = new H2TitleStore(userName(), password(), databasePath());
         testAdd(newTitleRecord("tt0000001", "short", "Animation Film Title"), store);
         testAdd(newTitleRecord("tt0000002", "short2", "Animation Film Title2"), store);
+    }
+    
+    @Test
+    public void update() throws IOException {
+        final TitleStore store = new H2TitleStore(userName(), password(), databasePath());
+        final TitleRecord originalRecord = newTitleRecord("tt0000001", "short", "Animation Film Title");
+        testAdd(originalRecord, store);
+        store.updateRating(originalRecord.tconst(), "5.5");
+        final TitleRecord updatedRecord = store.title(originalRecord.primaryTitle());
+        Assert.assertEquals("averageRating", "5.5", updatedRecord.averageRating());
     }
     
     private void testAdd(final TitleRecord expected, final TitleStore store) throws IOException {
@@ -43,5 +39,19 @@ public class H2TitleStoreTest {
         AssertUtils.assertEquals(expected, actual);
     }
     
-    // dir does not existx
+    @Test
+    public void dbDirectoryDoesNotExist() throws IOException {
+        final Path databasePath = Paths.get("./target/test-data2/foo");
+        final Path databaseFile = Paths.get(databasePath.toString() + DATABASE_FILE_SUFFIX);
+        final Path databaseTraceFile = Paths.get(databasePath.toString() + DATABASE_TRACE_FILE_SUFFIX);
+        Files.deleteIfExists(databaseFile);
+        Files.deleteIfExists(databaseTraceFile);
+        try {
+            new H2TitleStore(userName(), password(), databasePath);
+            Assert.assertEquals(databaseFile + "exists", true, Files.exists(databaseFile));
+        } finally {
+            Files.deleteIfExists(databaseFile);
+            Files.deleteIfExists(databaseTraceFile);
+        }
+    }
 }

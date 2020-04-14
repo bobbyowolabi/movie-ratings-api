@@ -5,7 +5,10 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Properties;
+import java.util.Set;
 
 /**
  *
@@ -18,7 +21,7 @@ public final class RatingsAppProperties {
     private static final String DATABASE_PASSWORD = "ratings.db.password";
     private static final String IMDB_TITLE_BASICS_URL = "imdb.title.basics.url";
     private static final String IMBD_TITLE_RATINGS_URL = "imdb.title.ratings.url";
-    private static final String TITLE_YEAR_INCLUDE = "title.year.include";
+    private static final String TITLE_INCLUDE_YEARS = "title.include.years";
     private static final Properties PROPERTIES = new Properties();
     
     static {
@@ -96,8 +99,8 @@ public final class RatingsAppProperties {
      * 
      * @return 
      */
-    public static String titleYearInclude() {
-        return requiredProperty(TITLE_YEAR_INCLUDE);
+    public static Set<String> titleIncludeYears() {
+        return new HashSet<>(Arrays.asList(requiredProperty(TITLE_INCLUDE_YEARS).split("\\s*[,]\\s*")));
     }
     
     /**

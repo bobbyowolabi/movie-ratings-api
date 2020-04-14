@@ -2,3 +2,7 @@ tconst	titleType	primaryTitle	originalTitle	isAdult	startYear	endYear	runtimeMin
 tt0000001	short	Carmencita	Carmencita	0	1894	\N	1	Documentary,Short
 tt0000002	short	Le clown et ses chiens	Le clown et ses chiens	0	1892	\N	5	Animation,Short
 tt0000003	short	Pauvre Pierrot	Pauvre Pierrot	0	1892	\N	4	Animation,Comedy,Romance
+tt0041038	tvSeries	The Lone Ranger	The Lone Ranger	0	1949	1957	30	Western
+tt0989125	tvSeries	BBC Sunday-Night Theatre	BBC Sunday-Night Theatre	0	1950	1959	\N	Drama
+tt0041951	tvEpisode	The Tenderfeet	The Tenderfeet	0	1949	\N	30	Western
+tt0042816	tvEpisode	Othello	Othello	0	1950	\N	135	Drama

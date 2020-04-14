@@ -84,6 +84,24 @@ public class AssertUtils {
         } 
     }
     
+    public static EpisodeRecord newEpisodeRecord(
+            final String tconst, 
+            final String parentTconst, 
+            final String primaryTitle, 
+            final String averageRating, 
+            final String seasonNumber, 
+            final String episodeNumber, 
+            final List<String> nConstList){
+        final EpisodeRecord record = new EpisodeRecord();
+        record.setAverageRating(averageRating);
+        record.setEpisodeNumber(episodeNumber);
+        record.setNconstList(nConstList);
+        record.setParentConst(parentTconst);
+        record.setSeasonNumber(seasonNumber);
+        record.setTconst(tconst);
+        return record;
+    }
+    
     public static TitleRecord newTitleRecord(final String tcosnt, final String titleType, final String primaryTitle) {
         final TitleRecord record = new TitleRecord();
         record.setTconst(tcosnt);
@@ -122,7 +140,7 @@ public class AssertUtils {
     
     /**
      *
-     * @param actual
+     * @param record
      * @return
      */
     public static List<String> toList(final CSVRecord record) {
