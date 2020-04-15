@@ -6,7 +6,6 @@ import com.owodigi.ratings.store.EpisodeStore;
 import com.owodigi.ratings.store.TitleStore;
 import com.owodigi.ratings.store.impl.H2EpisodeStore;
 import com.owodigi.ratings.store.impl.H2TitleStore;
-import com.owodigi.ratintgs.RatingsApp;
 import com.owodigi.ratintgs.util.RatingsAppProperties;
 import com.owodigi.util.AssertUtils;
 import static com.owodigi.util.AssertUtils.newEpisodeRecord;

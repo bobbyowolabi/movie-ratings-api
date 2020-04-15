@@ -1,4 +1,4 @@
-package com.owodigi.ratintgs;
+package com.owodigi.ratings;
 
 import com.owodigi.ratings.domain.EpisodeRecord;
 import com.owodigi.ratings.domain.TitleRecord;
