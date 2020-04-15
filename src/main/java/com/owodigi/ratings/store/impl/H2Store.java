@@ -16,7 +16,10 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  *
@@ -196,9 +199,26 @@ public abstract class H2Store {
      * @return 
      */
     protected String updateSql(final String column, final String value, final String conditionColumn, final String conditionValue) {
+        return updateSql(conditionColumn, conditionValue, Collections.singletonMap(column, value));
+    }
+    
+    /**
+     * 
+     * @param conditionColumn
+     * @param conditionValue
+     * @param updateValues
+     * @return 
+     */
+    protected String updateSql(final String conditionColumn, final String conditionValue, final Map<String, String> updateValues) {
         final StringBuilder statement = new StringBuilder();
-        statement.append("UPDATE ").append(tableName()).append(" ")
-            .append("SET ").append(column).append(" = ").append("'").append(value).append("' ")
+        statement.append("UPDATE ").append(tableName()).append(" SET ");
+        updateValues.entrySet().forEach((entry) -> {
+            final String updateColumn = entry.getKey();
+            final String updateValue = entry.getValue();
+            statement.append(updateColumn).append(" = ").append("'").append(updateValue).append("', ");
+        });
+        statement
+            .delete(statement.length() - 2, statement.length())
             .append("WHERE ").append(conditionColumn).append(" = ").append("'").append(conditionValue).append("';");
         return statement.toString();
     }

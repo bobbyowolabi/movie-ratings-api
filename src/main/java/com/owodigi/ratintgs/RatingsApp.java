@@ -10,6 +10,7 @@ import com.owodigi.ratintgs.util.RatingsAppProperties;
 import com.owodigi.util.IMDbDatasetDownloader;
 import com.owodigi.util.IMDbDownloaderCallback;
 import com.owodigi.util.IMDbTSVFormats.TitleBasicsFormat;
+import com.owodigi.util.IMDbTSVFormats.TitleEpisodeFormat;
 import com.owodigi.util.IMDbTSVFormats.TitlePrincipalsFormat;
 import com.owodigi.util.IMDbTSVFormats.TitleRatingsFormat;
 import java.io.IOException;
@@ -25,25 +26,8 @@ public class RatingsApp {
         final EpisodeStore episodeStore = new H2EpisodeStore(RatingsAppProperties.databaseUserName(), RatingsAppProperties.databaseUserPassword(), RatingsAppProperties.databasePath());
         processTitleBasicsDataset(titleStore, episodeStore);
         processTitleRatingsDataset(titleStore, episodeStore);
-
-        IMDbDatasetDownloader.read(RatingsAppProperties.titlePrincipalsURL(), new TitlePrincipalsFormat(), new IMDbDownloaderCallback() {
-
-            @Override
-            public void read(final CSVRecord record) throws IOException {
-                final String tconst = record.get(TitlePrincipalsFormat.headers.tconst);
-                final String nconst = record.get(TitlePrincipalsFormat.headers.nconst);
-                final TitleRecord titleRecord = titleStore.tconst(tconst);
-                if (titleRecord == null) {
-                    final EpisodeRecord episodeRecord = episodeStore.tconst(tconst);
-                    if (episodeRecord == null) {
-                        throw new IllegalStateException("Encountered record not found in both the TitleStore and EpisodeStore: " + record);
-                    }
-                    episodeStore.addNconst(tconst, nconst);
-                } else {
-                    titleStore.addNconst(tconst, nconst);
-                }
-            }
-        });
+        processTitlePrincipalsDataset(titleStore, episodeStore);
+        processTitleEpisodeDataset(episodeStore);
     }
 
     private static void processTitleBasicsDataset(final TitleStore titleStore, final EpisodeStore episodeStore) throws IOException {
@@ -83,6 +67,45 @@ public class RatingsApp {
                 } else {
                     titleStore.updateRating(tconst, averageRating);
                 }
+            }
+        });
+    }
+
+    private static void processTitlePrincipalsDataset(final TitleStore titleStore, final EpisodeStore episodeStore) throws IOException {
+        IMDbDatasetDownloader.read(RatingsAppProperties.titlePrincipalsURL(), new TitlePrincipalsFormat(), new IMDbDownloaderCallback() {
+
+            @Override
+            public void read(final CSVRecord record) throws IOException {
+                final String tconst = record.get(TitlePrincipalsFormat.headers.tconst);
+                final String nconst = record.get(TitlePrincipalsFormat.headers.nconst);
+                final TitleRecord titleRecord = titleStore.tconst(tconst);
+                if (titleRecord == null) {
+                    final EpisodeRecord episodeRecord = episodeStore.tconst(tconst);
+                    if (episodeRecord == null) {
+                        throw new IllegalStateException("Encountered record not found in both the TitleStore and EpisodeStore: " + record);
+                    }
+                    episodeStore.addNconst(tconst, nconst);
+                } else {
+                    titleStore.addNconst(tconst, nconst);
+                }
+            }
+        });
+    }
+
+    private static void processTitleEpisodeDataset(final EpisodeStore episodeStore) throws IOException {
+        IMDbDatasetDownloader.read(RatingsAppProperties.titleEpisodeURL(), new TitleEpisodeFormat(), new IMDbDownloaderCallback() {
+            
+            @Override
+            public void read(final CSVRecord record) throws IOException {
+                final String tconst = record.get(TitleEpisodeFormat.header.tconst);
+                final EpisodeRecord episodeRecord = episodeStore.tconst(tconst);
+                if (episodeRecord == null) {
+                    throw new IllegalStateException("Encountered a record not present in EpisdoeStore: " + record);
+                }
+                final String parentTconst = record.get(TitleEpisodeFormat.header.parentTconst);
+                final String episodeNumber = record.get(TitleEpisodeFormat.header.episodeNumber);
+                final String seasonNumber = record.get(TitleEpisodeFormat.header.seasonNumber);
+                episodeStore.updateEpisode(tconst, parentTconst, seasonNumber, episodeNumber);
             }
         });
     }

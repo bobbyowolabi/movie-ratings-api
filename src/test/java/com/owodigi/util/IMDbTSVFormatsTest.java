@@ -60,8 +60,7 @@ public class IMDbTSVFormatsTest {
         final String input = TEST_RESOURCES_DIR + "title.episode-sample.tsv";
         final List<List<String>> expected = AssertUtils.asList(
             Arrays.asList("tt0041951", "tt0041038", "1", "9"),
-            Arrays.asList("tt0042816", "tt0989125", "1", "17"),
-            Arrays.asList("tt0042889", "tt0989125", "\\N", "\\N")
+            Arrays.asList("tt0042816", "tt0989125", "1", "17")
         );
         test(expected, input, new TitleEpisodeFormat());        
     }

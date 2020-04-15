@@ -47,4 +47,13 @@ public interface EpisodeStore {
      * @throws java.io.IOException 
      */
     public void updateRating(String tconst, String averageRating) throws IOException;    
+
+    /**
+     * 
+     * @param tconst
+     * @param parentTconst
+     * @param seasonNumber
+     * @param episodeNumber 
+     */
+    public void updateEpisode(String tconst, String parentTconst, String seasonNumber, String episodeNumber) throws IOException;
 }

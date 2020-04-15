@@ -22,6 +22,7 @@ public final class RatingsAppProperties {
     private static final String IMDB_TITLE_BASICS_URL = "imdb.title.basics.url";
     private static final String IMBD_TITLE_RATINGS_URL = "imdb.title.ratings.url";
     private static final String IMBD_TITLE_PRINCIPALS_URL = "imdb.title.principals.url";
+    private static final String IMBD_TITLE_EPISODE_URL = "imdb.title.episode.url";
     private static final String TITLE_INCLUDE_YEARS = "title.include.years";
     private static final Properties PROPERTIES = new Properties();
     
@@ -108,7 +109,16 @@ public final class RatingsAppProperties {
      */
     public static URL titleRatingsURL() throws IOException {
         return toURL(requiredProperty(IMBD_TITLE_RATINGS_URL));
-    }    
+    }
+    
+    /**
+     * 
+     * @return
+     * @throws IOException 
+     */
+    public static URL titleEpisodeURL() throws IOException {
+        return toURL(requiredProperty(IMBD_TITLE_EPISODE_URL));
+    }
     
     /**
      * 

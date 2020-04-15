@@ -47,6 +47,7 @@ public class RatingsAppTest {
         whenRequest("/title.basics.tsv.gz", "src/test/resources/title.basics.tsv.gz");
         whenRequest("/title.ratings.tsv.gz", "src/test/resources/title.ratings.tsv.gz");
         whenRequest("/title.principals.tsv.gz", "src/test/resources/title.principals.tsv.gz");
+        whenRequest("/title.episode.tsv.gz", "src/test/resources/title.episode.tsv.gz");
         System.setProperty(RatingsAppProperties.SYSTEM_PROPERTIES_FILE, "src/test/resources/ratings-app.properties");
         RatingsApp.main(new String[0]); 
         testGetRating();

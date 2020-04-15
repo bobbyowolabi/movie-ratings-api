@@ -65,6 +65,13 @@ For All records in title.principals.tsv.gz
 			tconst MACTHES
 </pre>
 <pre>
+For All record in title.episode.tsv.gz
+	STORE in EPISODE_STORE
+		parentTconst, episodeNumber, seasonNumber
+		WHERE
+			tconst MATCHES	
+</pre>
+<pre>
 For All records in name.basics.tsv.gz
 	STORE in PRINCIPALS_STORE
 		primaryName
@@ -100,5 +107,8 @@ For All records in name.basics.tsv.gz
 
 # Improvements
 - Ability to account for interrupted downloads
+- robust logging
+- api schema
+- Database - batching
 
 [imdb-datasets]: https://www.imdb.com/interfaces 

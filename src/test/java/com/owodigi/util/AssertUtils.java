@@ -99,6 +99,7 @@ public class AssertUtils {
         record.setParentConst(parentTconst);
         record.setSeasonNumber(seasonNumber);
         record.setTconst(tconst);
+        record.setPrimaryTitle(primaryTitle);
         return record;
     }
     

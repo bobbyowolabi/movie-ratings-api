@@ -10,7 +10,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -21,7 +23,7 @@ public class H2EpisodeStore extends H2Store implements EpisodeStore {
 
     /**
      * Create new H2EpisodeStore instance.
-     * 
+     *
      * @param username database username
      * @param password database password
      * @param databasePath path to database file (minus extension)
@@ -47,8 +49,8 @@ public class H2EpisodeStore extends H2Store implements EpisodeStore {
             updatedNconstList.add(nconst);
         }
         updateNconstList(tconst, updatedNconstList);
-    }    
-    
+    }
+
     @Override
     public void addTitle(final String tconst, final String primaryTitle) throws IOException {
         final String sql = insertSql(
@@ -68,7 +70,7 @@ public class H2EpisodeStore extends H2Store implements EpisodeStore {
         return Arrays.asList(
             new ColumnConfig(columns.tconst.name(), "VARCHAR(255)"),
             new ColumnConfig(columns.parentTconst.name(), "VARCHAR(255)"),
-            new ColumnConfig(columns.primaryTitle.name(), "VARCHAR(255)"),            
+            new ColumnConfig(columns.primaryTitle.name(), "VARCHAR(255)"),
             new ColumnConfig(columns.averageRating.name(), "VARCHAR(255)"),
             new ColumnConfig(columns.seasonNumber.name(), "VARCHAR(255)"),
             new ColumnConfig(columns.episodeNumber.name(), "VARCHAR(255)"),
@@ -77,20 +79,20 @@ public class H2EpisodeStore extends H2Store implements EpisodeStore {
     }
 
     /**
-     * 
+     *
      * @param sql
      * @return
-     * @throws IOException 
+     * @throws IOException
      */
     private EpisodeRecord executeQuery(final String sql) throws IOException {
         final EpisodeRecord record = new EpisodeRecord();
         final int resultCount = executeQuery(sql, new ResultCallback() {
-            
+
             @Override
             public void process(final ResultSet result) throws SQLException {
                 record.setTconst(result.getString(columns.tconst.name()));
                 record.setParentConst(result.getString(columns.parentTconst.name()));
-                record.setPrimaryTitle(result.getString(columns.primaryTitle.name()));                
+                record.setPrimaryTitle(result.getString(columns.primaryTitle.name()));
                 record.setAverageRating(result.getString(columns.averageRating.name()));
                 record.setEpisodeNumber(result.getString(columns.episodeNumber.name()));
                 record.setSeasonNumber(result.getString(columns.seasonNumber.name()));
@@ -98,40 +100,58 @@ public class H2EpisodeStore extends H2Store implements EpisodeStore {
                 record.setNconstList(nconstList == null ? null : Arrays.asList(nconstList.split("[,]")));
             }
         });
-        return resultCount == 0 ? null : record;        
+        return resultCount == 0 ? null : record;
     }
-    
+
     @Override
     public EpisodeRecord tconst(final String tconst) throws IOException {
         final String sql = selectAllSql(columns.tconst.name(), tconst);
         return executeQuery(sql);
-    }    
-    
+    }
+
     @Override
     public EpisodeRecord title(final String title) throws IOException {
         final String sql = selectAllSql(columns.primaryTitle.name(), title);
         return executeQuery(sql);
-    }    
-    
+    }
+
     @Override
     protected String tableName() {
         return TABLE_NAME;
     }
-    
+
     /**
-     * 
+     *
      * @param tconst
      * @param nconstList
-     * @throws IOException 
+     * @throws IOException
      */
     private void updateNconstList(String tconst, List<String> nconstList) throws IOException {
         final String sql = updateSql(columns.nconstList.name(), String.join(",", nconstList), columns.tconst.name(), tconst);
         executeUpdate(sql);
-    }    
-    
+    }
+
+    /**
+     * 
+     * @param tconst
+     * @param parentTconst
+     * @param seasonNumber
+     * @param episodeNumber 
+     */
+    @Override
+    public void updateEpisode(final String tconst, final String parentTconst, final String seasonNumber, final String episodeNumber) throws IOException {
+        final Map<String, String> updateValues = new HashMap<String, String>() {{
+            put(columns.parentTconst.name(), parentTconst);
+            put(columns.seasonNumber.name(), seasonNumber);
+            put(columns.episodeNumber.name(), episodeNumber);
+        }};
+        final String sql = updateSql(columns.tconst.name(), tconst, updateValues);
+        executeUpdate(sql);
+    }
+
     @Override
     public void updateRating(final String tconst, final String averageRating) throws IOException {
         final String sql = updateSql(columns.averageRating.name(), averageRating, columns.tconst.name(), tconst);
         executeUpdate(sql);
-    }    
+    }
 }
