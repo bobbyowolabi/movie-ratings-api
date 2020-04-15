@@ -23,7 +23,9 @@ public class RatingsApp {
 
     public static void main(final String[] args) throws IOException {
         final TitleStore titleStore = new H2TitleStore(RatingsAppProperties.databaseUserName(), RatingsAppProperties.databaseUserPassword(), RatingsAppProperties.databasePath());
+        titleStore.clear();
         final EpisodeStore episodeStore = new H2EpisodeStore(RatingsAppProperties.databaseUserName(), RatingsAppProperties.databaseUserPassword(), RatingsAppProperties.databasePath());
+        episodeStore.clear();
         processTitleBasicsDataset(titleStore, episodeStore);
         processTitleRatingsDataset(titleStore, episodeStore);
         processTitlePrincipalsDataset(titleStore, episodeStore);

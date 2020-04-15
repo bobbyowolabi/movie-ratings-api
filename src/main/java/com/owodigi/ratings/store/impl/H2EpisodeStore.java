@@ -66,6 +66,11 @@ public class H2EpisodeStore extends H2Store implements EpisodeStore {
     }
 
     @Override
+    public void clear() throws IOException {
+        clearTable();
+    }    
+    
+    @Override
     protected List<ColumnConfig> columnConfigs() {
         return Arrays.asList(
             new ColumnConfig(columns.tconst.name(), "VARCHAR(255)"),

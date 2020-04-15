@@ -8,9 +8,7 @@ import static com.owodigi.ratings.store.impl.util.StatementCallback.EXECUTE;
 import static com.owodigi.ratings.store.impl.util.StatementCallback.EXECUTE_QUERY;
 import static com.owodigi.ratings.store.impl.util.StatementCallback.EXECUTE_UPDATE;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -28,36 +26,46 @@ public abstract class H2Store {
     private static final String DB_DRIVER = "org.h2.Driver";
     private final String username;
     private final String password;
-    private final Path path;    
-    
+    private final Path path;
+
     /**
-     * 
+     *
      * @param username
      * @param password
      * @param databasePath
-     * @throws IOException 
+     * @throws IOException
      */
     public H2Store(final String username, final String password, final Path databasePath) throws IOException {
         loadDbDriver();
         this.username = username;
         this.password = password;
-        this.path = databasePath;   
-        createTableIfNotExists();            
+        this.path = databasePath;
+        createTableIfNotExists();
     }
-    
-    private void createTableIfNotExists() throws IOException {
-        executeUpdate(createTableIfNotExistsSQL(), NO_OP_RESULT_CALLBACK);
-    }
+
+    /**
+     * Clears all the contents of this Store.
+     * 
+     * @throws IOException 
+     */
+    protected void clearTable() throws IOException {
+        dropTable();
+        createTableIfNotExists();
+    }    
     
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
     protected abstract List<ColumnConfig> columnConfigs();
+
+    private void createTableIfNotExists() throws IOException {
+        executeUpdate(createTableIfNotExistsSQL(), NO_OP_RESULT_CALLBACK);
+    }    
     
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
     private String createTableIfNotExistsSQL() {
         final StringBuilder statement = new StringBuilder()
@@ -68,35 +76,28 @@ public abstract class H2Store {
         statement.deleteCharAt(statement.length() - 1);
         statement.append(");");
         return statement.toString();
-    }    
-    
-    /**
-     * 
-     * @param databasePath
-     * @return
-     * @throws IOException 
-     */
-    private boolean databaseExists(final Path databasePath) throws IOException {
-        final Path dataBaseFile = Paths.get(databasePath.toString() + ".mv.db");
-        return Files.exists(dataBaseFile) ? Files.size(dataBaseFile) > 0L : false;
     }
-    
+
+    private void dropTable() throws IOException {
+        executeUpdate("DROP TABLE IF EXISTS " + tableName(), NO_OP_RESULT_CALLBACK);
+    }
+
     /**
-     * 
+     *
      * @param sql
-     * @throws IOException 
+     * @throws IOException
      */
     protected void execute(final String sql) throws IOException {
         execute(sql, EXECUTE, NO_OP_RESULT_CALLBACK);
     }
-    
+
     /**
-     * 
+     *
      * @param sql
      * @param statementCallback
      * @param resultCallback
      * @return
-     * @throws IOException 
+     * @throws IOException
      */
     private int execute(final String sql, final StatementCallback statementCallback, final ResultCallback resultCallback) throws IOException {
         try (final Connection connection = DriverManager.getConnection(DB_URL + path + ";mv_store=false", username, password);
@@ -113,28 +114,28 @@ public abstract class H2Store {
             throw new IOException("Unable to query Title Store due to " + ex.getMessage(), ex);
         }
     }
-    
+
     protected int executeQuery(final String sql, final ResultCallback resultCallback) throws IOException {
         return execute(sql, EXECUTE_QUERY, resultCallback);
     }
-    
+
     protected void executeUpdate(final String sql) throws IOException {
         execute(sql, EXECUTE_UPDATE, NO_OP_RESULT_CALLBACK);
-    }     
+    }
     /**
-     * 
+     *
      * @param sql
      * @param resultCallback
-     * @throws IOException 
+     * @throws IOException
      */
     private void executeUpdate(final String sql, final ResultCallback resultCallback) throws IOException {
         execute(sql, EXECUTE_UPDATE, resultCallback);
-    }    
-    
+    }
+
     /**
-     * 
+     *
      * @param values
-     * @return 
+     * @return
      */
     protected String insertSql(final String...values) {
         final StringBuilder statement = new StringBuilder()
@@ -157,9 +158,9 @@ public abstract class H2Store {
             .append(")");
         return statement.toString();
     }
-    
+
     /**
-     * 
+     *
      */
     private void loadDbDriver() {
         try {
@@ -168,45 +169,45 @@ public abstract class H2Store {
             throw new IllegalStateException("Unable to Load database driver", ex);
         }
     }
-    
+
     /**
-     * 
+     *
      * @param column
      * @param value
-     * @return 
+     * @return
      */
     protected String selectAllSql(final String column, final String value) {
         return new StringBuilder()
             .append("SELECT * FROM ").append(tableName()).append(" ")
             .append("WHERE ").append(column).append("='").append(value).append("'")
-            .toString();        
+            .toString();
     }
-    
+
     /**
-     * 
-     * 
-     * @return 
+     *
+     *
+     * @return
      */
     protected abstract String tableName();
-    
+
     /**
-     * 
+     *
      * @param column
      * @param value
      * @param conditionColumn
      * @param conditionValue
-     * @return 
+     * @return
      */
     protected String updateSql(final String column, final String value, final String conditionColumn, final String conditionValue) {
         return updateSql(conditionColumn, conditionValue, Collections.singletonMap(column, value));
     }
-    
+
     /**
-     * 
+     *
      * @param conditionColumn
      * @param conditionValue
      * @param updateValues
-     * @return 
+     * @return
      */
     protected String updateSql(final String conditionColumn, final String conditionValue, final Map<String, String> updateValues) {
         final StringBuilder statement = new StringBuilder();

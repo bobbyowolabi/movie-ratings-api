@@ -32,7 +32,7 @@ import static org.mockserver.model.HttpResponse.response;
  */
 public class RatingsAppTest extends H2StoreTest {
     private MockServerClient mockServerClient;
-    private final Path applicationPropertiesPath = Paths.get("target/test-data/ratings-app.properties"); 
+    private final Path applicationPropertiesPath = Paths.get("./target/test-data/ratings-app.properties"); 
 
     @Rule
     public MockServerRule mockServerRule = new MockServerRule(this);
@@ -56,6 +56,7 @@ public class RatingsAppTest extends H2StoreTest {
         final Properties applicationProperties = new Properties();
         applicationProperties.load(Files.newInputStream(Paths.get("src/test/resources/ratings-app.properties")));
         applicationProperties.setProperty(RatingsAppProperties.DATABASE_PATH, databasePath().toString());
+        Files.createDirectory(applicationPropertiesPath.getParent());
         applicationProperties.store(Files.newOutputStream(applicationPropertiesPath), "");
         System.setProperty(RatingsAppProperties.SYSTEM_PROPERTIES_FILE, applicationPropertiesPath.toString());
     }

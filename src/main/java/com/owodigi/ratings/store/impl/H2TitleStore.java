@@ -58,6 +58,11 @@ public class H2TitleStore extends H2Store implements TitleStore {
         );
         executeUpdate(sql);
     }
+    
+    @Override
+    public void clear() throws IOException {
+        clearTable();
+    }     
 
     @Override
     protected List<ColumnConfig> columnConfigs() {

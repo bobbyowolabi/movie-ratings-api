@@ -6,7 +6,7 @@ import java.io.IOException;
 /**
  *
  */
-public interface EpisodeStore {
+public interface EpisodeStore extends DatasetStore {
 
     /**
      * 
