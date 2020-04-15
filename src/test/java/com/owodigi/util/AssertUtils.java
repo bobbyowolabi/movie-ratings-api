@@ -120,10 +120,9 @@ public class AssertUtils {
      * @param primaryName
      * @return 
      */
-    public static NameRecord newNameRecord(final String nconst, final String primaryName) {
+    public static NameRecord newNameRecord(final String nconst) {
         final NameRecord record = new NameRecord();
         record.setNconst(nconst);
-        record.setPrimaryName(primaryName);
         return record;
     }
     

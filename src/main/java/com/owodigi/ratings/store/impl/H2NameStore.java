@@ -3,16 +3,25 @@ package com.owodigi.ratings.store.impl;
 import com.owodigi.ratings.domain.NameRecord;
 import com.owodigi.ratings.store.NameStore;
 import com.owodigi.ratings.store.impl.util.ColumnConfig;
+import com.owodigi.ratings.store.impl.util.ResultCallback;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.List;
 
 /**
  *
  */
 public class H2NameStore extends H2Store implements NameStore {
+    private static final String TABLE_NAME = "NAME_STORE";
+    private enum columns{nconst, primaryName}
 
     /**
+     * Create a new H2NameStore Instance.
+     * 
+     * Backing database tables are created.
      * 
      * @param username
      * @param password
@@ -24,32 +33,60 @@ public class H2NameStore extends H2Store implements NameStore {
     }
 
     @Override
-    public void addNconst(final String nconst) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void addNconst(final String nconst) throws IOException {
+        final String sql = insertSql(
+            nconst,
+            "NULL"
+        );
+        executeUpdate(sql);        
     }
     
     @Override
     public void clear() throws IOException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        clearTable();
     }
     
     @Override
     protected List<ColumnConfig> columnConfigs() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return Arrays.asList(
+            new ColumnConfig(columns.nconst.name(), "VARCHAR(255)"),
+            new ColumnConfig(columns.primaryName.name(), "VARCHAR(255)")
+        );
     }
 
+    /**
+     * 
+     * @param sql
+     * @return
+     * @throws IOException 
+     */
+    private NameRecord executeQuery(final String sql) throws IOException {
+        final NameRecord record = new NameRecord();
+        final int resultCount = executeQuery(sql, new ResultCallback() {
+
+            @Override
+            public void process(final ResultSet result) throws SQLException {
+                record.setNconst(result.getString(columns.nconst.name()));
+                record.setPrimaryName(result.getString(columns.primaryName.name()));
+            }
+        });
+        return resultCount == 0 ? null : record;
+    }    
+    
     @Override
-    public NameRecord nconst(final String nconst) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public NameRecord nconst(final String nconst) throws IOException {
+        final String sql = selectAllSql(columns.nconst.name(), nconst);
+        return executeQuery(sql);
     }
     
     @Override
     protected String tableName() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return TABLE_NAME;
     }
 
     @Override
-    public void updateName(final String nconst, final String primaryName) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void updateName(final String nconst, final String primaryName) throws IOException {
+        final String sql = updateSql(columns.primaryName.name(), primaryName, columns.nconst.name(), nconst);
+        executeUpdate(sql);
     }
 }

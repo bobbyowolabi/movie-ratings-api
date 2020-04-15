@@ -13,18 +13,19 @@ public class H2NameStoreTest extends H2StoreTest {
     @Test
     public void addNconst() throws IOException {
         final NameStore store = new H2NameStore(userName(), password(), databasePath());
-        testAddNconst(newNameRecord("nm0000001", "Fred Astaire"), store);
-        testAddNconst(newNameRecord("nm0000002", "Lauren Bacall"), store);
+        testAddNconst(newNameRecord("nm0000001"), store);
+        testAddNconst(newNameRecord("nm0000002"), store);
     }    
 
     @Test
     public void updateName() throws IOException {
         final NameStore store = new H2NameStore(userName(), password(), databasePath());
-        final NameRecord originalRecord = newNameRecord("nm0000001", "Fred Astaire");
+        final NameRecord originalRecord = newNameRecord("nm0000001"); 
         testAddNconst(originalRecord, store);
+        originalRecord.setPrimaryName("Fred Astaire");
         store.updateName(originalRecord.nconst(), originalRecord.primaryName());
         final NameRecord updatedRecord = store.nconst(originalRecord.nconst());
-        Assert.assertEquals("primaryName", originalRecord.primaryName(), updatedRecord.primaryName());
+        AssertUtils.assertEquals(originalRecord, updatedRecord);
     }
 
     private void testAddNconst(final NameRecord expected, final NameStore store) throws IOException {
