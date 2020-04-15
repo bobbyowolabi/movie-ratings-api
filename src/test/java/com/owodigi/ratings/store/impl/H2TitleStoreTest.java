@@ -1,6 +1,7 @@
 package com.owodigi.ratings.store.impl;
 
 import com.owodigi.ratings.domain.TitleRecord;
+import com.owodigi.ratings.store.EpisodeStore;
 import com.owodigi.ratings.store.TitleStore;
 import com.owodigi.util.AssertUtils;
 import static com.owodigi.util.AssertUtils.newTitleRecord;
@@ -8,6 +9,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -17,14 +20,22 @@ import org.junit.Test;
 public class H2TitleStoreTest extends H2StoreTest {
        
     @Test
-    public void add() throws IOException {
+    public void addTitle() throws IOException {
         final TitleStore store = new H2TitleStore(userName(), password(), databasePath());
         testAdd(newTitleRecord("tt0000001", "short", "Animation Film Title"), store);
         testAdd(newTitleRecord("tt0000002", "short2", "Animation Film Title2"), store);
     }
     
     @Test
-    public void update() throws IOException {
+    public void addNconst() throws IOException {
+        final TitleStore store = new H2TitleStore(userName(), password(), databasePath());
+        final String tconst = "tt0000001";
+        store.addTitle(tconst, "short", "Animation Film Title");
+        testAddNconst(tconst, store, "n1", "n2", "n3", "n4", "n5");
+    }    
+    
+    @Test
+    public void updateRating() throws IOException {
         final TitleStore store = new H2TitleStore(userName(), password(), databasePath());
         final TitleRecord originalRecord = newTitleRecord("tt0000001", "short", "Animation Film Title");
         testAdd(originalRecord, store);
@@ -34,12 +45,22 @@ public class H2TitleStoreTest extends H2StoreTest {
     }
     
     private void testAdd(final TitleRecord expected, final TitleStore store) throws IOException {
-        store.add(expected.tconst(), expected.titleType(), expected.primaryTitle());
+        store.addTitle(expected.tconst(), expected.titleType(), expected.primaryTitle());
         TitleRecord actual = store.title(expected.primaryTitle());
         AssertUtils.assertEquals(expected, actual);
         actual = store.tconst(expected.tconst());
         AssertUtils.assertEquals(expected, actual);
     }
+    
+    private void testAddNconst(final String tconst, final TitleStore store, final String...nconsts) throws IOException {
+        final List<String> expected = new ArrayList<>();
+        for (final String nconst : nconsts) {
+            expected.add(nconst);
+            store.addNconst(tconst, nconst);
+            final List<String> actual = store.tconst(tconst).nconstList();
+            Assert.assertEquals("nconstList", expected, actual);
+        }
+    }    
     
     @Test
     public void dbDirectoryDoesNotExist() throws IOException {
@@ -54,6 +75,7 @@ public class H2TitleStoreTest extends H2StoreTest {
         } finally {
             Files.deleteIfExists(databaseFile);
             Files.deleteIfExists(databaseTraceFile);
+            Files.deleteIfExists(databaseFile.getParent());
         }
     }
 }

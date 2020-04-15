@@ -51,7 +51,7 @@ public class TitleRecord {
         return primaryTitle;
     }
 
-    public List<String> nConstList() {
+    public List<String> nconstList() {
         return nconstList;
     }
 

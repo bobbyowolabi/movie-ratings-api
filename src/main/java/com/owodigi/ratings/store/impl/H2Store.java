@@ -40,13 +40,11 @@ public abstract class H2Store {
         this.username = username;
         this.password = password;
         this.path = databasePath;   
-        if (databaseExists(this.path) == false) {
-            createTable();            
-        }        
+        createTableIfNotExists();            
     }
     
-    private void createTable() throws IOException {
-        executeUpdate(createTableSQL(), NO_OP_RESULT_CALLBACK);
+    private void createTableIfNotExists() throws IOException {
+        executeUpdate(createTableIfNotExistsSQL(), NO_OP_RESULT_CALLBACK);
     }
     
     /**
@@ -59,9 +57,9 @@ public abstract class H2Store {
      * 
      * @return 
      */
-    private String createTableSQL() {
+    private String createTableIfNotExistsSQL() {
         final StringBuilder statement = new StringBuilder()
-            .append("CREATE TABLE ").append(tableName()).append("(");
+            .append("CREATE TABLE IF NOT EXISTS ").append(tableName()).append("(");
         for (final ColumnConfig config : columnConfigs()) {
             statement.append(config.column()).append(" ").append(config.type()).append(",");
         }
@@ -114,8 +112,8 @@ public abstract class H2Store {
         }
     }
     
-    protected void executeQuery(final String sql, final ResultCallback resultCallback) throws IOException {
-        execute(sql, EXECUTE_QUERY, resultCallback);
+    protected int executeQuery(final String sql, final ResultCallback resultCallback) throws IOException {
+        return execute(sql, EXECUTE_QUERY, resultCallback);
     }
     
     protected void executeUpdate(final String sql) throws IOException {
@@ -200,7 +198,7 @@ public abstract class H2Store {
     protected String updateSql(final String column, final String value, final String conditionColumn, final String conditionValue) {
         final StringBuilder statement = new StringBuilder();
         statement.append("UPDATE ").append(tableName()).append(" ")
-            .append("SET ").append(column).append(" = ").append("'").append(value).append("'")
+            .append("SET ").append(column).append(" = ").append("'").append(value).append("' ")
             .append("WHERE ").append(conditionColumn).append(" = ").append("'").append(conditionValue).append("';");
         return statement.toString();
     }

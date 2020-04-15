@@ -40,12 +40,13 @@ public class RatingsAppTest {
         Files.deleteIfExists(TEST_DB_PATH);
         Files.deleteIfExists(TEST_DB_TRACE_PATH);
     }
-    
+        
     @Test
     public void testRatingsApp() throws IOException {
         mockServerClient.bind(8080);
         whenRequest("/title.basics.tsv.gz", "src/test/resources/title.basics.tsv.gz");
         whenRequest("/title.ratings.tsv.gz", "src/test/resources/title.ratings.tsv.gz");
+        whenRequest("/title.principals.tsv.gz", "src/test/resources/title.principals.tsv.gz");
         System.setProperty(RatingsAppProperties.SYSTEM_PROPERTIES_FILE, "src/test/resources/ratings-app.properties");
         RatingsApp.main(new String[0]); 
         testGetRating();
@@ -74,12 +75,12 @@ public class RatingsAppTest {
             RatingsAppProperties.databasePath());
         final EpisodeRecord expected = newEpisodeRecord(
             "tt0041951",     
-             "tt0041038", 
-             "The Tenderfeet",
-             "7.4",
-             "1",
-             "9",
-             Arrays.asList("nm0156134","nm0138194","nm0798855","nm0071986","nm0112203","nm0782690","nm0872077","nm0289014","nm1080563","nm0834503")
+            "tt0041038", 
+            "The Tenderfeet",
+            "7.4",
+            "1",
+            "9",
+            Arrays.asList("nm0156134","nm0138194","nm0798855","nm0071986","nm0112203","nm0782690","nm0872077","nm0289014","nm1080563","nm0834503")
         );
         final EpisodeRecord actual = store.title("The Tenderfeet");
         AssertUtils.assertEquals(expected, actual);

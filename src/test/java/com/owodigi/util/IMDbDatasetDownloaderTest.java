@@ -30,7 +30,11 @@ public class IMDbDatasetDownloaderTest {
         final List<List<String>> expected = AssertUtils.asList(
             Arrays.asList("tt0000001", "short", 	"Carmencita", "Carmencita", "0", "1894", "\\N", "1", "Documentary,Short"),
             Arrays.asList("tt0000002", "short", 	"Le clown et ses chiens", "Le clown et ses chiens", "0", "1892", "\\N", "5", "Animation,Short"),
-            Arrays.asList("tt0000003", "short", "Pauvre Pierrot", "Pauvre Pierrot", "0", "1892", "\\N", "4", "Animation,Comedy,Romance")
+            Arrays.asList("tt0000003", "short", "Pauvre Pierrot", "Pauvre Pierrot", "0", "1892", "\\N", "4", "Animation,Comedy,Romance"),
+            Arrays.asList("tt0041038", "tvSeries", "The Lone Ranger", "The Lone Ranger", "0", "1949", "1957", "30", "Western"),
+            Arrays.asList("tt0989125", "tvSeries", "BBC Sunday-Night Theatre", "BBC Sunday-Night Theatre", "0", "1950", "1959", "\\N", "Drama"),
+            Arrays.asList("tt0041951", "tvEpisode", "The Tenderfeet", "The Tenderfeet", "0", "1949", "\\N", "30", "Western"),
+            Arrays.asList("tt0042816", "tvEpisode", "Othello", "Othello", "0", "1950", "\\N", "135", "Drama")
         );
         testDownload(fileName, new TitleBasicsFormat(), expected);
     }
@@ -41,7 +45,10 @@ public class IMDbDatasetDownloaderTest {
         final List<List<String>> expected = AssertUtils.asList(
             Arrays.asList("tt0000001", "5.6", "1593"),
             Arrays.asList("tt0000002", "6.0", "195"),
-            Arrays.asList("tt0000003", "6.5", "1266")
+            Arrays.asList("tt0000003", "6.5", "1266"),
+            Arrays.asList("tt0041038", "7.8", "1918"),
+            Arrays.asList("tt0989125", "8.0", "64"),
+            Arrays.asList("tt0041951", "7.4", "47")
         );
         testDownload(fileName, new TitleRatingsFormat(), expected);
     }

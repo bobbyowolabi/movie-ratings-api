@@ -10,6 +10,7 @@ import com.owodigi.ratintgs.util.RatingsAppProperties;
 import com.owodigi.util.IMDbDatasetDownloader;
 import com.owodigi.util.IMDbDownloaderCallback;
 import com.owodigi.util.IMDbTSVFormats.TitleBasicsFormat;
+import com.owodigi.util.IMDbTSVFormats.TitlePrincipalsFormat;
 import com.owodigi.util.IMDbTSVFormats.TitleRatingsFormat;
 import java.io.IOException;
 import org.apache.commons.csv.CSVRecord;
@@ -18,17 +19,36 @@ import org.apache.commons.csv.CSVRecord;
  *
  */
 public class RatingsApp {
-    
+
     public static void main(final String[] args) throws IOException {
         final TitleStore titleStore = new H2TitleStore(RatingsAppProperties.databaseUserName(), RatingsAppProperties.databaseUserPassword(), RatingsAppProperties.databasePath());
         final EpisodeStore episodeStore = new H2EpisodeStore(RatingsAppProperties.databaseUserName(), RatingsAppProperties.databaseUserPassword(), RatingsAppProperties.databasePath());
         processTitleBasicsDataset(titleStore, episodeStore);
         processTitleRatingsDataset(titleStore, episodeStore);
+
+        IMDbDatasetDownloader.read(RatingsAppProperties.titlePrincipalsURL(), new TitlePrincipalsFormat(), new IMDbDownloaderCallback() {
+
+            @Override
+            public void read(final CSVRecord record) throws IOException {
+                final String tconst = record.get(TitlePrincipalsFormat.headers.tconst);
+                final String nconst = record.get(TitlePrincipalsFormat.headers.nconst);
+                final TitleRecord titleRecord = titleStore.tconst(tconst);
+                if (titleRecord == null) {
+                    final EpisodeRecord episodeRecord = episodeStore.tconst(tconst);
+                    if (episodeRecord == null) {
+                        throw new IllegalStateException("Encountered record not found in both the TitleStore and EpisodeStore: " + record);
+                    }
+                    episodeStore.addNconst(tconst, nconst);
+                } else {
+                    titleStore.addNconst(tconst, nconst);
+                }
+            }
+        });
     }
-    
+
     private static void processTitleBasicsDataset(final TitleStore titleStore, final EpisodeStore episodeStore) throws IOException {
         IMDbDatasetDownloader.read(RatingsAppProperties.titleBasicsURL(), new TitleBasicsFormat(), new IMDbDownloaderCallback() {
-            
+
             @Override
             public void read(final CSVRecord record) throws IOException {
                 final String year = record.get(TitleBasicsFormat.header.startYear);
@@ -37,18 +57,18 @@ public class RatingsApp {
                     final String titleType = record.get(TitleBasicsFormat.header.titleType);
                     final String primaryTitle = record.get(TitleBasicsFormat.header.primaryTitle);
                     if (titleType.equals("tvEpisode")) {
-                        episodeStore.add(tconst, primaryTitle);
+                        episodeStore.addTitle(tconst, primaryTitle);
                     } else {
-                        titleStore.add(tconst, titleType, primaryTitle);
+                        titleStore.addTitle(tconst, titleType, primaryTitle);
                     }
                 }
             }
         });
     }
-    
+
     private static void processTitleRatingsDataset(final TitleStore titleStore, final EpisodeStore episodeStore) throws IOException {
         IMDbDatasetDownloader.read(RatingsAppProperties.titleRatingsURL(), new TitleRatingsFormat(), new IMDbDownloaderCallback() {
-            
+
             @Override
             public void read(final CSVRecord record) throws IOException {
                 final String tconst = record.get(TitleRatingsFormat.headers.tconst);
@@ -64,6 +84,6 @@ public class RatingsApp {
                     titleStore.updateRating(tconst, averageRating);
                 }
             }
-        });        
+        });
     }
 }

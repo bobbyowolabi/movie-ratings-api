@@ -57,7 +57,7 @@ public class EpisodeRecord {
         return averageRating;
     }
 
-    public List<String> nConstList() {
+    public List<String> nconstList() {
         return nconstList;
     }
 

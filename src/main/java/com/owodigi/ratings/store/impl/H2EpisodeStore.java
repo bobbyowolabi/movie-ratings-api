@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -32,7 +33,24 @@ public class H2EpisodeStore extends H2Store implements EpisodeStore {
     }
 
     @Override
-    public void add(final String tconst, final String primaryTitle) throws IOException {
+    public void addNconst(final String tconst, final String nconst) throws IOException {
+        final EpisodeRecord record = tconst(tconst);
+        if (record == null) {
+            throw new IllegalStateException("Unable to add nconst " + nconst + " to this Store because tconst " + tconst + " does not exists");
+        }
+        final List<String> nconstList = record.nconstList();
+        final List<String> updatedNconstList;
+        if (nconstList == null) {
+            updatedNconstList = Arrays.asList(nconst);
+        } else {
+            updatedNconstList = new ArrayList<>(nconstList);
+            updatedNconstList.add(nconst);
+        }
+        updateNconstList(tconst, updatedNconstList);
+    }    
+    
+    @Override
+    public void addTitle(final String tconst, final String primaryTitle) throws IOException {
         final String sql = insertSql(
             tconst,
             "NULL",
@@ -66,7 +84,7 @@ public class H2EpisodeStore extends H2Store implements EpisodeStore {
      */
     private EpisodeRecord executeQuery(final String sql) throws IOException {
         final EpisodeRecord record = new EpisodeRecord();
-        executeQuery(sql, new ResultCallback() {
+        final int resultCount = executeQuery(sql, new ResultCallback() {
             
             @Override
             public void process(final ResultSet result) throws SQLException {
@@ -80,7 +98,7 @@ public class H2EpisodeStore extends H2Store implements EpisodeStore {
                 record.setNconstList(nconstList == null ? null : Arrays.asList(nconstList.split("[,]")));
             }
         });
-        return record;        
+        return resultCount == 0 ? null : record;        
     }
     
     @Override
@@ -99,6 +117,17 @@ public class H2EpisodeStore extends H2Store implements EpisodeStore {
     protected String tableName() {
         return TABLE_NAME;
     }
+    
+    /**
+     * 
+     * @param tconst
+     * @param nconstList
+     * @throws IOException 
+     */
+    private void updateNconstList(String tconst, List<String> nconstList) throws IOException {
+        final String sql = updateSql(columns.nconstList.name(), String.join(",", nconstList), columns.tconst.name(), tconst);
+        executeUpdate(sql);
+    }    
     
     @Override
     public void updateRating(final String tconst, final String averageRating) throws IOException {

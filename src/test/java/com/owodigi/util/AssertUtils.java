@@ -35,7 +35,7 @@ public class AssertUtils {
         Assert.assertEquals("primaryTitle", expected.primaryTitle(), actual.primaryTitle());
         Assert.assertEquals("tconst", expected.tconst(), actual.tconst());
         Assert.assertEquals("titleType", expected.titleType(), actual.titleType());
-        Assert.assertEquals("nConstList", expected.nConstList(), actual.nConstList());
+        Assert.assertEquals("nConstList", expected.nconstList(), actual.nconstList());
     }    
     
     /**
@@ -50,7 +50,7 @@ public class AssertUtils {
         Assert.assertEquals("averageRating", expected.averageRating(), actual.averageRating());
         Assert.assertEquals("episodeNumber", expected.episodeNumber(), actual.episodeNumber());        
         Assert.assertEquals("seasonNumber", expected.seasonNumber(), actual.seasonNumber());             
-        Assert.assertEquals("nConstList", expected.nConstList(), actual.nConstList());
+        Assert.assertEquals("nConstList", expected.nconstList(), actual.nconstList());
     }    
     
     /**

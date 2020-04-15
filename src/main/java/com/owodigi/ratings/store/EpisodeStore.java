@@ -14,8 +14,16 @@ public interface EpisodeStore {
      * @param primaryTitle 
      * @throws java.io.IOException 
      */
-    public void add(String tconst, String primaryTitle) throws IOException;
+    public void addTitle(String tconst, String primaryTitle) throws IOException;
  
+    /**
+     * 
+     * @param tconst
+     * @param nconst 
+     * @throws java.io.IOException 
+     */
+    public void addNconst(String tconst, String nconst) throws IOException;    
+    
     /**
      * 
      * @param tconst
@@ -26,11 +34,11 @@ public interface EpisodeStore {
     
     /**
      * 
-     * @param title
+     * @param primaryTitle
      * @return 
      * @throws java.io.IOException 
      */
-    public EpisodeRecord title(String title) throws IOException;
+    public EpisodeRecord title(String primaryTitle) throws IOException;
     
     /**
      * 

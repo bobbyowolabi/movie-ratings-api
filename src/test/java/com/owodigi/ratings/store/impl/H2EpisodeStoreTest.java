@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -18,17 +20,33 @@ import org.junit.Test;
 public class H2EpisodeStoreTest extends H2StoreTest {
        
     @Test
-    public void add() throws IOException {
+    public void addTitle() throws IOException {
         final EpisodeStore store = new H2EpisodeStore(userName(), password(), databasePath());
-        testAdd(newEpisodeRecord("tt0000001", "Animation Film Title"), store);
-        testAdd(newEpisodeRecord("tt0000002", "Animation Film Title2"), store);
+        testAddTitle(newEpisodeRecord("tt0000001", "Animation Film Title"), store);
+        testAddTitle(newEpisodeRecord("tt0000002", "Animation Film Title2"), store);
+    }
+    
+    @Test
+    public void addNconst() throws IOException {
+        final EpisodeStore store = new H2EpisodeStore(userName(), password(), databasePath());
+        final String tconst = "tt0000001";
+        store.addTitle(tconst, "Animation Film Title");
+        testAddNconst(tconst, store, "n1", "n2", "n3", "n4", "n5");
     }
 
+    @Test(expected = IllegalStateException.class)
+    public void addNconstWhereTconstNonExistent() throws IOException {
+        final EpisodeStore store = new H2EpisodeStore(userName(), password(), databasePath());
+        final String tconst = "tt0000001";
+        store.addTitle(tconst, "Animation Film Title");
+        testAddNconst("tt0000002", store, "n1");
+    }
+    
     @Test
-    public void update() throws IOException {
+    public void updateRating() throws IOException {
         final EpisodeStore store = new H2EpisodeStore(userName(), password(), databasePath());
         final EpisodeRecord originalRecord = newEpisodeRecord("tt0000001", "Animation Film Title");
-        testAdd(originalRecord, store);
+        testAddTitle(originalRecord, store);
         store.updateRating(originalRecord.tconst(), "5.5");
         final EpisodeRecord updatedRecord = store.title(originalRecord.primaryTitle());
         Assert.assertEquals("averageRating", "5.5", updatedRecord.averageRating());
@@ -47,6 +65,17 @@ public class H2EpisodeStoreTest extends H2StoreTest {
         } finally {
             Files.deleteIfExists(databaseFile);
             Files.deleteIfExists(databaseTraceFile);
+            Files.deleteIfExists(databaseFile.getParent());
+        }
+    }
+    
+    private void testAddNconst(final String tconst, final EpisodeStore store, final String...nconsts) throws IOException {
+        final List<String> expected = new ArrayList<>();
+        for (final String nconst : nconsts) {
+            expected.add(nconst);
+            store.addNconst(tconst, nconst);
+            final List<String> actual = store.tconst(tconst).nconstList();
+            Assert.assertEquals("nconstList", expected, actual);
         }
     }
     
@@ -56,8 +85,8 @@ public class H2EpisodeStoreTest extends H2StoreTest {
      * @param store
      * @throws IOException 
      */
-    private void testAdd(final EpisodeRecord expected, final EpisodeStore store) throws IOException {
-        store.add(expected.tconst(), expected.primaryTitle());
+    private void testAddTitle(final EpisodeRecord expected, final EpisodeStore store) throws IOException {
+        store.addTitle(expected.tconst(), expected.primaryTitle());
         EpisodeRecord actual = store.title(expected.primaryTitle());
         AssertUtils.assertEquals(expected, actual);
         actual = store.tconst(expected.tconst());

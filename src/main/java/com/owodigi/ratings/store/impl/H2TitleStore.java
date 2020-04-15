@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import com.owodigi.ratings.store.impl.util.ResultCallback;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,7 +31,24 @@ public class H2TitleStore extends H2Store implements TitleStore {
     }
 
     @Override
-    public void add(final String tconst, final String titleType, final String primaryTitle) throws IOException {
+    public void addNconst(final String tconst, final String nconst) throws IOException {
+        final TitleRecord record = tconst(tconst);
+        if (record == null) {
+            throw new IllegalStateException("Unable to add nconst " + nconst + " to this Store because tconst " + tconst + " does not exists");
+        }
+        final List<String> nconstList = record.nconstList();
+        final List<String> updatedNconstList;
+        if (nconstList == null) {
+            updatedNconstList = Arrays.asList(nconst);
+        } else {
+            updatedNconstList = new ArrayList<>(nconstList);
+            updatedNconstList.add(nconst);
+        }
+        updateNconstList(tconst, updatedNconstList);
+    }    
+    
+    @Override
+    public void addTitle(final String tconst, final String titleType, final String primaryTitle) throws IOException {
         final String sql = insertSql(
             tconst,
             primaryTitle,
@@ -60,7 +78,7 @@ public class H2TitleStore extends H2Store implements TitleStore {
      */
     private TitleRecord executeQuery(final String sql) throws IOException {
         final TitleRecord record = new TitleRecord();
-        executeQuery(sql, new ResultCallback() {
+        final int resultCount = executeQuery(sql, new ResultCallback() {
             
             @Override
             public void process(final ResultSet result) throws SQLException {
@@ -72,7 +90,8 @@ public class H2TitleStore extends H2Store implements TitleStore {
                 record.setTconst(result.getString(columns.tconst.name()));
             }
         });
-        return record;        
+        return resultCount == 0 ? null : record;        
+
     }
     
     @Override
@@ -91,6 +110,16 @@ public class H2TitleStore extends H2Store implements TitleStore {
         final String sql = selectAllSql(columns.primaryTitle.name(), title);
         return executeQuery(sql);
     }
+    
+    /**
+     * 
+     * @param tconst
+     * @param updatedNconstList 
+     */
+    private void updateNconstList(final String tconst, final List<String> nconstList) throws IOException {
+        final String sql = updateSql(columns.nconstList.name(), String.join(",", nconstList), columns.tconst.name(), tconst);
+        executeUpdate(sql);
+    }    
     
     @Override
     public void updateRating(final String tconst, final String averageRating) throws IOException {

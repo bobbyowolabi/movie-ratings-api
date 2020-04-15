@@ -4,11 +4,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Random;
+import java.util.UUID;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Test;
 
 /**
  *
@@ -35,8 +33,7 @@ public abstract class H2StoreTest {
     }
     
     private Path uniqueDbPath() {
-        final Random random = new Random();
-        return DATABASE_DIRECTORY.resolve(DATABASE_FILE_PREFIX + "-" + random.nextInt(10000000));
+        return DATABASE_DIRECTORY.resolve(DATABASE_FILE_PREFIX + "-" + UUID.randomUUID());
     }
 
     protected Path databasePath() {
