@@ -1,14 +1,18 @@
 package com.owodigi.ratings;
 
 import com.owodigi.ratings.domain.EpisodeRecord;
+import com.owodigi.ratings.domain.NameRecord;
 import com.owodigi.ratings.domain.TitleRecord;
 import com.owodigi.ratings.store.EpisodeStore;
+import com.owodigi.ratings.store.NameStore;
 import com.owodigi.ratings.store.TitleStore;
 import com.owodigi.ratings.store.impl.H2EpisodeStore;
+import com.owodigi.ratings.store.impl.H2NameStore;
 import com.owodigi.ratings.store.impl.H2TitleStore;
 import com.owodigi.ratintgs.util.RatingsAppProperties;
 import com.owodigi.util.IMDbDatasetDownloader;
 import com.owodigi.util.IMDbDownloaderCallback;
+import com.owodigi.util.IMDbTSVFormats;
 import com.owodigi.util.IMDbTSVFormats.TitleBasicsFormat;
 import com.owodigi.util.IMDbTSVFormats.TitleEpisodeFormat;
 import com.owodigi.util.IMDbTSVFormats.TitlePrincipalsFormat;
@@ -26,10 +30,13 @@ public class RatingsApp {
         titleStore.clear();
         final EpisodeStore episodeStore = new H2EpisodeStore(RatingsAppProperties.databaseUserName(), RatingsAppProperties.databaseUserPassword(), RatingsAppProperties.databasePath());
         episodeStore.clear();
+        final NameStore nameStore = new H2NameStore(RatingsAppProperties.databaseUserName(), RatingsAppProperties.databaseUserPassword(), RatingsAppProperties.databasePath());
+        nameStore.clear();
         processTitleBasicsDataset(titleStore, episodeStore);
         processTitleRatingsDataset(titleStore, episodeStore);
-        processTitlePrincipalsDataset(titleStore, episodeStore);
+        processTitlePrincipalsDataset(titleStore, episodeStore, nameStore);
         processTitleEpisodeDataset(episodeStore);
+        processNameBasicsDataset(nameStore);
     }
 
     private static void processTitleBasicsDataset(final TitleStore titleStore, final EpisodeStore episodeStore) throws IOException {
@@ -73,7 +80,7 @@ public class RatingsApp {
         });
     }
 
-    private static void processTitlePrincipalsDataset(final TitleStore titleStore, final EpisodeStore episodeStore) throws IOException {
+    private static void processTitlePrincipalsDataset(final TitleStore titleStore, final EpisodeStore episodeStore, final NameStore nameStore) throws IOException {
         IMDbDatasetDownloader.read(RatingsAppProperties.titlePrincipalsURL(), new TitlePrincipalsFormat(), new IMDbDownloaderCallback() {
 
             @Override
@@ -87,8 +94,10 @@ public class RatingsApp {
                         throw new IllegalStateException("Encountered record not found in both the TitleStore and EpisodeStore: " + record);
                     }
                     episodeStore.addNconst(tconst, nconst);
+                    nameStore.addNconst(nconst);
                 } else {
                     titleStore.addNconst(tconst, nconst);
+                    nameStore.addNconst(nconst);
                 }
             }
         });
@@ -108,6 +117,21 @@ public class RatingsApp {
                 final String episodeNumber = record.get(TitleEpisodeFormat.header.episodeNumber);
                 final String seasonNumber = record.get(TitleEpisodeFormat.header.seasonNumber);
                 episodeStore.updateEpisode(tconst, parentTconst, seasonNumber, episodeNumber);
+            }
+        });
+    }
+    
+    private static void processNameBasicsDataset(final NameStore nameStore) throws IOException {
+        IMDbDatasetDownloader.read(RatingsAppProperties.nameBasicsURL(), new IMDbTSVFormats.NameBasicFormat(), new IMDbDownloaderCallback() {
+            
+            @Override
+            public void read(final CSVRecord record) throws IOException {
+                final String nconst = record.get(IMDbTSVFormats.NameBasicFormat.headers.nconst);
+                final String primaryName = record.get(IMDbTSVFormats.NameBasicFormat.headers.primaryName);
+                final NameRecord nameRecord = nameStore.nconst(nconst);
+                if (nameRecord != null) {
+                    nameStore.updateName(nconst, primaryName);
+                }
             }
         });
     }

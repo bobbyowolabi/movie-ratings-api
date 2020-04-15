@@ -73,6 +73,7 @@ public class RatingsAppTest extends H2StoreTest {
         whenRequest("/title.ratings.tsv.gz", "src/test/resources/title.ratings.tsv.gz");
         whenRequest("/title.principals.tsv.gz", "src/test/resources/title.principals.tsv.gz");
         whenRequest("/title.episode.tsv.gz", "src/test/resources/title.episode.tsv.gz");
+        whenRequest("/name.basics.tsv.gz", "src/test/resources/name.basics.tsv.gz");
         setApplicationProperties();
         runAndTestRatingsApp();
         runAndTestRatingsApp();
@@ -126,6 +127,12 @@ public class RatingsAppTest extends H2StoreTest {
     }    
 
     private void verifyNoDuplicateRows() throws IOException {
+        verifyNoDuplicateTitleRows();
+        verifyNoDuplicateEpisodeRows();
+        verifyNoDuplicateNameRows();
+    }
+    
+    private void verifyNoDuplicateTitleRows() throws IOException {
         final TestH2TitleStore store = new TestH2TitleStore(
             RatingsAppProperties.databaseUserName(),
             RatingsAppProperties.databaseUserPassword(),
@@ -133,9 +140,9 @@ public class RatingsAppTest extends H2StoreTest {
         final String title = "Pauvre Pierrot";
         final int expected = 1;
         final int actual = store.titles(title);
-        Assert.assertEquals("Number of rows in TitleStore with Title " + title, expected, actual);
+        Assert.assertEquals("Number of rows in TitleStore with Title " + title, expected, actual);        
     }
-
+    
     private class TestH2TitleStore extends H2TitleStore {
 
         public TestH2TitleStore(final String username, final String password, final Path databasePath) throws IOException {
@@ -146,8 +153,54 @@ public class RatingsAppTest extends H2StoreTest {
             final String sql = selectAllSql(H2TitleStore.columns.primaryTitle.name(), primaryTitle);
             return executeQuery(sql, NO_OP_RESULT_CALLBACK);
         }
-    }
+    }    
+    
+    private void verifyNoDuplicateEpisodeRows() throws IOException {
+        final TestH2EpisodeStore store = new TestH2EpisodeStore(
+            RatingsAppProperties.databaseUserName(),
+            RatingsAppProperties.databaseUserPassword(),
+            RatingsAppProperties.databasePath());
+        final String tconst = "tt0041951";
+        final int expected = 1;
+        final int actual = store.tconsts(tconst);
+        Assert.assertEquals("Number of rows in EpisdoeStore with tconst " + tconst, expected, actual);        
+    }    
 
+    private class TestH2EpisodeStore extends H2EpisodeStore {
+
+        public TestH2EpisodeStore(final String username, final String password, final Path databasePath) throws IOException {
+            super(username, password, databasePath);
+        }
+
+        public int tconsts(final String tconst) throws IOException {
+            final String sql = selectAllSql(H2EpisodeStore.columns.tconst.name(), tconst);
+            return executeQuery(sql, NO_OP_RESULT_CALLBACK);
+        }
+    }
+    
+    private void verifyNoDuplicateNameRows() throws IOException {
+        final TestH2NameStore store = new TestH2NameStore(
+            RatingsAppProperties.databaseUserName(),
+            RatingsAppProperties.databaseUserPassword(),
+            RatingsAppProperties.databasePath());
+        final String nconst = "nm0005690";
+        final int expected = 1;
+        final int actual = store.nconsts(nconst);
+        Assert.assertEquals("Number of rows in NameStore with nconst " + nconst, expected, actual);        
+    }     
+
+    private class TestH2NameStore extends H2NameStore {
+
+        public TestH2NameStore(final String username, final String password, final Path databasePath) throws IOException {
+            super(username, password, databasePath);
+        }
+
+        public int nconsts(final String nconst) throws IOException {
+            final String sql = selectAllSql(H2NameStore.columns.nconst.name(), nconst);
+            return executeQuery(sql, NO_OP_RESULT_CALLBACK);
+        }
+    }    
+    
     /**
      *
      * @param requestPath

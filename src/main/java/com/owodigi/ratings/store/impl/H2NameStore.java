@@ -16,7 +16,7 @@ import java.util.List;
  */
 public class H2NameStore extends H2Store implements NameStore {
     private static final String TABLE_NAME = "NAME_STORE";
-    private enum columns{nconst, primaryName}
+    protected enum columns{nconst, primaryName}
 
     /**
      * Create a new H2NameStore Instance.

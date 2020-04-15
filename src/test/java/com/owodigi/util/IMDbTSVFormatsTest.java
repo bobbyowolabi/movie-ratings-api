@@ -31,7 +31,7 @@ public class IMDbTSVFormatsTest {
     
     @Test
     public void nameBaiscsTSV() {
-        final String input = TEST_RESOURCES_DIR + "name.basics-sample.tsv";
+        final String input = TEST_RESOURCES_DIR + "name.basics-shortened.tsv";
         final List<List<String>> expected = AssertUtils.asList(
             Arrays.asList("nm0000001", "Fred Astaire", "1899", "1987", "soundtrack,actor,miscellaneous", "tt0053137,tt0050419,tt0072308,tt0043044"),
             Arrays.asList("nm0000002", "Lauren Bacall", "1924", "2014", "actress,soundtrack", "tt0071877,tt0038355,tt0037382,tt0117057"),

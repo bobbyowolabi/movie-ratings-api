@@ -19,7 +19,7 @@ import java.util.Map;
  */
 public class H2EpisodeStore extends H2Store implements EpisodeStore {
     private static final String TABLE_NAME = "EPISODE_STORE";
-    private enum columns {tconst, parentTconst, primaryTitle, averageRating, seasonNumber, episodeNumber, nconstList};
+    protected enum columns {tconst, parentTconst, primaryTitle, averageRating, seasonNumber, episodeNumber, nconstList};
 
     /**
      * Create new H2EpisodeStore instance.
