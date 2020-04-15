@@ -126,6 +126,12 @@ public class AssertUtils {
         return record;
     }
     
+    public static NameRecord newNameRecord(final String nconst, final String primaryName) {
+        final NameRecord record = newNameRecord(nconst);
+        record.setPrimaryName(primaryName);
+        return record;
+    }
+    
     public static TitleRecord newTitleRecord(final String tcosnt, final String titleType, final String primaryTitle) {
         final TitleRecord record = new TitleRecord();
         record.setTconst(tcosnt);

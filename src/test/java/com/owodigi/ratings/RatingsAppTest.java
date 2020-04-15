@@ -1,16 +1,20 @@
 package com.owodigi.ratings;
 
 import com.owodigi.ratings.domain.EpisodeRecord;
+import com.owodigi.ratings.domain.NameRecord;
 import com.owodigi.ratings.domain.TitleRecord;
 import com.owodigi.ratings.store.EpisodeStore;
+import com.owodigi.ratings.store.NameStore;
 import com.owodigi.ratings.store.TitleStore;
 import com.owodigi.ratings.store.impl.H2EpisodeStore;
+import com.owodigi.ratings.store.impl.H2NameStore;
 import com.owodigi.ratings.store.impl.H2StoreTest;
 import com.owodigi.ratings.store.impl.H2TitleStore;
 import static com.owodigi.ratings.store.impl.util.ResultCallback.NO_OP_RESULT_CALLBACK;
 import com.owodigi.ratintgs.util.RatingsAppProperties;
 import com.owodigi.util.AssertUtils;
 import static com.owodigi.util.AssertUtils.newEpisodeRecord;
+import static com.owodigi.util.AssertUtils.newNameRecord;
 import static com.owodigi.util.AssertUtils.newTitleRecord;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -20,6 +24,7 @@ import java.util.Arrays;
 import java.util.Properties;
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockserver.client.MockServerClient;
@@ -32,35 +37,35 @@ import static org.mockserver.model.HttpResponse.response;
  */
 public class RatingsAppTest extends H2StoreTest {
     private MockServerClient mockServerClient;
-    private final Path applicationPropertiesPath = Paths.get("./target/test-data/ratings-app.properties"); 
+    private final Path applicationPropertiesPath = Paths.get("./target/test-data/ratings-app.properties");
 
     @Rule
     public MockServerRule mockServerRule = new MockServerRule(this);
 
-    @After
+    @After @Before
     public void cleanup() throws IOException {
         Files.deleteIfExists(applicationPropertiesPath);
     }
-    
+
     /**
-     * 
+     *
      */
     private void runAndTestRatingsApp() throws IOException {
         RatingsApp.main(new String[0]);
-        testGetRating();
-        testGetRatingOfEpisode();        
+        testGetTitle();
+        testGetEpisode();
+        testGetName();
     }
-    
-    
+
+
     private void setApplicationProperties() throws IOException {
         final Properties applicationProperties = new Properties();
         applicationProperties.load(Files.newInputStream(Paths.get("src/test/resources/ratings-app.properties")));
         applicationProperties.setProperty(RatingsAppProperties.DATABASE_PATH, databasePath().toString());
-        Files.createDirectory(applicationPropertiesPath.getParent());
         applicationProperties.store(Files.newOutputStream(applicationPropertiesPath), "");
         System.setProperty(RatingsAppProperties.SYSTEM_PROPERTIES_FILE, applicationPropertiesPath.toString());
     }
-    
+
     @Test
     public void testRatingsApp() throws IOException {
         mockServerClient.bind(8080);
@@ -74,7 +79,7 @@ public class RatingsAppTest extends H2StoreTest {
         verifyNoDuplicateRows();
     }
 
-    private void testGetRating() throws IOException {
+    private void testGetTitle() throws IOException {
         final TitleStore store = new H2TitleStore(
             RatingsAppProperties.databaseUserName(),
             RatingsAppProperties.databaseUserPassword(),
@@ -89,7 +94,7 @@ public class RatingsAppTest extends H2StoreTest {
         AssertUtils.assertEquals(expected, actual);
     }
 
-    public void testGetRatingOfEpisode() throws IOException {
+    public void testGetEpisode() throws IOException {
         final EpisodeStore store = new H2EpisodeStore(
             RatingsAppProperties.databaseUserName(),
             RatingsAppProperties.databaseUserPassword(),
@@ -106,6 +111,19 @@ public class RatingsAppTest extends H2StoreTest {
         final EpisodeRecord actual = store.title("The Tenderfeet");
         AssertUtils.assertEquals(expected, actual);
     }
+    
+    private void testGetName() throws IOException {
+        final NameStore store = new H2NameStore(
+            RatingsAppProperties.databaseUserName(),
+            RatingsAppProperties.databaseUserPassword(),
+            RatingsAppProperties.databasePath());
+        final NameRecord expected = newNameRecord(
+            "nm0005690",
+            "William K.L. Dickson"
+        );
+        final NameRecord actual = store.nconst(expected.nconst());
+        AssertUtils.assertEquals(expected, actual);
+    }    
 
     private void verifyNoDuplicateRows() throws IOException {
         final TestH2TitleStore store = new TestH2TitleStore(
@@ -128,8 +146,8 @@ public class RatingsAppTest extends H2StoreTest {
             final String sql = selectAllSql(H2TitleStore.columns.primaryTitle.name(), primaryTitle);
             return executeQuery(sql, NO_OP_RESULT_CALLBACK);
         }
-    }    
-    
+    }
+
     /**
      *
      * @param requestPath
