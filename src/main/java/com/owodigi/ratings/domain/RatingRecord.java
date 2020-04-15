@@ -5,7 +5,7 @@ import java.util.Set;
 /**
  *
  */
-public class Rating {
+public class RatingRecord {
     private String title;
     private double rating;
     private Set<String> castList;

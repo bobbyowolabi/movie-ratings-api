@@ -17,7 +17,7 @@ import java.util.List;
  */
 public class H2TitleStore extends H2Store implements TitleStore {
     private static final String TABLE_NAME = "TITLE_STORE";
-    private enum columns {tconst, primaryTitle, averageRating, titleType, nconstList}
+    protected enum columns {tconst, primaryTitle, averageRating, titleType, nconstList}
     
     /**
      * 
@@ -91,7 +91,6 @@ public class H2TitleStore extends H2Store implements TitleStore {
             }
         });
         return resultCount == 0 ? null : record;        
-
     }
     
     @Override

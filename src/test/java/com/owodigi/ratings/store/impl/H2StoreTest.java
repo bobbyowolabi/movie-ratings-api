@@ -15,9 +15,8 @@ public abstract class H2StoreTest {
     private static final String USER_NAME = "test_user";
     private static final String PASSWORD = "changeit";
     private static final Path DATABASE_DIRECTORY = Paths.get("./target/test-data/");
-    private static final String DATABASE_FILE_PREFIX = "test-h2";
-    protected static final String DATABASE_FILE_SUFFIX = ".mv.db";
-    protected static final String DATABASE_TRACE_FILE_SUFFIX = ".trace.db";
+    private static final String DATABASE_FILE_PREFIX = "test";
+    protected static final String DATABASE_FILE_SUFFIX = ".h2.db";
     private Path dbPath;
     
     
@@ -29,7 +28,6 @@ public abstract class H2StoreTest {
     @After
     public void cleanupTest() throws IOException {
         Files.deleteIfExists(Paths.get(dbPath.toString() + DATABASE_FILE_SUFFIX));
-        Files.deleteIfExists(Paths.get(dbPath.toString() + DATABASE_TRACE_FILE_SUFFIX));
     }
     
     private Path uniqueDbPath() {

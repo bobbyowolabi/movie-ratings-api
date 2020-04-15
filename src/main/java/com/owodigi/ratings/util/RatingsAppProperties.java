@@ -16,7 +16,7 @@ import java.util.Set;
 public final class RatingsAppProperties {
     public static final String SYSTEM_PROPERTIES_FILE = "ratings.properties.file";
     private static final String SYSTEM_PROPERTIES_PATH;
-    private static final String DATABASE_PATH = "ratings.db.path";
+    public static final String DATABASE_PATH = "ratings.db.path";
     private static final String DATABASE_USERNAME = "ratings.db.username";
     private static final String DATABASE_PASSWORD = "ratings.db.password";
     private static final String IMDB_TITLE_BASICS_URL = "imdb.title.basics.url";

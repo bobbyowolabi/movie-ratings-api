@@ -19,7 +19,6 @@ import java.sql.Statement;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 /**
  *
@@ -100,7 +99,7 @@ public abstract class H2Store {
      * @throws IOException 
      */
     private int execute(final String sql, final StatementCallback statementCallback, final ResultCallback resultCallback) throws IOException {
-        try (final Connection connection = DriverManager.getConnection(DB_URL + path, username, password);
+        try (final Connection connection = DriverManager.getConnection(DB_URL + path + ";mv_store=false", username, password);
              final Statement statement = connection.createStatement()) {
             statementCallback.execute(sql, statement);
             final ResultSet result = statement.getResultSet();

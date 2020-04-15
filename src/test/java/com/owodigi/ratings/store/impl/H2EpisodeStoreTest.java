@@ -56,15 +56,12 @@ public class H2EpisodeStoreTest extends H2StoreTest {
     public void dbDirectoryDoesNotExist() throws IOException {
         final Path databasePath = Paths.get("./target/test-data3/foo");
         final Path databaseFile = Paths.get(databasePath.toString() + DATABASE_FILE_SUFFIX);
-        final Path databaseTraceFile = Paths.get(databasePath.toString() + DATABASE_TRACE_FILE_SUFFIX);
         Files.deleteIfExists(databaseFile);
-        Files.deleteIfExists(databaseTraceFile);
         try {
             new H2EpisodeStore(userName(), password(), databasePath);
             Assert.assertEquals(databaseFile + "exists", true, Files.exists(databaseFile));
         } finally {
             Files.deleteIfExists(databaseFile);
-            Files.deleteIfExists(databaseTraceFile);
             Files.deleteIfExists(databaseFile.getParent());
         }
     }

@@ -1,7 +1,6 @@
 package com.owodigi.ratings.store.impl;
 
 import com.owodigi.ratings.domain.TitleRecord;
-import com.owodigi.ratings.store.EpisodeStore;
 import com.owodigi.ratings.store.TitleStore;
 import com.owodigi.util.AssertUtils;
 import static com.owodigi.util.AssertUtils.newTitleRecord;
@@ -66,15 +65,12 @@ public class H2TitleStoreTest extends H2StoreTest {
     public void dbDirectoryDoesNotExist() throws IOException {
         final Path databasePath = Paths.get("./target/test-data2/foo");
         final Path databaseFile = Paths.get(databasePath.toString() + DATABASE_FILE_SUFFIX);
-        final Path databaseTraceFile = Paths.get(databasePath.toString() + DATABASE_TRACE_FILE_SUFFIX);
         Files.deleteIfExists(databaseFile);
-        Files.deleteIfExists(databaseTraceFile);
         try {
             new H2TitleStore(userName(), password(), databasePath);
             Assert.assertEquals(databaseFile + "exists", true, Files.exists(databaseFile));
         } finally {
             Files.deleteIfExists(databaseFile);
-            Files.deleteIfExists(databaseTraceFile);
             Files.deleteIfExists(databaseFile.getParent());
         }
     }
