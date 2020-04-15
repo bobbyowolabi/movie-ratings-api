@@ -1,6 +1,7 @@
 package com.owodigi.util;
 
 import com.owodigi.ratings.domain.EpisodeRecord;
+import com.owodigi.ratings.domain.NameRecord;
 import com.owodigi.ratings.domain.TitleRecord;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -58,6 +59,16 @@ public class AssertUtils {
      * @param expected
      * @param actual 
      */
+    public static void assertEquals(final NameRecord expected, final NameRecord actual) {
+        Assert.assertEquals("nconst", expected.nconst(), actual.nconst());
+        Assert.assertEquals("primaryName", expected.primaryName(), actual.primaryName());
+    }
+    
+    /**
+     * 
+     * @param expected
+     * @param actual 
+     */
     public static void assertEquals(final List<String> expected, final CSVRecord actual) throws AssertionError {
         Assert.assertEquals(expected, toList(actual));
     }
@@ -100,6 +111,19 @@ public class AssertUtils {
         record.setSeasonNumber(seasonNumber);
         record.setTconst(tconst);
         record.setPrimaryTitle(primaryTitle);
+        return record;
+    }
+    
+    /**
+     * 
+     * @param nconst
+     * @param primaryName
+     * @return 
+     */
+    public static NameRecord newNameRecord(final String nconst, final String primaryName) {
+        final NameRecord record = new NameRecord();
+        record.setNconst(nconst);
+        record.setPrimaryName(primaryName);
         return record;
     }
     
