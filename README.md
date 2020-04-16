@@ -11,13 +11,37 @@ http://commons.apache.org/proper/commons-csv/index.html
 
 # Design
 
-## Part 1
-Build an application that pulls and persists the following attributes for titles (movies, tv shows, etc):
+## Requirements
+Build an API endpoint that pulls and persists the following attributes for titles (movies, tv shows, etc):
 * Title 
 * Rating 
 * Cast List
 
+Provide the ability to only persist titles from certain years.
+
+For TV shows, average all the episode ratings and provide an average rating
+
+Provide ability to regularly synchronize and update persisted data from IMDb.
+
 Return the persisted title via query by title name.
+
+**Sample Response to user**:
+```json
+{
+   "title": "Foo",
+   "type": "tvSeries",
+   "userRating": "5.4",
+   "castList": "Person 1, Person 2",
+   "calculatedRating": 5.9,
+   "episodes": [{
+      "title": "foo",
+      "userRating": 6.5,
+      "seasonNumber": 1,
+      "episodeNumber": 10,
+      "castList": "Person 1, Person 2"      
+   }]
+}
+```
 
 ### Data to Pull
 | Field         | Data File               | Notes                                                                                                                                                                       |
@@ -90,21 +114,21 @@ For All records in name.basics.tsv.gz
 | parent_tconst | tconst | primaryTitle | averageRating | castList | 
 |---------------|--------|--------------|---------------|----------|  
 
-#### Principals
+#### Names
 | nconst | primaryName | 
 |--------|-------------|
 
-### Diagram
-![](docs/diagram.svg)
-### Components
-#### Ratings Source (IMDB impl)
-#### Streaming TSV Reader
-#### Ratings Data Store
-
-### Considerations
+### Notes & Considerations
 * Will store the tconst id.  We could generate an id for our system; however, this will be easier to sync the data when we get to part 3 and need to refresh the data.
 * Is a relational db the best way to go, especially since some of the data is not "1:1", ex: title -> cast list; title -> episodes?
 * The cast_list could be better modeled, especially if this would need to be queried in the future.
+
+### High Level Diagram
+![](docs/diagram.svg)
+#### Components
+##### Persistence
+##### API Service
+##### IMDb Processor
 
 # Improvements
 - Ability to account for interrupted downloads
