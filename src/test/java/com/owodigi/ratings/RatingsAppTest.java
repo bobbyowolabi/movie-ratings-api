@@ -8,7 +8,6 @@ import com.owodigi.ratings.store.NameStore;
 import com.owodigi.ratings.store.TitleStore;
 import com.owodigi.ratings.store.impl.H2EpisodeStore;
 import com.owodigi.ratings.store.impl.H2NameStore;
-import com.owodigi.ratings.store.impl.H2StoreTest;
 import com.owodigi.ratings.store.impl.H2TitleStore;
 import static com.owodigi.ratings.store.impl.util.ResultCallback.NO_OP_RESULT_CALLBACK;
 import com.owodigi.ratintgs.util.RatingsAppProperties;
@@ -17,35 +16,15 @@ import static com.owodigi.util.AssertUtils.newEpisodeRecord;
 import static com.owodigi.util.AssertUtils.newNameRecord;
 import static com.owodigi.util.AssertUtils.newTitleRecord;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.Properties;
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.mockserver.client.MockServerClient;
-import org.mockserver.junit.MockServerRule;
-import static org.mockserver.model.HttpRequest.request;
-import static org.mockserver.model.HttpResponse.response;
 
 /**
  *
  */
-public class RatingsAppTest extends H2StoreTest {
-    private MockServerClient mockServerClient;
-    private final Path applicationPropertiesPath = Paths.get("./target/test-data/ratings-app.properties");
-
-    @Rule
-    public MockServerRule mockServerRule = new MockServerRule(this);
-
-    @After @Before
-    public void cleanup() throws IOException {
-        Files.deleteIfExists(applicationPropertiesPath);
-    }
+public class RatingsAppTest extends RatingsAppConfiguration {
 
     /**
      *
@@ -58,23 +37,8 @@ public class RatingsAppTest extends H2StoreTest {
     }
 
 
-    private void setApplicationProperties() throws IOException {
-        final Properties applicationProperties = new Properties();
-        applicationProperties.load(Files.newInputStream(Paths.get("src/test/resources/ratings-app.properties")));
-        applicationProperties.setProperty(RatingsAppProperties.DATABASE_PATH, databasePath().toString());
-        applicationProperties.store(Files.newOutputStream(applicationPropertiesPath), "");
-        System.setProperty(RatingsAppProperties.SYSTEM_PROPERTIES_FILE, applicationPropertiesPath.toString());
-    }
-
     @Test
     public void testRatingsApp() throws IOException {
-        mockServerClient.bind(8080);
-        whenRequest("/title.basics.tsv.gz", "src/test/resources/title.basics.tsv.gz");
-        whenRequest("/title.ratings.tsv.gz", "src/test/resources/title.ratings.tsv.gz");
-        whenRequest("/title.principals.tsv.gz", "src/test/resources/title.principals.tsv.gz");
-        whenRequest("/title.episode.tsv.gz", "src/test/resources/title.episode.tsv.gz");
-        whenRequest("/name.basics.tsv.gz", "src/test/resources/name.basics.tsv.gz");
-        setApplicationProperties();
         runAndTestRatingsApp();
         runAndTestRatingsApp();
         verifyNoDuplicateRows();
@@ -200,23 +164,4 @@ public class RatingsAppTest extends H2StoreTest {
             return executeQuery(sql, NO_OP_RESULT_CALLBACK);
         }
     }    
-    
-    /**
-     *
-     * @param requestPath
-     * @param responsePath
-     * @throws IOException
-     */
-    private void whenRequest(final String requestPath, final String responsePath) throws IOException {
-        mockServerClient
-            .when(
-                request()
-                    .withPath(requestPath)
-            )
-            .respond(
-                response()
-                    .withStatusCode(200)
-                    .withBody(Files.readAllBytes(Paths.get(responsePath)))
-            );
-    }
 }

@@ -110,5 +110,7 @@ For All records in name.basics.tsv.gz
 - robust logging
 - api schema
 - Database - batching
+- microservices
+- support concurrent data store read and writes, availability while dataset loading
 
 [imdb-datasets]: https://www.imdb.com/interfaces 
