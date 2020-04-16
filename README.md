@@ -94,7 +94,8 @@ For All records in name.basics.tsv.gz
 | nconst | primaryName | 
 |--------|-------------|
 
-
+### Diagram
+![](docs/diagram.svg)
 ### Components
 #### Ratings Source (IMDB impl)
 #### Streaming TSV Reader

@@ -1,0 +1,11 @@
+graph TD
+    subgraph rating-store-component[Persistence]
+	    episode-store[(Episode Store)] --- rating-store 
+        title-store[(Title Store)] --- rating-store
+        name-store[(Name Store)] --- rating-store
+        rating-store([Rating Store])
+    end
+    server[API Server] --> |query| rating-store
+    user((User)) --> |request|server
+    imdb-process(IMDb Dataset Processor) --> |Download .tsv.gz  Files|imdb((IMDb Webservice))
+    imdb-process --> |populate|rating-store
