@@ -1,8 +1,8 @@
 package com.owodigi.util;
 
-import com.owodigi.ratings.domain.EpisodeRecord;
-import com.owodigi.ratings.domain.NameRecord;
-import com.owodigi.ratings.domain.TitleRecord;
+import com.owodigi.movie.ratings.store.domain.EpisodeRecord;
+import com.owodigi.movie.ratings.store.domain.NameRecord;
+import com.owodigi.movie.ratings.store.domain.TitleRecord;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
