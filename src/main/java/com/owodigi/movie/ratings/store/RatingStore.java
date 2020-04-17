@@ -1,5 +1,6 @@
 package com.owodigi.movie.ratings.store;
 
+import com.owodigi.movie.ratings.api.domain.RatingRecord;
 import com.owodigi.movie.ratings.store.domain.EpisodeRecord;
 import com.owodigi.movie.ratings.store.domain.NameRecord;
 import com.owodigi.movie.ratings.store.domain.TitleRecord;
@@ -56,6 +57,11 @@ public class RatingStore implements DatasetStore {
         nameStore.clear();
     }    
     
+    public RatingRecord title(final String tile) throws IOException {
+        final TitleRecord titleRecord = titleStore.title(tile);
+        return titleRecord == null ? null : toRatingRecord(titleRecord);
+    }
+    
     public void updateEpisode(final String tconst, final String parentTconst, final String seasonNumber, final String episodeNumber) throws IOException {
         final EpisodeRecord episodeRecord = episodeStore.tconst(tconst);
         if (episodeRecord == null) {
@@ -84,6 +90,14 @@ public class RatingStore implements DatasetStore {
         }
     }
     
-
-
+    private RatingRecord toRatingRecord(final TitleRecord titleRecord) throws IOException {
+        final RatingRecord ratingRecord = new RatingRecord();
+        ratingRecord.setTitle(titleRecord.primaryTitle());
+//        record.setCalculatedRating();
+        ratingRecord.setCastList(String.join(", ", nameStore.names(titleRecord.nconstList())));
+//        record.setEpisodes(episodes);
+        ratingRecord.setType(titleRecord.titleType());
+        ratingRecord.setUserRating(titleRecord.averageRating());
+        return ratingRecord;
+    }
 }

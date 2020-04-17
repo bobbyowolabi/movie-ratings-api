@@ -1,0 +1,54 @@
+package com.owodigi.movie.ratings.api.domain;
+
+import java.util.List;
+
+/**
+ *
+ */
+public class Episode {
+    private String title;
+    private String  userRating;
+    private String seasonNumber;
+    private String episodeNumber;
+    private List<String> castList;
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getUserRating() {
+        return userRating;
+    }
+
+    public String getSeasonNumber() {
+        return seasonNumber;
+    }
+
+    public String getEpisodeNumber() {
+        return episodeNumber;
+    }
+
+    public List<String> getCastList() {
+        return castList;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setUserRating(String userRating) {
+        this.userRating = userRating;
+    }
+
+    public void setSeasonNumber(String seasonNumber) {
+        this.seasonNumber = seasonNumber;
+    }
+
+    public void setEpisodeNumber(String episodeNumber) {
+        this.episodeNumber = episodeNumber;
+    }
+
+    public void setCastList(List<String> castList) {
+        this.castList = castList;
+    }
+}

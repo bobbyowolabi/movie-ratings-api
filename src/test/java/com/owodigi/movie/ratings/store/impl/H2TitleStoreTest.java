@@ -1,6 +1,5 @@
 package com.owodigi.movie.ratings.store.impl;
 
-import com.owodigi.movie.ratings.store.impl.H2TitleStore;
 import com.owodigi.movie.ratings.store.domain.TitleRecord;
 import com.owodigi.movie.ratings.store.TitleStore;
 import com.owodigi.util.AssertUtils;

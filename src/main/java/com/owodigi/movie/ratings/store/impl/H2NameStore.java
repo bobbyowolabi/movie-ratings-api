@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -71,6 +72,20 @@ public class H2NameStore extends H2Store implements NameStore {
             }
         });
         return resultCount == 0 ? null : record;
+    }    
+    
+    @Override
+    public List<String> names(final List<String> nconsts) throws IOException {
+        final List<String> names = new ArrayList<>();
+        for (final String nconst : nconsts) {
+            final NameRecord nameRecord = nconst(nconst);
+            if (nameRecord == null) {
+                names.add(nconst);
+            } else {
+                names.add(nameRecord.primaryName());
+            }
+        }
+        return names;
     }    
     
     @Override

@@ -1,7 +1,9 @@
-package com.owodigi.ratings;
+package com.owodigi.movie.ratings;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.owodigi.movie.ratings.api.domain.RatingRecord;
 import com.owodigi.movie.ratings.util.MovieRatingsAppConfiguration;
-import com.owodigi.movie.ratings.MovieRatingsApp;
 import com.owodigi.movie.ratings.store.domain.EpisodeRecord;
 import com.owodigi.movie.ratings.store.domain.NameRecord;
 import com.owodigi.movie.ratings.store.domain.TitleRecord;
@@ -23,7 +25,7 @@ import java.util.Arrays;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class MovieRatingsAPITest extends MovieRatingsAppConfiguration {
+public class MovieRatingsAppTest extends MovieRatingsAppConfiguration {
     private static final String APP_URL = "http://localhost:8080/movie-ratings?title=";
 
     @Test
@@ -54,21 +56,16 @@ public class MovieRatingsAPITest extends MovieRatingsAppConfiguration {
     }
     
     public void queryNonTVShow() throws IOException {
-        final String title = "Foo";
-        final String expected = "{\n"
-                + "   \"title\": \"Foo\",\n"
-                + "   \"type\": \"tvSeries\",\n"
-                + "   \"userRating: \"5.4\",\n"
-                + "   \"castList\": \"Person 1, Person 2\",\n"
-                + "   \"calculatedRating\": 5.9,\n"
-                + "   \"episodes\": [{\n"
-                + "      \"title\": \"foo\",\n"
-                + "      \"userRating\": 6.5,\n"
-                + "      \"seasonNumber\": 1,\n"
-                + "      \"episodeNumber\": 10,\n"
-                + "      \"castList\": \"Person 1, Person 2\"      \n"
-                + "   }]\n"
-                + "}";
+        final String title = "Carmencita";
+        final String expected = 
+            "{"
+                + "\"title\": \"Carmencita\","
+                + "\"type\": \"short\","
+                + "\"userRating\": \"5.6\","
+                + "\"calculatedRating\": null,"
+                + "\"castList\": \"Carmencita, William K.L. Dickson, William Heise\","
+                + "\"episodes\": null"
+          + "}";
         AssertUtils.assertQuery("Querying a Non TV Show", appURL(title), expected);
     }
 
@@ -83,12 +80,6 @@ public class MovieRatingsAPITest extends MovieRatingsAppConfiguration {
     }
 
     public void queryNonExistentTitle() throws IOException {
-    }
-
-    private void runTwice() throws IOException {
-        MovieRatingsApp.main(new String[0]);
-        MovieRatingsApp.stop();
-        MovieRatingsApp.main(new String[0]);
     }
 
     public void testGetTitle() throws IOException {

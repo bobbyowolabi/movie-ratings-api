@@ -1,5 +1,9 @@
 package com.owodigi.util;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.owodigi.movie.ratings.api.domain.Episode;
+import com.owodigi.movie.ratings.api.domain.RatingRecord;
 import com.owodigi.movie.ratings.store.domain.EpisodeRecord;
 import com.owodigi.movie.ratings.store.domain.NameRecord;
 import com.owodigi.movie.ratings.store.domain.TitleRecord;
@@ -63,12 +67,13 @@ public class AssertUtils {
         Assert.assertEquals("nConstList", expected.nconstList(), actual.nconstList());
     }    
     
-    private static void assertEqualsIfNull(final String message, final Object expected, final Object actual) {
+    private static boolean assertEqualsIfNull(final String message, final Object expected, final Object actual) {
         if (expected == null) {
             Assert.assertNull("Actual is not null: " + message, actual);
         } else {
             Assert.assertNotNull("Actual is null: " + message, actual);
         }
+        return expected == null || actual == null;
     }
     
     /**
@@ -77,7 +82,9 @@ public class AssertUtils {
      * @param actual 
      */
     public static void assertEquals(final NameRecord expected, final NameRecord actual) {
-        assertEqualsIfNull("NameRecord", expected, actual);
+        if(assertEqualsIfNull("NameRecord", expected, actual)) {
+            return;
+        }
         Assert.assertEquals("nconst", expected.nconst(), actual.nconst());
         Assert.assertEquals("primaryName", expected.primaryName(), actual.primaryName());
     }
@@ -113,6 +120,55 @@ public class AssertUtils {
         } 
     }
     
+    private static void assertEquals(final String message, final List<Episode> expected, List<Episode> actual) {
+        if(assertEqualsIfNull(message , expected, actual)) {
+            return;
+        }
+        final Iterator<Episode> actualEpisodes = actual.iterator();
+        for (final Episode expectedEpisode : expected) {
+            Assert.assertEquals("Expected episode " + expectedEpisode + "; however, there are no more records", true, actualEpisodes.hasNext());
+            final Episode actualEpisode = actualEpisodes.next();
+            assertEquals(message, expectedEpisode, actualEpisode);
+        }
+        if (actualEpisodes.hasNext()) {
+            Assert.fail("Did not expect anymore epsidoes; however found epsiode " + actualEpisodes.next());
+        }
+    }
+
+    private static void assertEquals(final String message, final Episode expected, Episode actual) {
+        if(assertEqualsIfNull(message, expected, actual)) {
+            return;
+        }
+        Assert.assertEquals(message, expected.getCastList(), actual.getCastList());      
+        Assert.assertEquals(message, expected.getEpisodeNumber(), actual.getEpisodeNumber());      
+        Assert.assertEquals(message, expected.getSeasonNumber(), actual.getSeasonNumber());      
+        Assert.assertEquals(message, expected.getTitle(), actual.getTitle());      
+        Assert.assertEquals(message, expected.getUserRating(), actual.getUserRating());      
+    }
+    
+    private static void assertEquals(final String message, final RatingRecord expected, final RatingRecord actual) {
+        if (assertEqualsIfNull(message + ": RatingRecord", expected, actual)) {
+            return;
+        }
+        Assert.assertEquals(message, expected.getCalculatedRating(), actual.getCalculatedRating());
+        Assert.assertEquals(message, expected.getCastList(), actual.getCastList());
+        assertEquals(message + ": Episodes", expected.getEpisodes(), actual.getEpisodes());
+        Assert.assertEquals(message, expected.getTitle(), actual.getTitle());
+        Assert.assertEquals(message, expected.getType(), actual.getType());
+        Assert.assertEquals(message, expected.getUserRating(), actual.getUserRating());
+    }    
+    
+    private static void assertRatingRecord(final String message, final String expectedJson, final String actualJson) throws JsonProcessingException {
+        final RatingRecord expected = toRatingRecord(expectedJson);
+        final RatingRecord actual = toRatingRecord(actualJson);
+        assertEquals(message, expected, actual);
+    }
+    
+    private static RatingRecord toRatingRecord(final String json) throws JsonProcessingException {
+        final ObjectMapper mapper = new ObjectMapper();
+        return mapper.readValue(json, RatingRecord.class);
+    }    
+    
     public static void assertQuery(final String message, final String url, final String expected) throws IOException {
         HttpURLConnection connection = null;
         try {
@@ -121,7 +177,7 @@ public class AssertUtils {
             final int statusCode = connection.getResponseCode();
             if (statusCode <= 299) {
                 final String actual = toString(connection.getInputStream());
-                Assert.assertEquals(expected, actual);
+                assertRatingRecord(message, expected, actual);
             } else {
                 Assert.fail(message + ": Unexpected response code " + statusCode + toString(connection.getErrorStream()));
             }

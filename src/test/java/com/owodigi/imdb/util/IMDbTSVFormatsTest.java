@@ -1,6 +1,5 @@
 package com.owodigi.imdb.util;
 
-import com.owodigi.imdb.util.TSVFormat;
 import com.owodigi.imdb.util.IMDbTSVFormats.NameBasicFormat;
 import com.owodigi.imdb.util.IMDbTSVFormats.TitleBasicsFormat;
 import com.owodigi.imdb.util.IMDbTSVFormats.TitleEpisodeFormat;
@@ -20,7 +19,6 @@ import org.junit.Test;
 
 public class IMDbTSVFormatsTest {
     private static final String TEST_RESOURCES_DIR = "src/test/resources/";
-            
     
     public void test(final List<List<String>> expected, final String input, final TSVFormat expectedFormat) {
         try (final Reader reader = Files.newBufferedReader(Paths.get(input), StandardCharsets.UTF_8);

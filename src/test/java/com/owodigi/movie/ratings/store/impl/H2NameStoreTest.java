@@ -1,12 +1,10 @@
 package com.owodigi.movie.ratings.store.impl;
 
-import com.owodigi.movie.ratings.store.impl.H2NameStore;
 import com.owodigi.movie.ratings.store.domain.NameRecord;
 import com.owodigi.movie.ratings.store.NameStore;
 import com.owodigi.util.AssertUtils;
 import static com.owodigi.util.AssertUtils.newNameRecord;
 import java.io.IOException;
-import org.junit.Assert;
 import org.junit.Test;
 
 public class H2NameStoreTest extends H2StoreTest {

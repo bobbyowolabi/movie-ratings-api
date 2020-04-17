@@ -1,8 +1,5 @@
 package com.owodigi.imdb.util;
 
-import com.owodigi.imdb.util.IMDbDownloaderCallback;
-import com.owodigi.imdb.util.IMDbDatasetDownloader;
-import com.owodigi.imdb.util.TSVFormat;
 import com.owodigi.imdb.util.IMDbTSVFormats.NameBasicFormat;
 import com.owodigi.imdb.util.IMDbTSVFormats.TitleBasicsFormat;
 import com.owodigi.imdb.util.IMDbTSVFormats.TitleEpisodeFormat;

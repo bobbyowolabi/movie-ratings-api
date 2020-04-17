@@ -1,6 +1,5 @@
 package com.owodigi.movie.ratings.store.impl;
 
-import com.owodigi.movie.ratings.store.impl.H2EpisodeStore;
 import com.owodigi.movie.ratings.store.domain.EpisodeRecord;
 import com.owodigi.movie.ratings.store.EpisodeStore;
 import static com.owodigi.movie.ratings.store.impl.H2StoreTest.DATABASE_FILE_SUFFIX;
