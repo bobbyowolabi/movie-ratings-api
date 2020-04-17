@@ -10,19 +10,15 @@ import java.net.ProtocolException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  *
  */
-@Ignore
-public class APITest extends MovieRatingAPITest {
+public class APITest extends MovieRatingAPIConfiguration {
     private static final String RATINGS_APP_URL = "http://localhost:7272/ratings?title=foo";
     
-    @Test@Ignore
-    public void queryNonTVShow() throws IOException {
-        start();
+    private void assertQuery(final String message, final String expected) throws IOException {
         HttpURLConnection connection = null;
         try {
             final URL url = new URL(RATINGS_APP_URL);
@@ -30,34 +26,61 @@ public class APITest extends MovieRatingAPITest {
             connection.setRequestMethod("GET");
             final int statusCode = connection.getResponseCode();
             if (statusCode <= 299) {
-                final String expected = "{\n"
-                        + "   \"title\": \"Foo\",\n"
-                        + "   \"type\": \"tvSeries\",\n"
-                        + "   \"userRating: \"5.4\",\n"
-                        + "   \"castList\": \"Person 1, Person 2\",\n"
-                        + "   \"calculatedRating\": 5.9,\n"
-                        + "   \"episodes\": [{\n"
-                        + "      \"title\": \"foo\",\n"
-                        + "      \"userRating\": 6.5,\n"
-                        + "      \"seasonNumber\": 1,\n"
-                        + "      \"episodeNumber\": 10,\n"
-                        + "      \"castList\": \"Person 1, Person 2\"      \n"
-                        + "   }]\n"
-                        + "}";
                 final String actual = toString(connection.getInputStream());
                 Assert.assertEquals(expected, actual);
             } else {
-                Assert.fail("Unexpected response code " + statusCode + toString(connection.getErrorStream()));
+                Assert.fail(message + ": Unexpected response code " + statusCode + toString(connection.getErrorStream()));
             }
         } catch (final MalformedURLException ex) {
-            Assert.fail("URL to movie API is invalid due to " + ex);
+            Assert.fail(message + ": URL to movie API is invalid due to " + ex);
         } catch (final ProtocolException ex) {
-            Assert.fail("The request method is invalud due to " + ex);
+            Assert.fail(message + ": The request method is invalud due to " + ex);
         } finally {
             if (connection != null) {
                 connection.disconnect();
             }
         }
+    }
+    
+    @Test
+    public void testAPI() throws IOException {
+        MovieRatingsAPI.main(new String[0]);
+        try {
+            queryNonTVShow();
+            queryTvShow();
+            queryTvShowEpisode();
+            queryNonExistentTitle();
+            
+        } finally {
+            MovieRatingsAPI.stop();
+        }
+    }
+    
+    public void queryNonTVShow() throws IOException {
+        final String expected = "{\n"
+                + "   \"title\": \"Foo\",\n"
+                + "   \"type\": \"tvSeries\",\n"
+                + "   \"userRating: \"5.4\",\n"
+                + "   \"castList\": \"Person 1, Person 2\",\n"
+                + "   \"calculatedRating\": 5.9,\n"
+                + "   \"episodes\": [{\n"
+                + "      \"title\": \"foo\",\n"
+                + "      \"userRating\": 6.5,\n"
+                + "      \"seasonNumber\": 1,\n"
+                + "      \"episodeNumber\": 10,\n"
+                + "      \"castList\": \"Person 1, Person 2\"      \n"
+                + "   }]\n"
+                + "}";
+        assertQuery("Querying a Non TV Show", expected);
+    }
+
+    public void queryTvShow() throws IOException {
+    }
+    
+    public void queryTvShowEpisode() throws IOException {
+    }
+    
+    public void queryNonExistentTitle() throws IOException {
     }
     
     /**
@@ -73,20 +96,5 @@ public class APITest extends MovieRatingAPITest {
             value.append(reader.readLine()).append("\n");
         }
         return value.toString();
-    }
-    
-    @Ignore
-    public void queryTvShow() throws IOException {
-        start();
-    }
-    
-    @Ignore
-    public void queryTvShowEpisode() throws IOException {
-        start();
-    }
-    
-    @Ignore
-    public void queryNonExistentTitle() throws IOException {
-        start();
     }
 }

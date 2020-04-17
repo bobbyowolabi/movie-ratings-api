@@ -20,27 +20,66 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import org.junit.Assert;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-public class MovieRatingsAPIDatabaseTest extends MovieRatingAPITest {
-    private static final Logger LOGGER = LoggerFactory.getLogger(MovieRatingsAPIDatabaseTest.class);
-
+public class MovieRatingsAPITest extends MovieRatingAPIConfiguration {
+    private static final String APP_URL = "http://localhost:8080/movie-ratings-api?title=";
+    
     @Test
-    public void runApplicationTwice() throws IOException {
-        LOGGER.info("Starting test runApplicationTwice()");
-        start();
-        stop();
-        start();
-        stop();
-        Assert.assertEquals("Number of Times Movies Rating API was run", 2, runCount());
-        verifyNoDuplicateRows();
+    public void testDatabaseBackingOfApplication() throws IOException {
+        runTwice();
+        try {
+            verifyNoDuplicateRows();
+            testGetEpisode();
+            testGetName();
+            testGetTitle();
+            queryNonTVShow();
+            queryTvShow();
+            queryTvShowEpisode();
+            queryNonExistentTitle();            
+        } finally {
+            MovieRatingsAPI.stop();
+        }
+    }
+    
+    public void queryNonTVShow() throws IOException {
+        final String title = "Foo";
+        final String expected = "{\n"
+                + "   \"title\": \"Foo\",\n"
+                + "   \"type\": \"tvSeries\",\n"
+                + "   \"userRating: \"5.4\",\n"
+                + "   \"castList\": \"Person 1, Person 2\",\n"
+                + "   \"calculatedRating\": 5.9,\n"
+                + "   \"episodes\": [{\n"
+                + "      \"title\": \"foo\",\n"
+                + "      \"userRating\": 6.5,\n"
+                + "      \"seasonNumber\": 1,\n"
+                + "      \"episodeNumber\": 10,\n"
+                + "      \"castList\": \"Person 1, Person 2\"      \n"
+                + "   }]\n"
+                + "}";
+        AssertUtils.assertQuery("Querying a Non TV Show", appURL(title), expected);
     }
 
-    @Test
+    private String appURL(final String title) {
+        return APP_URL + title;
+    }
+    
+    public void queryTvShow() throws IOException {
+    }
+    
+    public void queryTvShowEpisode() throws IOException {
+    }
+    
+    public void queryNonExistentTitle() throws IOException {
+    }
+    
+    private void runTwice() throws IOException {
+        MovieRatingsAPI.main(new String[0]);
+        MovieRatingsAPI.stop();
+        MovieRatingsAPI.main(new String[0]);        
+    }
+    
     public void testGetTitle() throws IOException {
-        LOGGER.info("Starting test testGetTitle()");
-        start();
         final TitleStore store = new H2TitleStore(
             RatingsAppProperties.databaseUserName(),
             RatingsAppProperties.databaseUserPassword(),
@@ -55,10 +94,7 @@ public class MovieRatingsAPIDatabaseTest extends MovieRatingAPITest {
         AssertUtils.assertEquals(expected, actual);
     }
 
-    @Test
     public void testGetEpisode() throws IOException {
-        LOGGER.info("Starting test testGetEpisode()");
-        start();
         final EpisodeStore store = new H2EpisodeStore(
             RatingsAppProperties.databaseUserName(),
             RatingsAppProperties.databaseUserPassword(),
@@ -76,10 +112,7 @@ public class MovieRatingsAPIDatabaseTest extends MovieRatingAPITest {
         AssertUtils.assertEquals(expected, actual);
     }
     
-    @Test
     public void testGetName() throws IOException {
-        LOGGER.info("Starting test testGetName()");
-        start();
         final NameStore store = new H2NameStore(
             RatingsAppProperties.databaseUserName(),
             RatingsAppProperties.databaseUserPassword(),

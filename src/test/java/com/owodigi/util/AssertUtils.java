@@ -3,6 +3,15 @@ package com.owodigi.util;
 import com.owodigi.ratings.domain.EpisodeRecord;
 import com.owodigi.ratings.domain.NameRecord;
 import com.owodigi.ratings.domain.TitleRecord;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -103,6 +112,44 @@ public class AssertUtils {
             Assert.fail("Unable to parse TSV File due to " + ex);
         } 
     }
+    
+    public static void assertQuery(final String message, final String url, final String expected) throws IOException {
+        HttpURLConnection connection = null;
+        try {
+            connection = (HttpURLConnection) new URL(url).openConnection();
+            connection.setRequestMethod("GET");
+            final int statusCode = connection.getResponseCode();
+            if (statusCode <= 299) {
+                final String actual = toString(connection.getInputStream());
+                Assert.assertEquals(expected, actual);
+            } else {
+                Assert.fail(message + ": Unexpected response code " + statusCode + toString(connection.getErrorStream()));
+            }
+        } catch (final MalformedURLException ex) {
+            Assert.fail(message + ": URL to movie API is invalid due to " + ex);
+        } catch (final ProtocolException ex) {
+            Assert.fail(message + ": The request method is invalud due to " + ex);
+        } finally {
+            if (connection != null) {
+                connection.disconnect();
+            }
+        }
+    }    
+    
+    /**
+     * Does not maintain original line ending characters
+     * 
+     * @param inputStream
+     * @return
+     * @throws IOException 
+     */
+    private static String toString(final InputStream inputStream) throws IOException {
+        final StringBuilder value = new StringBuilder();
+        try(final BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
+            value.append(reader.readLine()).append("\n");
+        }
+        return value.toString();
+    }     
     
     public static EpisodeRecord newEpisodeRecord(
             final String tconst, 
