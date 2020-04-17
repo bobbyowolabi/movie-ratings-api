@@ -35,11 +35,11 @@ public class IMDbDatasetProcessor {
 
             @Override
             public void read(final CSVRecord record) throws IOException {
-                final String year = record.get(IMDbTSVFormats.TitleBasicsFormat.header.startYear);
+                final String year = record.get(TitleBasicsFormat.header.startYear);
                 if (RatingsAppProperties.titleIncludeYears().contains(year)) {
-                    final String tconst = record.get(IMDbTSVFormats.TitleBasicsFormat.header.tconst);
-                    final String titleType = record.get(IMDbTSVFormats.TitleBasicsFormat.header.titleType);
-                    final String primaryTitle = record.get(IMDbTSVFormats.TitleBasicsFormat.header.primaryTitle);
+                    final String tconst = record.get(TitleBasicsFormat.header.tconst);
+                    final String titleType = record.get(TitleBasicsFormat.header.titleType);
+                    final String primaryTitle = record.get(TitleBasicsFormat.header.primaryTitle);
                     store.addTitle(tconst, titleType, primaryTitle);
                 }
             }
@@ -51,8 +51,8 @@ public class IMDbDatasetProcessor {
 
             @Override
             public void read(final CSVRecord record) throws IOException {
-                final String tconst = record.get(IMDbTSVFormats.TitleRatingsFormat.headers.tconst);
-                final String averageRating = record.get(IMDbTSVFormats.TitleRatingsFormat.headers.averageRating);
+                final String tconst = record.get(TitleRatingsFormat.headers.tconst);
+                final String averageRating = record.get(TitleRatingsFormat.headers.averageRating);
                 store.updateRating(tconst, averageRating);
             }
         });
@@ -63,9 +63,9 @@ public class IMDbDatasetProcessor {
 
             @Override
             public void read(final CSVRecord record) throws IOException {
-                final String tconst = record.get(IMDbTSVFormats.TitlePrincipalsFormat.headers.tconst);
-                final String nconst = record.get(IMDbTSVFormats.TitlePrincipalsFormat.headers.nconst);
-                store.updateName(tconst, nconst);
+                final String tconst = record.get(TitlePrincipalsFormat.headers.tconst);
+                final String nconst = record.get(TitlePrincipalsFormat.headers.nconst);
+                store.addNconst(tconst, nconst);
             }
         });
     }

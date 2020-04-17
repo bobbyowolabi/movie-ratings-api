@@ -22,23 +22,33 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class MovieRatingsAPITest extends MovieRatingAPIConfiguration {
-    private static final String APP_URL = "http://localhost:8080/movie-ratings-api?title=";
-    
+    private static final String APP_URL = "http://localhost:8080/movie-ratings?title=";
+
     @Test
-    public void testDatabaseBackingOfApplication() throws IOException {
-        runTwice();
+    public void testMovieRatingsAPI() throws IOException {
         try {
-            verifyNoDuplicateRows();
-            testGetEpisode();
-            testGetName();
-            testGetTitle();
-            queryNonTVShow();
-            queryTvShow();
-            queryTvShowEpisode();
-            queryNonExistentTitle();            
+            testDatabase();
+            testAPI();
         } finally {
             MovieRatingsAPI.stop();
         }
+    }
+
+    public void testDatabase() throws IOException {
+        MovieRatingsAPI.main(new String[0]);
+        testGetEpisode();
+        testGetName();
+        testGetTitle();
+        MovieRatingsAPI.stop();
+        MovieRatingsAPI.main(new String[0]);
+        verifyNoDuplicateRows();
+    }
+
+    public void testAPI() throws IOException {
+        queryNonTVShow();
+        queryTvShow();
+        queryTvShowEpisode();
+        queryNonExistentTitle();
     }
     
     public void queryNonTVShow() throws IOException {
@@ -63,22 +73,22 @@ public class MovieRatingsAPITest extends MovieRatingAPIConfiguration {
     private String appURL(final String title) {
         return APP_URL + title;
     }
-    
+
     public void queryTvShow() throws IOException {
     }
-    
+
     public void queryTvShowEpisode() throws IOException {
     }
-    
+
     public void queryNonExistentTitle() throws IOException {
     }
-    
+
     private void runTwice() throws IOException {
         MovieRatingsAPI.main(new String[0]);
         MovieRatingsAPI.stop();
-        MovieRatingsAPI.main(new String[0]);        
+        MovieRatingsAPI.main(new String[0]);
     }
-    
+
     public void testGetTitle() throws IOException {
         final TitleStore store = new H2TitleStore(
             RatingsAppProperties.databaseUserName(),
@@ -111,7 +121,7 @@ public class MovieRatingsAPITest extends MovieRatingAPIConfiguration {
         final EpisodeRecord actual = store.title("The Tenderfeet");
         AssertUtils.assertEquals(expected, actual);
     }
-    
+
     public void testGetName() throws IOException {
         final NameStore store = new H2NameStore(
             RatingsAppProperties.databaseUserName(),
@@ -123,14 +133,14 @@ public class MovieRatingsAPITest extends MovieRatingAPIConfiguration {
         );
         final NameRecord actual = store.nconst(expected.nconst());
         AssertUtils.assertEquals(expected, actual);
-    }    
+    }
 
     private void verifyNoDuplicateRows() throws IOException {
         verifyNoDuplicateTitleRows();
         verifyNoDuplicateEpisodeRows();
         verifyNoDuplicateNameRows();
     }
-    
+
     private void verifyNoDuplicateTitleRows() throws IOException {
         final TestH2TitleStore store = new TestH2TitleStore(
             RatingsAppProperties.databaseUserName(),
@@ -139,9 +149,9 @@ public class MovieRatingsAPITest extends MovieRatingAPIConfiguration {
         final String title = "Pauvre Pierrot";
         final int expected = 1;
         final int actual = store.titles(title);
-        Assert.assertEquals("Number of rows in TitleStore with Title " + title, expected, actual);        
+        Assert.assertEquals("Number of rows in TitleStore with Title " + title, expected, actual);
     }
-    
+
     private class TestH2TitleStore extends H2TitleStore {
 
         public TestH2TitleStore(final String username, final String password, final Path databasePath) throws IOException {
@@ -152,8 +162,8 @@ public class MovieRatingsAPITest extends MovieRatingAPIConfiguration {
             final String sql = selectAllSql(H2TitleStore.columns.primaryTitle.name(), primaryTitle);
             return executeQuery(sql, NO_OP_RESULT_CALLBACK);
         }
-    }    
-    
+    }
+
     private void verifyNoDuplicateEpisodeRows() throws IOException {
         final TestH2EpisodeStore store = new TestH2EpisodeStore(
             RatingsAppProperties.databaseUserName(),
@@ -162,8 +172,8 @@ public class MovieRatingsAPITest extends MovieRatingAPIConfiguration {
         final String tconst = "tt0041951";
         final int expected = 1;
         final int actual = store.tconsts(tconst);
-        Assert.assertEquals("Number of rows in EpisdoeStore with tconst " + tconst, expected, actual);        
-    }    
+        Assert.assertEquals("Number of rows in EpisdoeStore with tconst " + tconst, expected, actual);
+    }
 
     private class TestH2EpisodeStore extends H2EpisodeStore {
 
@@ -176,7 +186,7 @@ public class MovieRatingsAPITest extends MovieRatingAPIConfiguration {
             return executeQuery(sql, NO_OP_RESULT_CALLBACK);
         }
     }
-    
+
     private void verifyNoDuplicateNameRows() throws IOException {
         final TestH2NameStore store = new TestH2NameStore(
             RatingsAppProperties.databaseUserName(),
@@ -185,8 +195,8 @@ public class MovieRatingsAPITest extends MovieRatingAPIConfiguration {
         final String nconst = "nm0005690";
         final int expected = 1;
         final int actual = store.nconsts(nconst);
-        Assert.assertEquals("Number of rows in NameStore with nconst " + nconst, expected, actual);        
-    }     
+        Assert.assertEquals("Number of rows in NameStore with nconst " + nconst, expected, actual);
+    }
 
     private class TestH2NameStore extends H2NameStore {
 
@@ -198,5 +208,5 @@ public class MovieRatingsAPITest extends MovieRatingAPIConfiguration {
             final String sql = selectAllSql(H2NameStore.columns.nconst.name(), nconst);
             return executeQuery(sql, NO_OP_RESULT_CALLBACK);
         }
-    }    
+    }
 }

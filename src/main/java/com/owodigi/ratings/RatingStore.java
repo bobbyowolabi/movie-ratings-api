@@ -10,7 +10,6 @@ import com.owodigi.ratings.store.impl.H2EpisodeStore;
 import com.owodigi.ratings.store.impl.H2NameStore;
 import com.owodigi.ratings.store.impl.H2TitleStore;
 import com.owodigi.ratings.util.RatingsAppProperties;
-import com.owodigi.util.IMDbTSVFormats;
 import java.io.IOException;
 
 /**
