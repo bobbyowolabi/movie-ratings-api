@@ -10,7 +10,7 @@ import com.owodigi.ratings.store.impl.H2EpisodeStore;
 import com.owodigi.ratings.store.impl.H2NameStore;
 import com.owodigi.ratings.store.impl.H2TitleStore;
 import static com.owodigi.ratings.store.impl.util.ResultCallback.NO_OP_RESULT_CALLBACK;
-import com.owodigi.ratintgs.util.RatingsAppProperties;
+import com.owodigi.ratings.util.RatingsAppProperties;
 import com.owodigi.util.AssertUtils;
 import static com.owodigi.util.AssertUtils.newEpisodeRecord;
 import static com.owodigi.util.AssertUtils.newNameRecord;
@@ -20,31 +20,27 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import org.junit.Assert;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-/**
- *
- */
-public class RatingsAppTest extends RatingsAppConfiguration {
-
-    /**
-     *
-     */
-    private void runAndTestRatingsApp() throws IOException {
-        RatingsApp.main(new String[0]);
-        testGetTitle();
-        testGetEpisode();
-        testGetName();
-    }
-
+public class MovieRatingsAPIDatabaseTest extends MovieRatingAPITest {
+    private static final Logger LOGGER = LoggerFactory.getLogger(MovieRatingsAPIDatabaseTest.class);
 
     @Test
-    public void testRatingsApp() throws IOException {
-        runAndTestRatingsApp();
-        runAndTestRatingsApp();
+    public void runApplicationTwice() throws IOException {
+        LOGGER.info("Starting test runApplicationTwice()");
+        start();
+        stop();
+        start();
+        stop();
+        Assert.assertEquals("Number of Times Movies Rating API was run", 2, runCount());
         verifyNoDuplicateRows();
     }
 
-    private void testGetTitle() throws IOException {
+    @Test
+    public void testGetTitle() throws IOException {
+        LOGGER.info("Starting test testGetTitle()");
+        start();
         final TitleStore store = new H2TitleStore(
             RatingsAppProperties.databaseUserName(),
             RatingsAppProperties.databaseUserPassword(),
@@ -59,7 +55,10 @@ public class RatingsAppTest extends RatingsAppConfiguration {
         AssertUtils.assertEquals(expected, actual);
     }
 
+    @Test
     public void testGetEpisode() throws IOException {
+        LOGGER.info("Starting test testGetEpisode()");
+        start();
         final EpisodeStore store = new H2EpisodeStore(
             RatingsAppProperties.databaseUserName(),
             RatingsAppProperties.databaseUserPassword(),
@@ -77,7 +76,10 @@ public class RatingsAppTest extends RatingsAppConfiguration {
         AssertUtils.assertEquals(expected, actual);
     }
     
-    private void testGetName() throws IOException {
+    @Test
+    public void testGetName() throws IOException {
+        LOGGER.info("Starting test testGetName()");
+        start();
         final NameStore store = new H2NameStore(
             RatingsAppProperties.databaseUserName(),
             RatingsAppProperties.databaseUserPassword(),

@@ -16,12 +16,13 @@ import org.junit.Test;
 /**
  *
  */
-public class APITest extends RatingsAppConfiguration {
+@Ignore
+public class APITest extends MovieRatingAPITest {
     private static final String RATINGS_APP_URL = "http://localhost:7272/ratings?title=foo";
     
-    @Test
+    @Test@Ignore
     public void queryNonTVShow() throws IOException {
-        RatingsApp.main(new String[0]);        
+        start();
         HttpURLConnection connection = null;
         try {
             final URL url = new URL(RATINGS_APP_URL);
@@ -75,17 +76,17 @@ public class APITest extends RatingsAppConfiguration {
     }
     
     @Ignore
-    public void queryTvShow() {
-        
+    public void queryTvShow() throws IOException {
+        start();
     }
     
     @Ignore
-    public void queryTvShowEpisode() {
-        
+    public void queryTvShowEpisode() throws IOException {
+        start();
     }
     
     @Ignore
-    public void queryNonExistentTitle() {
-        
+    public void queryNonExistentTitle() throws IOException {
+        start();
     }
 }

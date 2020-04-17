@@ -54,12 +54,21 @@ public class AssertUtils {
         Assert.assertEquals("nConstList", expected.nconstList(), actual.nconstList());
     }    
     
+    private static void assertEqualsIfNull(final String message, final Object expected, final Object actual) {
+        if (expected == null) {
+            Assert.assertNull("Actual is not null: " + message, actual);
+        } else {
+            Assert.assertNotNull("Actual is null: " + message, actual);
+        }
+    }
+    
     /**
      * 
      * @param expected
      * @param actual 
      */
     public static void assertEquals(final NameRecord expected, final NameRecord actual) {
+        assertEqualsIfNull("NameRecord", expected, actual);
         Assert.assertEquals("nconst", expected.nconst(), actual.nconst());
         Assert.assertEquals("primaryName", expected.primaryName(), actual.primaryName());
     }

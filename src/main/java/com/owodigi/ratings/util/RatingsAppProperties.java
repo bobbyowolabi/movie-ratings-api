@@ -1,4 +1,4 @@
-package com.owodigi.ratintgs.util;
+package com.owodigi.ratings.util;
 
 import java.io.IOException;
 import java.net.URL;
@@ -19,11 +19,11 @@ public final class RatingsAppProperties {
     public static final String DATABASE_PATH = "ratings.db.path";
     private static final String DATABASE_USERNAME = "ratings.db.username";
     private static final String DATABASE_PASSWORD = "ratings.db.password";
-    private static final String IMDB_TITLE_BASICS_URL = "imdb.title.basics.url";
-    private static final String IMBD_TITLE_RATINGS_URL = "imdb.title.ratings.url";
-    private static final String IMBD_TITLE_PRINCIPALS_URL = "imdb.title.principals.url";
-    private static final String IMBD_TITLE_EPISODE_URL = "imdb.title.episode.url";
-    private static final String IMBD_NAME_BASICS_URL = "imdb.name.basics.url";
+    public static final String IMDB_TITLE_BASICS_URL = "imdb.title.basics.url";
+    public static final String IMBD_TITLE_RATINGS_URL = "imdb.title.ratings.url";
+    public static final String IMBD_TITLE_PRINCIPALS_URL = "imdb.title.principals.url";
+    public static final String IMBD_TITLE_EPISODE_URL = "imdb.title.episode.url";
+    public static final String IMBD_NAME_BASICS_URL = "imdb.name.basics.url";
     private static final String TITLE_INCLUDE_YEARS = "title.include.years";
     private static final Properties PROPERTIES = new Properties();
     

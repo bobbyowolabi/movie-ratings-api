@@ -137,5 +137,6 @@ For All records in name.basics.tsv.gz
 - Database - batching
 - microservices
 - support concurrent data store read and writes, availability while dataset loading
+- Work with Data persistence framework and remove custom sql related code
 
 [imdb-datasets]: https://www.imdb.com/interfaces 

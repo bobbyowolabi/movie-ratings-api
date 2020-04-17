@@ -9,7 +9,7 @@ import com.owodigi.ratings.store.TitleStore;
 import com.owodigi.ratings.store.impl.H2EpisodeStore;
 import com.owodigi.ratings.store.impl.H2NameStore;
 import com.owodigi.ratings.store.impl.H2TitleStore;
-import com.owodigi.ratintgs.util.RatingsAppProperties;
+import com.owodigi.ratings.util.RatingsAppProperties;
 import com.owodigi.util.IMDbDatasetDownloader;
 import com.owodigi.util.IMDbDownloaderCallback;
 import com.owodigi.util.IMDbTSVFormats;
@@ -19,17 +19,34 @@ import com.owodigi.util.IMDbTSVFormats.TitlePrincipalsFormat;
 import com.owodigi.util.IMDbTSVFormats.TitleRatingsFormat;
 import java.io.IOException;
 import org.apache.commons.csv.CSVRecord;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  *
  */
-public class RatingsApp {
+//@SpringBootApplication
+//@RestController
+public class MovieRatingsAPI {
+    private static ConfigurableApplicationContext context;
+    private static final Logger LOGGER = LoggerFactory.getLogger(MovieRatingsAPI.class);
 
     public static void main(final String[] args) throws IOException {
+        LOGGER.info("Starting REST service in MovieRatingsAPI");
+//        context = SpringApplication.run(MovieRatingsAPI.class, args);
+        LOGGER.info("Creating Title Store");
         final TitleStore titleStore = new H2TitleStore(RatingsAppProperties.databaseUserName(), RatingsAppProperties.databaseUserPassword(), RatingsAppProperties.databasePath());
         titleStore.clear();
+        LOGGER.info("Creating EpisodeStore Store");
         final EpisodeStore episodeStore = new H2EpisodeStore(RatingsAppProperties.databaseUserName(), RatingsAppProperties.databaseUserPassword(), RatingsAppProperties.databasePath());
         episodeStore.clear();
+        LOGGER.info("Creating NameStore Store");
         final NameStore nameStore = new H2NameStore(RatingsAppProperties.databaseUserName(), RatingsAppProperties.databaseUserPassword(), RatingsAppProperties.databasePath());
         nameStore.clear();
         processTitleBasicsDataset(titleStore, episodeStore);
@@ -39,7 +56,19 @@ public class RatingsApp {
         processNameBasicsDataset(nameStore);
     }
 
+    public static void stop() {
+        if (context != null) {
+            context.close();
+        }
+    }
+    
+    @GetMapping("/hello")
+    public String hello(@RequestParam(value = "name", defaultValue = "World") String name) {
+        return String.format("Hello %s!", name);
+    }
+
     private static void processTitleBasicsDataset(final TitleStore titleStore, final EpisodeStore episodeStore) throws IOException {
+        LOGGER.info("processTitleBasicsDataset: " + RatingsAppProperties.titleBasicsURL());
         IMDbDatasetDownloader.read(RatingsAppProperties.titleBasicsURL(), new TitleBasicsFormat(), new IMDbDownloaderCallback() {
 
             @Override
@@ -60,6 +89,7 @@ public class RatingsApp {
     }
 
     private static void processTitleRatingsDataset(final TitleStore titleStore, final EpisodeStore episodeStore) throws IOException {
+        LOGGER.info("processTitleRatingsDataset: " + RatingsAppProperties.titleRatingsURL());
         IMDbDatasetDownloader.read(RatingsAppProperties.titleRatingsURL(), new TitleRatingsFormat(), new IMDbDownloaderCallback() {
 
             @Override
@@ -81,6 +111,7 @@ public class RatingsApp {
     }
 
     private static void processTitlePrincipalsDataset(final TitleStore titleStore, final EpisodeStore episodeStore, final NameStore nameStore) throws IOException {
+        LOGGER.info("processTitlePrincipalsDataset: " + RatingsAppProperties.titlePrincipalsURL());
         IMDbDatasetDownloader.read(RatingsAppProperties.titlePrincipalsURL(), new TitlePrincipalsFormat(), new IMDbDownloaderCallback() {
 
             @Override
@@ -104,8 +135,9 @@ public class RatingsApp {
     }
 
     private static void processTitleEpisodeDataset(final EpisodeStore episodeStore) throws IOException {
+        LOGGER.info("processTitleEpisodeDataset: " + RatingsAppProperties.titleEpisodeURL());
         IMDbDatasetDownloader.read(RatingsAppProperties.titleEpisodeURL(), new TitleEpisodeFormat(), new IMDbDownloaderCallback() {
-            
+
             @Override
             public void read(final CSVRecord record) throws IOException {
                 final String tconst = record.get(TitleEpisodeFormat.header.tconst);
@@ -120,10 +152,11 @@ public class RatingsApp {
             }
         });
     }
-    
+
     private static void processNameBasicsDataset(final NameStore nameStore) throws IOException {
+        LOGGER.info("processNameBasicsDataset: " + RatingsAppProperties.nameBasicsURL());
         IMDbDatasetDownloader.read(RatingsAppProperties.nameBasicsURL(), new IMDbTSVFormats.NameBasicFormat(), new IMDbDownloaderCallback() {
-            
+
             @Override
             public void read(final CSVRecord record) throws IOException {
                 final String nconst = record.get(IMDbTSVFormats.NameBasicFormat.headers.nconst);

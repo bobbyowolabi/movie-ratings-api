@@ -12,20 +12,34 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import org.apache.commons.csv.CSVRecord;
+import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.Rule;
+import org.junit.BeforeClass;
 import org.junit.Test;
-import org.mockserver.client.MockServerClient;
-import org.mockserver.junit.MockServerRule;
+import org.mockserver.integration.ClientAndServer;
+import static org.mockserver.integration.ClientAndServer.startClientAndServer;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 
 public class IMDbDatasetDownloaderTest {
-    private MockServerClient mockServerClient;
+    private static ClientAndServer mockServer;
+    private static int port;
 
-    @Rule
-    public MockServerRule mockServerRule = new MockServerRule(this);
-
+    static {
+        System.setProperty("mockserver.logLevel", "OFF");
+    }    
+    
+    @BeforeClass
+    public static void setupTests() throws IOException {
+        mockServer = startClientAndServer(0);
+        port = mockServer.getLocalPort();
+    }
+    
+    @AfterClass
+    public static void cleanupTests() {
+        mockServer.stop();
+    }    
+    
     @Test
     public void downloadTitleBasics() throws IOException {
         final String fileName = "title.basics.tsv.gz";
@@ -100,7 +114,7 @@ public class IMDbDatasetDownloaderTest {
      * @throws IOException
      */
     private <E extends TSVFormat> void testDownload(final String fileName, final E tsvFormat, final List<List<String>> expected) throws IOException {
-        mockServerClient
+        mockServer
             .when(
                 request("/" + fileName)
             )
@@ -110,7 +124,7 @@ public class IMDbDatasetDownloaderTest {
                     .withBody(Files.readAllBytes(Paths.get("src/test/resources/" + fileName)))
             );
         final Iterator<List<String>> expectedIterator = expected.iterator();
-        final URL url = new URL("http://localhost:" + mockServerRule.getPort() + "/" + fileName);
+        final URL url = new URL("http://localhost:" + port + "/" + fileName);
         IMDbDatasetDownloader.read(url, tsvFormat, new IMDbDownloaderCallback() {
 
             @Override

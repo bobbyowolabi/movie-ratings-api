@@ -7,11 +7,14 @@ import java.nio.file.Paths;
 import java.util.UUID;
 import org.junit.After;
 import org.junit.Before;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  */
 public abstract class H2StoreTest {
+    private static final Logger LOGGER = LoggerFactory.getLogger(H2StoreTest.class);
     private static final String USER_NAME = "test_user";
     private static final String PASSWORD = "changeit";
     private static final Path DATABASE_DIRECTORY = Paths.get("./target/test-data/");
@@ -19,18 +22,20 @@ public abstract class H2StoreTest {
     protected static final String DATABASE_FILE_SUFFIX = ".h2.db";
     private Path dbPath;
     
-    
     @Before
     public void setupTest() {
         dbPath = uniqueDbPath();
+        LOGGER.info("Setting unique DB path " + dbPath);
     }
     
     @After
     public void cleanupTest() throws IOException {
-        Files.deleteIfExists(Paths.get(dbPath.toString() + DATABASE_FILE_SUFFIX));
+        final Path databaseFile = Paths.get(dbPath.toString() + DATABASE_FILE_SUFFIX);
+        Files.deleteIfExists(databaseFile);
+        LOGGER.info("Deleting database file " + databaseFile);
     }
     
-    private Path uniqueDbPath() {
+    protected static Path uniqueDbPath() {
         return DATABASE_DIRECTORY.resolve(DATABASE_FILE_PREFIX + "-" + UUID.randomUUID());
     }
 
