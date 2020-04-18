@@ -3,6 +3,7 @@ package com.owodigi.movie.ratings.store;
 import com.owodigi.movie.ratings.store.domain.EpisodeRecord;
 import com.owodigi.movie.ratings.store.impl.DatasetStore;
 import java.io.IOException;
+import java.util.List;
 
 /**
  *
@@ -32,6 +33,9 @@ public interface EpisodeStore extends DatasetStore {
      * @throws java.io.IOException 
      */
     public EpisodeRecord tconst(String tconst) throws IOException;    
+    
+    
+    public List<EpisodeRecord> parentTconst(String parentTconst) throws IOException;
     
     /**
      * 

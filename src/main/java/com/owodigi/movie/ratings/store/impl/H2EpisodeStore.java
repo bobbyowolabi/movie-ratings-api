@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -89,12 +90,13 @@ public class H2EpisodeStore extends H2Store implements EpisodeStore {
      * @return
      * @throws IOException
      */
-    private EpisodeRecord executeQuery(final String sql) throws IOException {
-        final EpisodeRecord record = new EpisodeRecord();
-        final int resultCount = executeQuery(sql, new ResultCallback() {
+    private LinkedList<EpisodeRecord> executeQuery(final String sql) throws IOException {
+        final LinkedList<EpisodeRecord> records = new LinkedList<>();
+        executeQuery(sql, new ResultCallback() {
 
             @Override
             public void process(final ResultSet result) throws SQLException {
+                final EpisodeRecord record = new EpisodeRecord();
                 record.setTconst(result.getString(columns.tconst.name()));
                 record.setParentConst(result.getString(columns.parentTconst.name()));
                 record.setPrimaryTitle(result.getString(columns.primaryTitle.name()));
@@ -103,21 +105,30 @@ public class H2EpisodeStore extends H2Store implements EpisodeStore {
                 record.setSeasonNumber(result.getString(columns.seasonNumber.name()));
                 final String nconstList = result.getString(columns.nconstList.name());
                 record.setNconstList(nconstList == null ? null : Arrays.asList(nconstList.split("[,]")));
+                records.add(record);
             }
         });
-        return resultCount == 0 ? null : record;
+        return records;
     }
 
     @Override
     public EpisodeRecord tconst(final String tconst) throws IOException {
         final String sql = selectAllSql(columns.tconst.name(), tconst);
-        return executeQuery(sql);
+        final LinkedList<EpisodeRecord> results = executeQuery(sql);
+        return results.isEmpty() ? null : results.get(results.size() - 1);
     }
 
     @Override
+    public List<EpisodeRecord> parentTconst(final String parentTconst) throws IOException {
+        final String sql = selectAllSql(columns.parentTconst.name(), parentTconst);
+        return executeQuery(sql);
+    }    
+    
+    @Override
     public EpisodeRecord title(final String title) throws IOException {
         final String sql = selectAllSql(columns.primaryTitle.name(), title);
-        return executeQuery(sql);
+        final LinkedList<EpisodeRecord> results = executeQuery(sql);
+        return results.isEmpty() ? null : results.get(results.size() - 1);
     }
 
     @Override

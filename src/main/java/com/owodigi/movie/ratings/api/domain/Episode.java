@@ -1,16 +1,14 @@
 package com.owodigi.movie.ratings.api.domain;
 
-import java.util.List;
-
 /**
  *
  */
 public class Episode {
     private String title;
-    private String  userRating;
+    private String userRating;
     private String seasonNumber;
     private String episodeNumber;
-    private List<String> castList;
+    private String castList;
 
     public String getTitle() {
         return title;
@@ -28,7 +26,7 @@ public class Episode {
         return episodeNumber;
     }
 
-    public List<String> getCastList() {
+    public String getCastList() {
         return castList;
     }
 
@@ -48,7 +46,7 @@ public class Episode {
         this.episodeNumber = episodeNumber;
     }
 
-    public void setCastList(List<String> castList) {
+    public void setCastList(String castList) {
         this.castList = castList;
     }
 }

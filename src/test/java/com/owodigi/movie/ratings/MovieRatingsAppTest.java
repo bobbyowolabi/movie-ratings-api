@@ -1,8 +1,5 @@
 package com.owodigi.movie.ratings;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.owodigi.movie.ratings.api.domain.RatingRecord;
 import com.owodigi.movie.ratings.util.MovieRatingsAppConfiguration;
 import com.owodigi.movie.ratings.store.domain.EpisodeRecord;
 import com.owodigi.movie.ratings.store.domain.NameRecord;
@@ -51,35 +48,44 @@ public class MovieRatingsAppTest extends MovieRatingsAppConfiguration {
     public void testAPI() throws IOException {
         queryNonTVShow();
         queryTvShow();
-        queryTvShowEpisode();
-        queryNonExistentTitle();
     }
     
     public void queryNonTVShow() throws IOException {
         final String title = "Carmencita";
         final String expected = 
             "{"
-                + "\"title\": \"Carmencita\","
-                + "\"type\": \"short\","
-                + "\"userRating\": \"5.6\","
-                + "\"calculatedRating\": null,"
-                + "\"castList\": \"Carmencita, William K.L. Dickson, William Heise\","
-                + "\"episodes\": null"
+                + "\"title\":\"Carmencita\","
+                + "\"type\":\"short\","
+                + "\"userRating\":\"5.6\","
+                + "\"calculatedRating\":null,"
+                + "\"castList\":\"Carmencita, William K.L. Dickson, William Heise\","
+                + "\"episodes\":[]"
           + "}";
         AssertUtils.assertQuery("Querying a Non TV Show", appURL(title), expected);
     }
 
     private String appURL(final String title) {
-        return APP_URL + title;
+        return (APP_URL + title).replaceAll("\\s+", "%20");
     }
 
     public void queryTvShow() throws IOException {
-    }
-
-    public void queryTvShowEpisode() throws IOException {
-    }
-
-    public void queryNonExistentTitle() throws IOException {
+        final String title = "The Lone Ranger";
+        final String expected = 
+            "{"
+                + "\"title\":\"The Lone Ranger\","
+                + "\"type\":\"tvSeries\","
+                + "\"userRating\":\"7.8\","
+                + "\"calculatedRating\":\"7.4\","
+                + "\"castList\":\"John Cason, Jay Silverheels, Clayton Moore, John Hart, Chuck Courtney, George W. Trendle, George W. George, Lane Bradford, Mickey Simpson, House Peters Jr.\","
+                + "\"episodes\":[{"
+                + "\"title\":\"The Tenderfeet\","
+                + "\"userRating\":\"7.4\","
+                + "\"seasonNumber\":\"1\","
+                + "\"episodeNumber\":\"9\","
+                + "\"castList\":\"Jack Chertok, Clayton Moore, Jay Silverheels, Ray Bennett, Rand Brooks, George B. Seitz Jr., George W. Trendle, Gibson Fox, Polly James, Fran Striker\""
+                + "}]"
+          + "}";
+        AssertUtils.assertQuery("Querying a TV Show", appURL(title), expected);
     }
 
     public void testGetTitle() throws IOException {
@@ -164,7 +170,7 @@ public class MovieRatingsAppTest extends MovieRatingsAppConfiguration {
             MovieRatingsAppProperties.databasePath());
         final String tconst = "tt0041951";
         final int expected = 1;
-        final int actual = store.tconsts(tconst);
+        final int actual = store.getCount(tconst);
         Assert.assertEquals("Number of rows in EpisdoeStore with tconst " + tconst, expected, actual);
     }
 
@@ -174,7 +180,7 @@ public class MovieRatingsAppTest extends MovieRatingsAppConfiguration {
             super(username, password, databasePath);
         }
 
-        public int tconsts(final String tconst) throws IOException {
+        public int getCount(final String tconst) throws IOException {
             final String sql = selectAllSql(H2EpisodeStore.columns.tconst.name(), tconst);
             return executeQuery(sql, NO_OP_RESULT_CALLBACK);
         }

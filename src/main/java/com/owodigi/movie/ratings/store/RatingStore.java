@@ -1,5 +1,7 @@
 package com.owodigi.movie.ratings.store;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.owodigi.movie.ratings.api.domain.Episode;
 import com.owodigi.movie.ratings.api.domain.RatingRecord;
 import com.owodigi.movie.ratings.store.domain.EpisodeRecord;
 import com.owodigi.movie.ratings.store.domain.NameRecord;
@@ -10,6 +12,9 @@ import com.owodigi.movie.ratings.store.impl.H2NameStore;
 import com.owodigi.movie.ratings.store.impl.H2TitleStore;
 import com.owodigi.movie.ratings.util.MovieRatingsAppProperties;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -90,12 +95,36 @@ public class RatingStore implements DatasetStore {
         }
     }
     
+    private String calculateAverageRating(final List<EpisodeRecord> episodes) {
+        return episodes
+            .stream()
+            .map(episode -> episode.averageRating())
+            .filter(averageRating -> averageRating != null)
+            .map(averageRating -> Double.parseDouble(averageRating))
+            .collect(Collectors.averagingDouble(d -> d))
+            .toString();
+    }
+    
     private RatingRecord toRatingRecord(final TitleRecord titleRecord) throws IOException {
         final RatingRecord ratingRecord = new RatingRecord();
         ratingRecord.setTitle(titleRecord.primaryTitle());
-//        record.setCalculatedRating();
+        final List<EpisodeRecord> episodes = episodeStore.parentTconst(titleRecord.tconst());
+        if (episodes.isEmpty() == false) {
+            ratingRecord.setCalculatedRating(calculateAverageRating(episodes));
+        }
         ratingRecord.setCastList(String.join(", ", nameStore.names(titleRecord.nconstList())));
-//        record.setEpisodes(episodes);
+        final Episode[] episodeArray = new Episode[episodes.size()];
+        for (int i = 0; i < episodes.size(); ++i) {
+            final EpisodeRecord episodeRecord = episodes.get(i);
+            final Episode episode = new Episode();
+            episode.setUserRating(episodeRecord.averageRating());
+            episode.setCastList(String.join(", ", nameStore.names(episodeRecord.nconstList())));
+            episode.setEpisodeNumber(episodeRecord.episodeNumber());
+            episode.setSeasonNumber(episodeRecord.seasonNumber());
+            episode.setTitle(episodeRecord.primaryTitle()); 
+            episodeArray[i] = episode;
+        }
+        ratingRecord.setEpisodes(episodeArray);
         ratingRecord.setType(titleRecord.titleType());
         ratingRecord.setUserRating(titleRecord.averageRating());
         return ratingRecord;

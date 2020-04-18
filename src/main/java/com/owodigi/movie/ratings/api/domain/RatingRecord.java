@@ -1,7 +1,5 @@
 package com.owodigi.movie.ratings.api.domain;
 
-import java.util.List;
-
 /**
  *
  */
@@ -11,7 +9,7 @@ public class RatingRecord {
     private String userRating;
     private String calculatedRating;
     private String castList;
-    private List<Episode> episodes;
+    private Episode[] episodes;
 
     public String getTitle() {
         return title;
@@ -33,7 +31,7 @@ public class RatingRecord {
         return castList;
     }
 
-    public List<Episode> getEpisodes() {
+    public Episode[] getEpisodes() {
         return episodes;
     }
 
@@ -57,7 +55,7 @@ public class RatingRecord {
         this.castList = castList;
     }
 
-    public void setEpisodes(List<Episode> episodes) {
+    public void setEpisodes(Episode[] episodes) {
         this.episodes = episodes;
     }
 }

@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
@@ -64,6 +65,28 @@ public class H2EpisodeStoreTest extends H2StoreTest {
             Files.deleteIfExists(databaseFile);
             Files.deleteIfExists(databaseFile.getParent());
         }
+    }
+    
+    @Test
+    public void parentTconst() throws IOException {
+        final EpisodeStore store = new H2EpisodeStore(userName(), password(), databasePath());
+        final EpisodeRecord originalRecord = new EpisodeRecord();
+        originalRecord.setAverageRating("123");
+        originalRecord.setEpisodeNumber("1");
+        originalRecord.setNconstList(Arrays.asList("1", "2"));
+        originalRecord.setParentConst("tt002");
+        originalRecord.setPrimaryTitle("Test Title");
+        originalRecord.setSeasonNumber("5");
+        originalRecord.setTconst("TT0010");
+        store.addTitle(originalRecord.tconst(), originalRecord.primaryTitle());
+        for (final String nconst : originalRecord.nconstList()) {
+            store.addNconst(originalRecord.tconst(), nconst);
+        }
+        store.updateRating(originalRecord.tconst(), originalRecord.averageRating());
+        store.updateEpisode(originalRecord.tconst(), originalRecord.parentConst(), originalRecord.seasonNumber(), originalRecord.episodeNumber());
+        final List<EpisodeRecord> updatedRecords = store.parentTconst(originalRecord.parentConst());
+        Assert.assertEquals(1, updatedRecords.size());
+        AssertUtils.assertEquals(originalRecord, updatedRecords.iterator().next());
     }
     
     private void testAddNconst(final String tconst, final EpisodeStore store, final String...nconsts) throws IOException {
