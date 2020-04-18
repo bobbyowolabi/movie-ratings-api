@@ -67,7 +67,7 @@ public class IMDbTSVFormatsTest {
     
     @Test
     public void titlePrincipalsTSV() {
-        final String input = TEST_RESOURCES_DIR + "title.principals-sample.tsv";
+        final String input = TEST_RESOURCES_DIR + "title.principals-shortened.tsv";
         final List<List<String>> expected = AssertUtils.asList(
             Arrays.asList("tt0000001", "1", "nm1588970", "self", "\\N", "[\"Self\"]"),
             Arrays.asList("tt0000001", "2", "nm0005690", "director", "\\N", "\\N"),
