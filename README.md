@@ -6,6 +6,9 @@ The Internet Movie Database (IMDB) provides access to their [datasets][imdb-data
 * Java 1.8+
 * Maven 3.5.3+
 
+space considerations
+how to run, specify that files on disk can be configured to this property
+
 ## Dependencies
 http://commons.apache.org/proper/commons-csv/index.html
 
