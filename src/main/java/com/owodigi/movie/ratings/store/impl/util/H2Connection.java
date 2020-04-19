@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -26,7 +24,7 @@ public class H2Connection {
         }        
     }
     
-    public static boolean isClosed() throws IOException {
+    private static boolean isClosed() throws IOException {
         try {
             return connection == null ? false : connection.isClosed();
         } catch (SQLException ex) {

@@ -35,7 +35,7 @@ public class H2EpisodeStoreTest extends H2StoreTest {
         testAddNconst(tconst, store, "n1", "n2", "n3", "n4", "n5");
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = NullPointerException.class)
     public void addNconstWhereTconstNonExistent() throws IOException {
         final EpisodeStore store = new EpisodeTable(connection());
         final String tconst = "tt0000001";

@@ -14,11 +14,14 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  */
 public class EpisodeTable extends DatabaseStore implements EpisodeStore {
+    private static final Logger LOGGER = LoggerFactory.getLogger(EpisodeTable.class);
     private static final String TABLE_NAME = "EPISODE_STORE";
     protected enum columns {tconst, parentTconst, primaryTitle, averageRating, seasonNumber, episodeNumber, nconstList};
 
@@ -35,7 +38,8 @@ public class EpisodeTable extends DatabaseStore implements EpisodeStore {
     public void addNconst(final String tconst, final String nconst) throws IOException {
         final EpisodeRecord record = tconst(tconst);
         if (record == null) {
-            throw new IllegalStateException("Unable to add nconst " + nconst + " to this Store because tconst " + tconst + " does not exists");
+            LOGGER.debug("Unable to add nconst " + nconst + " to this Store because tconst " + tconst + " does not exists");
+            return;
         }
         final List<String> nconstList = record.nconstList();
         final List<String> updatedNconstList;

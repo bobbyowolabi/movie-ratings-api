@@ -13,7 +13,6 @@ import com.owodigi.movie.ratings.store.impl.util.H2Connection;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -44,7 +43,8 @@ public class H2RatingStore implements RatingStore {
         if (titleRecord == null) {
             final EpisodeRecord episodeRecord = episodeStore.tconst(tconst);
             if (episodeRecord == null) {
-                throw new IllegalStateException("Encountered record not found in both the TitleStore and EpisodeStore; tconst: " + tconst);
+                LOGGER.debug("Encountered record not found in both the TitleStore and EpisodeStore; tconst: " + tconst);
+                return;
             }
             episodeStore.addNconst(tconst, nconst);
             nameStore.addNconst(nconst);
@@ -88,7 +88,8 @@ public class H2RatingStore implements RatingStore {
     public void updateEpisode(final String tconst, final String parentTconst, final String seasonNumber, final String episodeNumber) throws IOException {
         final EpisodeRecord episodeRecord = episodeStore.tconst(tconst);
         if (episodeRecord == null) {
-            throw new IllegalStateException("Encountered a record not present in EpisdoeStore; tconst: " + tconst);
+            LOGGER.debug("Encountered a record not present in EpisdoeStore; tconst: " + tconst);
+            return;
         }
         episodeStore.updateEpisode(tconst, parentTconst, seasonNumber, episodeNumber);        
     }
@@ -108,6 +109,7 @@ public class H2RatingStore implements RatingStore {
             final EpisodeRecord episodeRecord = episodeStore.tconst(tconst);
             if (episodeRecord == null) {
                 LOGGER.debug("Encountered record not found in both the TitleStore and EpisodeStore; tconst: " + tconst);
+                return;
             }
             episodeStore.updateRating(tconst, averageRating);
         } else {

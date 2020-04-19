@@ -32,6 +32,9 @@ public abstract class DatabaseStore {
         createTableIfNotExists();
     }
     
+    /**
+     *
+     */
     public void close() {
         try {
             connection.close();

@@ -11,11 +11,14 @@ import com.owodigi.movie.ratings.store.impl.util.ResultCallback;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  */
 public class TitleTable extends DatabaseStore implements TitleStore {
+    private static final Logger LOGGER = LoggerFactory.getLogger(TitleTable.class);
     private static final String TABLE_NAME = "TITLE_STORE";
     protected enum columns {tconst, primaryTitle, averageRating, titleType, nconstList}
     
@@ -32,7 +35,7 @@ public class TitleTable extends DatabaseStore implements TitleStore {
     public void addNconst(final String tconst, final String nconst) throws IOException {
         final TitleRecord record = tconst(tconst);
         if (record == null) {
-            throw new IllegalStateException("Unable to add nconst " + nconst + " to this Store because tconst " + tconst + " does not exists");
+            LOGGER.debug("Unable to add nconst " + nconst + " to this Store because tconst " + tconst + " does not exists");
         }
         final List<String> nconstList = record.nconstList();
         final List<String> updatedNconstList;

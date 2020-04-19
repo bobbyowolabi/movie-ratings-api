@@ -48,6 +48,7 @@ public class MovieRatingsAppTest extends MovieRatingsAppConfiguration {
     public void testAPI() throws IOException {
         queryNonTVShow();
         queryTvShow();
+        queryNotFound();
     }
     
     public void queryNonTVShow() throws IOException {
@@ -64,6 +65,12 @@ public class MovieRatingsAppTest extends MovieRatingsAppConfiguration {
         AssertUtils.assertQuery("Querying a Non TV Show", appURL(title), expected);
     }
 
+    public void queryNotFound() throws IOException {
+        final String title = "Foo";
+        final String expected = "null";
+        AssertUtils.assertQuery("Query Not Found", appURL(title), expected);
+    }    
+    
     private String appURL(final String title) {
         return (APP_URL + title).replaceAll("\\s+", "%20");
     }
