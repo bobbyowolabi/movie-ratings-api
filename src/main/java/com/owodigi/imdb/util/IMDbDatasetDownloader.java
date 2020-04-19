@@ -1,5 +1,6 @@
 package com.owodigi.imdb.util;
 
+import com.owodigi.movie.ratings.MovieRatingsApp;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -10,11 +11,14 @@ import java.util.stream.Collectors;
 import java.util.zip.GZIPInputStream;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  */
 public class IMDbDatasetDownloader {
+    private static final Logger LOGGER = LoggerFactory.getLogger(IMDbDatasetDownloader.class);
 
     /**
      *
@@ -25,6 +29,7 @@ public class IMDbDatasetDownloader {
      * @throws IOException
      */
     public static <E extends TSVFormat> void read(final URL url, E tsvFormat, final IMDbDownloaderCallback callback) throws IOException {
+        LOGGER.info("Processing Dataset "+ url + " dataset");
         try (final CSVParser parser = tsvFormat.format().parse(new InputStreamReader(new GZIPInputStream(new BufferedInputStream(url.openStream()))))) {
             validate(tsvFormat, parser);
             for (final CSVRecord record : parser) {

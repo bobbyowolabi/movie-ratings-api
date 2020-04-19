@@ -1,6 +1,5 @@
 package com.owodigi.movie.ratings.store;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.owodigi.movie.ratings.api.domain.Episode;
 import com.owodigi.movie.ratings.api.domain.RatingRecord;
 import com.owodigi.movie.ratings.store.domain.EpisodeRecord;
@@ -12,21 +11,26 @@ import com.owodigi.movie.ratings.store.impl.H2NameStore;
 import com.owodigi.movie.ratings.store.impl.H2TitleStore;
 import com.owodigi.movie.ratings.util.MovieRatingsAppProperties;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  */
 public class RatingStore implements DatasetStore {
+    private static final Logger LOGGER = LoggerFactory.getLogger(RatingStore.class);
     private final TitleStore titleStore;
     private final EpisodeStore episodeStore;
     private final NameStore nameStore;
 
     public RatingStore() throws IOException {
+        LOGGER.info("Creating TitleStore");
         this.titleStore = new H2TitleStore(MovieRatingsAppProperties.databaseUserName(), MovieRatingsAppProperties.databaseUserPassword(), MovieRatingsAppProperties.databasePath());
+        LOGGER.info("Creating EpisodeStore");
         this.episodeStore = new H2EpisodeStore(MovieRatingsAppProperties.databaseUserName(), MovieRatingsAppProperties.databaseUserPassword(), MovieRatingsAppProperties.databasePath());
+        LOGGER.info("Creating NameRecordStore");
         this.nameStore = new H2NameStore(MovieRatingsAppProperties.databaseUserName(), MovieRatingsAppProperties.databaseUserPassword(), MovieRatingsAppProperties.databasePath());
     }
     

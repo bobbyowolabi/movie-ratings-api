@@ -29,6 +29,7 @@ public abstract class TSVFormat {
                 .withHeader(headerClass())
                 .withAllowMissingColumnNames(false)
                 .withAllowDuplicateHeaderNames(false)
-                .withFirstRecordAsHeader();
+                .withFirstRecordAsHeader()
+                .withQuote(null);
     }
 }

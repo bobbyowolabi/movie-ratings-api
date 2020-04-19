@@ -132,6 +132,10 @@ public abstract class H2Store {
         execute(sql, EXECUTE_UPDATE, resultCallback);
     }
 
+    private String escape(final String value) {
+        return value.replace("'", "''");
+    }
+    
     /**
      *
      * @param values
@@ -146,7 +150,8 @@ public abstract class H2Store {
         statement
             .delete(statement.length() - 2, statement.length())
             .append(") VALUES (");
-        for (final String value : values) {
+        for (String value : values) {
+            value = escape(value);
             if (value.equals("NULL")) {
                 statement.append(value).append(", ");
             } else {
