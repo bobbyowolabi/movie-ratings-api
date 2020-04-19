@@ -1,13 +1,17 @@
 package com.owodigi.movie.ratings.util;
 
 import com.owodigi.movie.ratings.store.impl.H2StoreTest;
+import com.owodigi.movie.ratings.store.impl.util.H2Connection;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Properties;
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.mockserver.integration.ClientAndServer;
 import static org.mockserver.integration.ClientAndServer.startClientAndServer;
@@ -18,6 +22,7 @@ import static org.mockserver.model.HttpResponse.response;
  *
  */
 public abstract class MovieRatingsAppConfiguration extends H2StoreTest {
+    private static final Path UNIQUE_DB_PATH = uniqueDbPath();
     private static final Path APPLICATION_PROPERTIES_PATH = Paths.get("./target/test-data/ratings-app.properties");
     private static ClientAndServer mockServer;
     private static int port;
@@ -46,7 +51,7 @@ public abstract class MovieRatingsAppConfiguration extends H2StoreTest {
         Files.deleteIfExists(APPLICATION_PROPERTIES_PATH);
         final Properties applicationProperties = new Properties();
         applicationProperties.load(Files.newInputStream(Paths.get("src/test/resources/ratings-app.properties")));
-        applicationProperties.setProperty(MovieRatingsAppProperties.DATABASE_PATH, uniqueDbPath().toString());
+        applicationProperties.setProperty(MovieRatingsAppProperties.DATABASE_PATH, UNIQUE_DB_PATH.toString());
         applicationProperties.setProperty(MovieRatingsAppProperties.IMDB_TITLE_BASICS_URL, "http://localhost:" + port + "/title.basics.tsv.gz");
         applicationProperties.setProperty(MovieRatingsAppProperties.IMBD_NAME_BASICS_URL, "http://localhost:" + port + "/name.basics.tsv.gz");
         applicationProperties.setProperty(MovieRatingsAppProperties.IMBD_TITLE_EPISODE_URL, "http://localhost:" + port + "/title.episode.tsv.gz");
@@ -66,11 +71,27 @@ public abstract class MovieRatingsAppConfiguration extends H2StoreTest {
     public static void cleanupIMDbDataServer() {
         mockServer.stop();
     }
+
+    @Override
+    protected Connection connection(final String path) throws IOException {
+        Assert.fail("Please use connection(); this test only supports 1 database connection");
+        return null;
+    }
+
+    @Override
+    protected Connection connection() throws IOException {
+        return H2Connection.instance(MovieRatingsAppProperties.databaseUserName(), MovieRatingsAppProperties.databaseUserPassword(), MovieRatingsAppProperties.databasePath().toString());
+    }
     
     private static void createDirectoryIfNotExists(final Path path) throws IOException {
         if (Files.notExists(path)) {
             Files.createDirectory(path);
         }
+    }
+
+    @Override
+    protected Path databasePath() {
+        return UNIQUE_DB_PATH;
     }
     
     /**

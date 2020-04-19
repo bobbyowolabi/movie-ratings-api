@@ -54,6 +54,9 @@ public class AssertUtils {
      * @param actual 
      */
     public static void assertEquals(final EpisodeRecord expected, final EpisodeRecord actual) {
+        if (assertEqualsIfNull("EpisodeRecord", expected, actual)) {
+            return;
+        }
         Assert.assertEquals("tconst", expected.tconst(), actual.tconst());
         Assert.assertEquals("parentConst", expected.parentConst(), actual.parentConst());  
         Assert.assertEquals("primaryTitle", expected.primaryTitle(), actual.primaryTitle());

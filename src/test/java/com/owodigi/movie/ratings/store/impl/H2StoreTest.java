@@ -1,10 +1,15 @@
 package com.owodigi.movie.ratings.store.impl;
 
+import com.owodigi.movie.ratings.store.impl.util.H2Connection;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.Before;
 
@@ -17,7 +22,19 @@ public abstract class H2StoreTest {
     private static final Path DATABASE_DIRECTORY = Paths.get("./target/test-data/");
     private static final String DATABASE_FILE_PREFIX = "test";
     protected static final String DATABASE_FILE_SUFFIX = ".h2.db";
+    protected static final String DATABASE_LOCK_FILE_SUFFIX = ".lock.db";
     private Path dbPath;
+    
+    protected Connection connection() throws IOException {
+        return connection(databasePath().toString());
+    }
+    
+    protected Connection connection(final String path) throws IOException {
+        try {
+            H2Connection.instance(username(), password(), path).close();
+        } catch (SQLException ex) {}
+        return H2Connection.instance(username(), password(), path);
+    }
     
     @Before
     public void setupTest() {
@@ -38,11 +55,11 @@ public abstract class H2StoreTest {
         return dbPath;
     }
     
-    protected String userName() {
+    private static String username() {
         return USER_NAME;
     }
     
-    protected String password() {
+    private String password() {
         return PASSWORD;
     }
 }

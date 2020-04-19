@@ -135,6 +135,7 @@ For All records in name.basics.tsv.gz
 - robust logging
 - api schema
 - Database - batching
+- Inmemory DB
 - microservices
 - support concurrent data store read and writes, availability while dataset loading
 - Work with Data persistence framework and remove custom sql related code

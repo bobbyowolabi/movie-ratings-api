@@ -7,26 +7,26 @@ import com.owodigi.movie.ratings.store.domain.TitleRecord;
 import com.owodigi.movie.ratings.store.EpisodeStore;
 import com.owodigi.movie.ratings.store.NameStore;
 import com.owodigi.movie.ratings.store.TitleStore;
-import com.owodigi.movie.ratings.store.impl.H2EpisodeStore;
-import com.owodigi.movie.ratings.store.impl.H2NameStore;
-import com.owodigi.movie.ratings.store.impl.H2TitleStore;
+import com.owodigi.movie.ratings.store.impl.EpisodeTable;
+import com.owodigi.movie.ratings.store.impl.NameTable;
+import com.owodigi.movie.ratings.store.impl.TitleTable;
 import static com.owodigi.movie.ratings.store.impl.util.ResultCallback.NO_OP_RESULT_CALLBACK;
-import com.owodigi.movie.ratings.util.MovieRatingsAppProperties;
 import com.owodigi.util.AssertUtils;
 import static com.owodigi.util.AssertUtils.newEpisodeRecord;
 import static com.owodigi.util.AssertUtils.newNameRecord;
 import static com.owodigi.util.AssertUtils.newTitleRecord;
 import java.io.IOException;
-import java.nio.file.Path;
+import java.sql.Connection;
 import java.util.Arrays;
 import org.junit.Assert;
 import org.junit.Test;
 
 public class MovieRatingsAppTest extends MovieRatingsAppConfiguration {
     private static final String APP_URL = "http://localhost:8080/movie-ratings?title=";
+    
 
     @Test
-    public void testMovieRatingsAPI() throws IOException {
+    public void testMovieRatingsAPI() throws Exception {
         try {
             testDatabase();
             testAPI();
@@ -35,7 +35,7 @@ public class MovieRatingsAppTest extends MovieRatingsAppConfiguration {
         }
     }
 
-    public void testDatabase() throws IOException {
+    public void testDatabase() throws Exception {
         MovieRatingsApp.main(new String[0]);
         testGetEpisode();
         testGetName();
@@ -89,10 +89,7 @@ public class MovieRatingsAppTest extends MovieRatingsAppConfiguration {
     }
 
     public void testGetTitle() throws IOException {
-        final TitleStore store = new H2TitleStore(
-            MovieRatingsAppProperties.databaseUserName(),
-            MovieRatingsAppProperties.databaseUserPassword(),
-            MovieRatingsAppProperties.databasePath());
+        final TitleStore store = new TitleTable(connection());
         final TitleRecord expected = newTitleRecord (
             "6.5",
             Arrays.asList("nm0721526", "nm5442194", "nm1335271", "nm5442200"),
@@ -104,10 +101,7 @@ public class MovieRatingsAppTest extends MovieRatingsAppConfiguration {
     }
 
     public void testGetEpisode() throws IOException {
-        final EpisodeStore store = new H2EpisodeStore(
-            MovieRatingsAppProperties.databaseUserName(),
-            MovieRatingsAppProperties.databaseUserPassword(),
-            MovieRatingsAppProperties.databasePath());
+        final EpisodeStore store = new EpisodeTable(connection());
         final EpisodeRecord expected = newEpisodeRecord(
             "tt0041951",
             "tt0041038",
@@ -122,10 +116,7 @@ public class MovieRatingsAppTest extends MovieRatingsAppConfiguration {
     }
 
     public void testGetName() throws IOException {
-        final NameStore store = new H2NameStore(
-            MovieRatingsAppProperties.databaseUserName(),
-            MovieRatingsAppProperties.databaseUserPassword(),
-            MovieRatingsAppProperties.databasePath());
+        final NameStore store = new NameTable(connection());
         final NameRecord expected = newNameRecord(
             "nm0005690",
             "William K.L. Dickson"
@@ -141,70 +132,61 @@ public class MovieRatingsAppTest extends MovieRatingsAppConfiguration {
     }
 
     private void verifyNoDuplicateTitleRows() throws IOException {
-        final TestH2TitleStore store = new TestH2TitleStore(
-            MovieRatingsAppProperties.databaseUserName(),
-            MovieRatingsAppProperties.databaseUserPassword(),
-            MovieRatingsAppProperties.databasePath());
+        final TestH2TitleStore store = new TestH2TitleStore(connection());
         final String title = "Pauvre Pierrot";
         final int expected = 1;
         final int actual = store.titles(title);
         Assert.assertEquals("Number of rows in TitleStore with Title " + title, expected, actual);
     }
 
-    private class TestH2TitleStore extends H2TitleStore {
+    private class TestH2TitleStore extends TitleTable {
 
-        public TestH2TitleStore(final String username, final String password, final Path databasePath) throws IOException {
-            super(username, password, databasePath);
+        public TestH2TitleStore(final Connection connection) throws IOException {
+            super(connection);
         }
 
         public int titles(final String primaryTitle) throws IOException {
-            final String sql = selectAllSql(H2TitleStore.columns.primaryTitle.name(), primaryTitle);
+            final String sql = selectAllSql(TitleTable.columns.primaryTitle.name(), primaryTitle);
             return executeQuery(sql, NO_OP_RESULT_CALLBACK);
         }
     }
 
     private void verifyNoDuplicateEpisodeRows() throws IOException {
-        final TestH2EpisodeStore store = new TestH2EpisodeStore(
-            MovieRatingsAppProperties.databaseUserName(),
-            MovieRatingsAppProperties.databaseUserPassword(),
-            MovieRatingsAppProperties.databasePath());
+        final TestH2EpisodeStore store = new TestH2EpisodeStore(connection());
         final String tconst = "tt0041951";
         final int expected = 1;
         final int actual = store.getCount(tconst);
         Assert.assertEquals("Number of rows in EpisdoeStore with tconst " + tconst, expected, actual);
     }
 
-    private class TestH2EpisodeStore extends H2EpisodeStore {
+    private class TestH2EpisodeStore extends EpisodeTable {
 
-        public TestH2EpisodeStore(final String username, final String password, final Path databasePath) throws IOException {
-            super(username, password, databasePath);
+        public TestH2EpisodeStore(final Connection connection) throws IOException {
+            super(connection);
         }
 
         public int getCount(final String tconst) throws IOException {
-            final String sql = selectAllSql(H2EpisodeStore.columns.tconst.name(), tconst);
+            final String sql = selectAllSql(EpisodeTable.columns.tconst.name(), tconst);
             return executeQuery(sql, NO_OP_RESULT_CALLBACK);
         }
     }
 
     private void verifyNoDuplicateNameRows() throws IOException {
-        final TestH2NameStore store = new TestH2NameStore(
-            MovieRatingsAppProperties.databaseUserName(),
-            MovieRatingsAppProperties.databaseUserPassword(),
-            MovieRatingsAppProperties.databasePath());
+        final TestH2NameStore store = new TestH2NameStore(connection());
         final String nconst = "nm0005690";
         final int expected = 1;
         final int actual = store.nconsts(nconst);
         Assert.assertEquals("Number of rows in NameStore with nconst " + nconst, expected, actual);
     }
 
-    private class TestH2NameStore extends H2NameStore {
+    private class TestH2NameStore extends NameTable {
 
-        public TestH2NameStore(final String username, final String password, final Path databasePath) throws IOException {
-            super(username, password, databasePath);
+        public TestH2NameStore(final Connection connection) throws IOException {
+            super(connection);
         }
 
         public int nconsts(final String nconst) throws IOException {
-            final String sql = selectAllSql(H2NameStore.columns.nconst.name(), nconst);
+            final String sql = selectAllSql(NameTable.columns.nconst.name(), nconst);
             return executeQuery(sql, NO_OP_RESULT_CALLBACK);
         }
     }

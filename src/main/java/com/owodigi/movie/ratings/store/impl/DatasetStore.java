@@ -5,7 +5,7 @@ import java.io.IOException;
 /**
  *
  */
-public interface DatasetStore {
+public interface DatasetStore extends AutoCloseable {
 
     /**
      * Clears all the contents of this Store.

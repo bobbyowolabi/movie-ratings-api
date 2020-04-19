@@ -11,14 +11,14 @@ public class H2NameStoreTest extends H2StoreTest {
        
     @Test
     public void addNconst() throws IOException {
-        final NameStore store = new H2NameStore(userName(), password(), databasePath());
+        final NameStore store = new NameTable(connection());
         testAddNconst(newNameRecord("nm0000001"), store);
         testAddNconst(newNameRecord("nm0000002"), store);
     }    
 
     @Test
     public void updateName() throws IOException {
-        final NameStore store = new H2NameStore(userName(), password(), databasePath());
+        final NameStore store = new NameTable(connection());
         final NameRecord originalRecord = newNameRecord("nm0000001"); 
         testAddNconst(originalRecord, store);
         originalRecord.setPrimaryName("Fred Astaire");

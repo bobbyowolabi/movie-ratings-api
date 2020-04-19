@@ -5,7 +5,7 @@ import com.owodigi.movie.ratings.store.EpisodeStore;
 import com.owodigi.movie.ratings.store.impl.util.ColumnConfig;
 import com.owodigi.movie.ratings.store.impl.util.ResultCallback;
 import java.io.IOException;
-import java.nio.file.Path;
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -18,21 +18,17 @@ import java.util.Map;
 /**
  *
  */
-public class H2EpisodeStore extends H2Store implements EpisodeStore {
+public class EpisodeTable extends DatabaseStore implements EpisodeStore {
     private static final String TABLE_NAME = "EPISODE_STORE";
     protected enum columns {tconst, parentTconst, primaryTitle, averageRating, seasonNumber, episodeNumber, nconstList};
 
     /**
-     * Create new H2EpisodeStore instance.
-     *
-     * @param username database username
-     * @param password database password
-     * @param databasePath path to database file (minus extension)
-     * @throws IOException If there was an error connecting to database or creating
-     * tables
+     * 
+     * @param connection
+     * @throws IOException 
      */
-    public H2EpisodeStore(final String username, final String password, final Path databasePath) throws IOException {
-        super(username, password, databasePath);
+    public EpisodeTable(final Connection connection) throws IOException {
+        super(connection);
     }
 
     @Override
@@ -76,7 +72,7 @@ public class H2EpisodeStore extends H2Store implements EpisodeStore {
         return Arrays.asList(
             new ColumnConfig(columns.tconst.name(), "VARCHAR(255)"),
             new ColumnConfig(columns.parentTconst.name(), "VARCHAR(255)"),
-            new ColumnConfig(columns.primaryTitle.name(), "VARCHAR(255)"),
+            new ColumnConfig(columns.primaryTitle.name(), "VARCHAR(512)"),
             new ColumnConfig(columns.averageRating.name(), "VARCHAR(255)"),
             new ColumnConfig(columns.seasonNumber.name(), "VARCHAR(255)"),
             new ColumnConfig(columns.episodeNumber.name(), "VARCHAR(255)"),

@@ -1,6 +1,5 @@
 package com.owodigi.imdb;
 
-import com.owodigi.movie.ratings.store.RatingStore;
 import com.owodigi.movie.ratings.util.MovieRatingsAppProperties;
 import com.owodigi.imdb.util.IMDbDatasetDownloader;
 import com.owodigi.imdb.util.IMDbDownloaderCallback;
@@ -10,6 +9,7 @@ import com.owodigi.imdb.util.IMDbTSVFormats.TitleBasicsFormat;
 import com.owodigi.imdb.util.IMDbTSVFormats.TitleEpisodeFormat;
 import com.owodigi.imdb.util.IMDbTSVFormats.TitlePrincipalsFormat;
 import com.owodigi.imdb.util.IMDbTSVFormats.TitleRatingsFormat;
+import com.owodigi.movie.ratings.store.domain.RatingStore;
 import java.io.IOException;
 import org.apache.commons.csv.CSVRecord;
 

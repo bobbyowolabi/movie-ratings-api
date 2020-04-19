@@ -1,6 +1,5 @@
 package com.owodigi.imdb.util;
 
-import com.owodigi.movie.ratings.MovieRatingsApp;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -19,7 +18,13 @@ import org.slf4j.LoggerFactory;
  */
 public class IMDbDatasetDownloader {
     private static final Logger LOGGER = LoggerFactory.getLogger(IMDbDatasetDownloader.class);
+    private static final int MAX_COUNT = 1_000_000;
 
+    private static void count(final int count, final long start) {
+        final long end = System.currentTimeMillis();
+        LOGGER.info("Processed " + count + " records in " + (end - start) + " ms");
+    }
+    
     /**
      *
      * @param <E>
@@ -30,10 +35,20 @@ public class IMDbDatasetDownloader {
      */
     public static <E extends TSVFormat> void read(final URL url, E tsvFormat, final IMDbDownloaderCallback callback) throws IOException {
         LOGGER.info("Processing Dataset "+ url + " dataset");
+        int count = 0;
         try (final CSVParser parser = tsvFormat.format().parse(new InputStreamReader(new GZIPInputStream(new BufferedInputStream(url.openStream()))))) {
             validate(tsvFormat, parser);
+            long start = System.currentTimeMillis();
             for (final CSVRecord record : parser) {
                 callback.read(record);
+                if (++count == MAX_COUNT) {
+                    count(count, start);
+                    count = 0;
+                    start = System.currentTimeMillis();
+                }
+            }
+            if (count > 0) {
+                count(count, start);
             }
         } catch (final IOException ex) {
             throw new IOException("Unable to download " + url + " due to " + ex.getMessage(), ex);

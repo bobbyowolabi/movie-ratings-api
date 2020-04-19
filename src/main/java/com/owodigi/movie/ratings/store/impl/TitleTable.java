@@ -8,26 +8,24 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
 import com.owodigi.movie.ratings.store.impl.util.ResultCallback;
-import java.nio.file.Path;
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  *
  */
-public class H2TitleStore extends H2Store implements TitleStore {
+public class TitleTable extends DatabaseStore implements TitleStore {
     private static final String TABLE_NAME = "TITLE_STORE";
     protected enum columns {tconst, primaryTitle, averageRating, titleType, nconstList}
     
     /**
      * 
-     * @param username
-     * @param password
-     * @param databasePath
-     * @throws IOException 
+     * @param connection
+     * @throws java.io.IOException
      */
-    public H2TitleStore(final String username, final String password, final Path databasePath) throws IOException {
-        super(username, password, databasePath);
+    public TitleTable(final Connection connection) throws IOException {
+        super(connection);
     }
 
     @Override
@@ -68,7 +66,7 @@ public class H2TitleStore extends H2Store implements TitleStore {
     protected List<ColumnConfig> columnConfigs() {
         return Arrays.asList(
             new ColumnConfig(columns.tconst.name(), "VARCHAR(255)"),
-            new ColumnConfig(columns.primaryTitle.name(), "VARCHAR(255)"),
+            new ColumnConfig(columns.primaryTitle.name(), "VARCHAR(512)"),
             new ColumnConfig(columns.titleType.name(), "VARCHAR(255)"),
             new ColumnConfig(columns.averageRating.name(), "VARCHAR(255)"),
             new ColumnConfig(columns.nconstList.name(), "VARCHAR(255)")

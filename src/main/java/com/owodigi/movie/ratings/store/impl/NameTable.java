@@ -5,7 +5,7 @@ import com.owodigi.movie.ratings.store.NameStore;
 import com.owodigi.movie.ratings.store.impl.util.ColumnConfig;
 import com.owodigi.movie.ratings.store.impl.util.ResultCallback;
 import java.io.IOException;
-import java.nio.file.Path;
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -15,22 +15,17 @@ import java.util.List;
 /**
  *
  */
-public class H2NameStore extends H2Store implements NameStore {
+public class NameTable extends DatabaseStore implements NameStore {
     private static final String TABLE_NAME = "NAME_STORE";
     protected enum columns{nconst, primaryName}
 
     /**
-     * Create a new H2NameStore Instance.
      * 
-     * Backing database tables are created.
-     * 
-     * @param username
-     * @param password
-     * @param databasePath
+     * @param connection
      * @throws IOException 
      */
-    public H2NameStore(final String username, final String password, final Path databasePath) throws IOException {
-        super(username, password, databasePath);
+    public NameTable(final Connection connection) throws IOException {
+        super(connection);
     }
 
     @Override

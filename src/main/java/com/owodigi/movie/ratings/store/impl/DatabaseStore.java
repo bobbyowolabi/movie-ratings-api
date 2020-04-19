@@ -8,9 +8,7 @@ import static com.owodigi.movie.ratings.store.impl.util.StatementCallback.EXECUT
 import static com.owodigi.movie.ratings.store.impl.util.StatementCallback.EXECUTE_QUERY;
 import static com.owodigi.movie.ratings.store.impl.util.StatementCallback.EXECUTE_UPDATE;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -21,28 +19,26 @@ import java.util.Map;
 /**
  *
  */
-public abstract class H2Store {
-    private static final String DB_URL = "jdbc:h2:";
-    private static final String DB_DRIVER = "org.h2.Driver";
-    private final String username;
-    private final String password;
-    private final Path path;
+public abstract class DatabaseStore {
+    private final Connection connection;
 
     /**
      *
-     * @param username
-     * @param password
-     * @param databasePath
+     * @param connection
      * @throws IOException
      */
-    public H2Store(final String username, final String password, final Path databasePath) throws IOException {
-        loadDbDriver();
-        this.username = username;
-        this.password = password;
-        this.path = databasePath;
+    public DatabaseStore(final Connection connection) throws IOException {
+        this.connection = connection;
         createTableIfNotExists();
     }
-
+    
+    public void close() {
+        try {
+            connection.close();
+        } catch (SQLException ex) {
+        }
+    }
+    
     /**
      * Clears all the contents of this Store.
      * 
@@ -100,8 +96,7 @@ public abstract class H2Store {
      * @throws IOException
      */
     private int execute(final String sql, final StatementCallback statementCallback, final ResultCallback resultCallback) throws IOException {
-        try (final Connection connection = DriverManager.getConnection(DB_URL + path + ";mv_store=false", username, password);
-             final Statement statement = connection.createStatement()) {
+        try (final Statement statement = connection.createStatement()) {
             statementCallback.execute(sql, statement);
             final ResultSet result = statement.getResultSet();
             int size = 0;
@@ -162,17 +157,6 @@ public abstract class H2Store {
             .delete(statement.length() - 2, statement.length())
             .append(")");
         return statement.toString();
-    }
-
-    /**
-     *
-     */
-    private void loadDbDriver() {
-        try {
-            Class.forName(DB_DRIVER);
-        } catch (final ClassNotFoundException ex) {
-            throw new IllegalStateException("Unable to Load database driver", ex);
-        }
     }
 
     /**

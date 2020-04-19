@@ -22,14 +22,14 @@ public class H2EpisodeStoreTest extends H2StoreTest {
        
     @Test
     public void addTitle() throws IOException {
-        final EpisodeStore store = new H2EpisodeStore(userName(), password(), databasePath());
+        final EpisodeStore store = new EpisodeTable(connection());
         testAddTitle(newEpisodeRecord("tt0000001", "Animation Film Title"), store);
         testAddTitle(newEpisodeRecord("tt0000002", "Animation Film Title2"), store);
     }
     
     @Test
     public void addNconst() throws IOException {
-        final EpisodeStore store = new H2EpisodeStore(userName(), password(), databasePath());
+        final EpisodeStore store = new EpisodeTable(connection());
         final String tconst = "tt0000001";
         store.addTitle(tconst, "Animation Film Title");
         testAddNconst(tconst, store, "n1", "n2", "n3", "n4", "n5");
@@ -37,7 +37,7 @@ public class H2EpisodeStoreTest extends H2StoreTest {
 
     @Test(expected = IllegalStateException.class)
     public void addNconstWhereTconstNonExistent() throws IOException {
-        final EpisodeStore store = new H2EpisodeStore(userName(), password(), databasePath());
+        final EpisodeStore store = new EpisodeTable(connection());
         final String tconst = "tt0000001";
         store.addTitle(tconst, "Animation Film Title");
         testAddNconst("tt0000002", store, "n1");
@@ -45,7 +45,7 @@ public class H2EpisodeStoreTest extends H2StoreTest {
     
     @Test
     public void updateRating() throws IOException {
-        final EpisodeStore store = new H2EpisodeStore(userName(), password(), databasePath());
+        final EpisodeStore store = new EpisodeTable(connection());
         final EpisodeRecord originalRecord = newEpisodeRecord("tt0000001", "Animation Film Title");
         testAddTitle(originalRecord, store);
         store.updateRating(originalRecord.tconst(), "5.5");
@@ -54,22 +54,8 @@ public class H2EpisodeStoreTest extends H2StoreTest {
     }    
     
     @Test
-    public void dbDirectoryDoesNotExist() throws IOException {
-        final Path databasePath = Paths.get("./target/test-data3/foo");
-        final Path databaseFile = Paths.get(databasePath.toString() + DATABASE_FILE_SUFFIX);
-        Files.deleteIfExists(databaseFile);
-        try {
-            new H2EpisodeStore(userName(), password(), databasePath);
-            Assert.assertEquals(databaseFile + "exists", true, Files.exists(databaseFile));
-        } finally {
-            Files.deleteIfExists(databaseFile);
-            Files.deleteIfExists(databaseFile.getParent());
-        }
-    }
-    
-    @Test
     public void parentTconst() throws IOException {
-        final EpisodeStore store = new H2EpisodeStore(userName(), password(), databasePath());
+        final EpisodeStore store = new EpisodeTable(connection());
         final EpisodeRecord originalRecord = new EpisodeRecord();
         originalRecord.setAverageRating("123");
         originalRecord.setEpisodeNumber("1");

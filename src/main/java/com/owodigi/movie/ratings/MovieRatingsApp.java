@@ -1,8 +1,10 @@
 package com.owodigi.movie.ratings;
 
 import com.owodigi.movie.ratings.api.APIServer;
-import com.owodigi.movie.ratings.store.RatingStore;
+import com.owodigi.movie.ratings.store.impl.H2RatingStore;
 import com.owodigi.imdb.IMDbDatasetProcessor;
+import com.owodigi.movie.ratings.store.domain.RatingStore;
+import com.owodigi.movie.ratings.util.MovieRatingsAppProperties;
 import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +22,7 @@ public class MovieRatingsApp {
     public static void main(final String[] args) throws IOException {
         LOGGER.info("Create RatingStore");
         try {
-            store = new RatingStore();
+            store = new H2RatingStore(MovieRatingsAppProperties.databaseUserName(), MovieRatingsAppProperties.databaseUserPassword(), MovieRatingsAppProperties.databasePath());
             final IMDbDatasetProcessor processor = new IMDbDatasetProcessor(store);
             LOGGER.info("Clearing out all Datastores");
             store.clear();
@@ -35,7 +37,10 @@ public class MovieRatingsApp {
         return store;
     }
     
-    public static void stop() {
+    public static void stop() throws Exception {
+        if (store != null) {
+            store.close();
+        }
         if (context != null) {
             context.close();
         }

@@ -5,9 +5,6 @@ import com.owodigi.movie.ratings.store.TitleStore;
 import com.owodigi.util.AssertUtils;
 import static com.owodigi.util.AssertUtils.newTitleRecord;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Assert;
@@ -20,14 +17,14 @@ public class H2TitleStoreTest extends H2StoreTest {
        
     @Test
     public void addTitle() throws IOException {
-        final TitleStore store = new H2TitleStore(userName(), password(), databasePath());
+        final TitleStore store = new TitleTable(connection());
         testAdd(newTitleRecord("tt0000001", "short", "Animation Film Title"), store);
         testAdd(newTitleRecord("tt0000002", "short2", "Animation Film Title2"), store);
     }
     
     @Test
     public void addNconst() throws IOException {
-        final TitleStore store = new H2TitleStore(userName(), password(), databasePath());
+        final TitleStore store = new TitleTable(connection());
         final String tconst = "tt0000001";
         store.addTitle(tconst, "short", "Animation Film Title");
         testAddNconst(tconst, store, "n1", "n2", "n3", "n4", "n5");
@@ -35,7 +32,7 @@ public class H2TitleStoreTest extends H2StoreTest {
     
     @Test
     public void updateRating() throws IOException {
-        final TitleStore store = new H2TitleStore(userName(), password(), databasePath());
+        final TitleStore store = new TitleTable(connection());
         final TitleRecord originalRecord = newTitleRecord("tt0000001", "short", "Animation Film Title");
         testAdd(originalRecord, store);
         store.updateRating(originalRecord.tconst(), "5.5");
@@ -58,20 +55,6 @@ public class H2TitleStoreTest extends H2StoreTest {
             store.addNconst(tconst, nconst);
             final List<String> actual = store.tconst(tconst).nconstList();
             Assert.assertEquals("nconstList", expected, actual);
-        }
-    }    
-    
-    @Test
-    public void dbDirectoryDoesNotExist() throws IOException {
-        final Path databasePath = Paths.get("./target/test-data2/foo");
-        final Path databaseFile = Paths.get(databasePath.toString() + DATABASE_FILE_SUFFIX);
-        Files.deleteIfExists(databaseFile);
-        try {
-            new H2TitleStore(userName(), password(), databasePath);
-            Assert.assertEquals(databaseFile + "exists", true, Files.exists(databaseFile));
-        } finally {
-            Files.deleteIfExists(databaseFile);
-            Files.deleteIfExists(databaseFile.getParent());
         }
     }
 }
