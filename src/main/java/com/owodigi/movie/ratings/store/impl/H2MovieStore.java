@@ -16,6 +16,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.owodigi.movie.ratings.store.MovieStore;
+import com.owodigi.movie.ratings.store.MovieStoreUpdater;
 import com.owodigi.movie.ratings.store.RatingStore;
 import com.owodigi.movie.ratings.store.domain.PrincipalRecord;
 import com.owodigi.movie.ratings.store.domain.RatingRecord;
@@ -47,31 +48,6 @@ public class H2MovieStore implements MovieStore {
     }
     
     @Override
-    public void addEpisode(final String tconst, String parentTconst, String seasonNumber, String episodeNumber) throws IOException {
-        episodeStore.add(tconst, parentTconst, seasonNumber, episodeNumber);
-    }
-
-    @Override
-    public void addName(String nconst, String primaryName) throws IOException {
-        nameStore.add(nconst, primaryName);
-    }
-    
-    @Override
-    public void addPrincipal(final String tconst, final String nconst, final String ordering) throws IOException {
-        principalStore.add(tconst, nconst, ordering);
-    }
-
-    @Override
-    public void addRating(final String tconst, final String averageRating) throws IOException {
-        ratingStore.addRating(tconst, averageRating);
-    }
-    
-    @Override
-    public void addTitle(final String tconst, final String titleType, final String primaryTitle) throws IOException {
-        titleStore.addTitle(tconst, titleType, primaryTitle);
-    }
-    
-    @Override
     public void clear() throws IOException {
         titleStore.clear();
         episodeStore.clear();
@@ -93,6 +69,12 @@ public class H2MovieStore implements MovieStore {
     public MovieRecord title(final String tile) throws IOException {
         final TitleRecord titleRecord = titleStore.title(tile);
         return titleRecord == null ? null : toRatingRecord(titleRecord);
+    }
+    
+    
+    @Override
+    public void update(MovieStoreUpdateCallback callback) throws IOException {
+        callback.update(updater);
     }
     
     private String calculateAverageRating(final List<RatingRecord> ratings) {
@@ -157,4 +139,32 @@ public class H2MovieStore implements MovieStore {
         ratingRecord.setUserRating(userRating(titleRecord.tconst()));
         return ratingRecord;
     }
+    
+    private final MovieStoreUpdater updater = new MovieStoreUpdater() {
+
+        @Override
+        public void addEpisode(final String tconst, String parentTconst, String seasonNumber, String episodeNumber) throws IOException {
+            episodeStore.add(tconst, parentTconst, seasonNumber, episodeNumber);
+        }
+
+        @Override
+        public void addName(String nconst, String primaryName) throws IOException {
+            nameStore.add(nconst, primaryName);
+        }
+
+        @Override
+        public void addPrincipal(final String tconst, final String nconst, final String ordering) throws IOException {
+            principalStore.add(tconst, nconst, ordering);
+        }
+
+        @Override
+        public void addRating(final String tconst, final String averageRating) throws IOException {
+            ratingStore.addRating(tconst, averageRating);
+        }
+
+        @Override
+        public void addTitle(final String tconst, final String titleType, final String primaryTitle) throws IOException {
+            titleStore.addTitle(tconst, titleType, primaryTitle);
+        }
+    };    
 }

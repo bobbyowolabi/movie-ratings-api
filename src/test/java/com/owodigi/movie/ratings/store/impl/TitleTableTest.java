@@ -5,9 +5,6 @@ import com.owodigi.movie.ratings.store.TitleStore;
 import com.owodigi.util.AssertUtils;
 import static com.owodigi.util.AssertUtils.newTitleRecord;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import org.junit.Assert;
 import org.junit.Test;
 
 /**
