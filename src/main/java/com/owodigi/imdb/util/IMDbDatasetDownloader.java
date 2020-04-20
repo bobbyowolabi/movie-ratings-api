@@ -13,9 +13,6 @@ import org.apache.commons.csv.CSVRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- *
- */
 public class IMDbDatasetDownloader {
     private static final Logger LOGGER = LoggerFactory.getLogger(IMDbDatasetDownloader.class);
     private static final int MAX_COUNT = 1_000_000;
@@ -26,7 +23,8 @@ public class IMDbDatasetDownloader {
     }
     
     /**
-     *
+     * Downloads and processes the dataset.
+     * 
      * @param <E>
      * @param url
      * @param tsvFormat
@@ -55,6 +53,14 @@ public class IMDbDatasetDownloader {
         }
     }
 
+    /**
+     * Ensures that the header in the given Parser matches the expected header
+     * values.
+     * 
+     * @param <E>
+     * @param tsvFormat
+     * @param parser 
+     */
     private static <E extends TSVFormat> void validate(final E tsvFormat, final CSVParser parser) {
         final List<String> expected = Arrays.asList(tsvFormat.headerClass().getEnumConstants()).stream().map(e -> e.name()).collect(Collectors.toList());
         final List<String> actual = parser.getHeaderNames();

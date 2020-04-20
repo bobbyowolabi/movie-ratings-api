@@ -12,9 +12,6 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- *
- */
 public class RatingTable extends DatabaseTable implements RatingStore {
     private static final String TABLE_NAME = "RATING_STORE";
     protected enum columns {tconst, averageRating}
@@ -40,6 +37,13 @@ public class RatingTable extends DatabaseTable implements RatingStore {
         );
     }
 
+    /**
+     * Executes the given query and returns the corresponding result.
+     * 
+     * @param sql
+     * @return
+     * @throws IOException 
+     */    
     private LinkedList<RatingRecord> executeQuery(final String sql) throws IOException {
         final LinkedList<RatingRecord> records = new LinkedList<>();
         executeQuery(sql, new ResultCallback() {

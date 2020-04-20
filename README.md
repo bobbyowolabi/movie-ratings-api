@@ -22,6 +22,18 @@ mvn clean install
 ```bash
 java -Dratings.properties.file=src/main/resources/movie-ratings-api.properties -jar target/movie-ratings-api-1.0.0-SNAPSHOT-jar-with-dependencies.jar
 ```	
+1. Once the following log message is written, the API is active:
+```bash
+[main] INFO  c.o.movie.ratings.MovieRatingsApp - Started MovieRatingsApp in 2.371 seconds (JVM running for 358.461)
+```
+1. A request can be executed on a browser or curl:
+```
+http://localhost:8080/movie-ratings?title=Ambulans
+```
+Response
+```json
+{"title":"Ambulans","type":"short","userRating":"7.7","calculatedRating":null,"castList":"Zbigniew Józefowicz, Leopold R. Nowak, Boguslaw Sochnacki, Janusz Morgenstern, Tadeusz Lomnicki, Krzysztof Komeda, Jerzy Lipman, Janina Niedzwiecka","episodes":[]}
+```
 
 ## Settings File
 The properties files referenced above provides configuration to the application that can be modified as needed.  

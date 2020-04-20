@@ -1,6 +1,6 @@
-package com.owodigi.movie.ratings.store.impl;
+package com.owodigi.movie.ratings.store.util;
 
-import com.owodigi.movie.ratings.store.MovieStoreUpdater;
+import com.owodigi.movie.ratings.store.util.MovieStoreUpdater;
 import java.io.IOException;
 
 /**

@@ -10,9 +10,6 @@ import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
 
-/**
- *
- */
 public final class MovieRatingsAppProperties {
     public static final String SYSTEM_PROPERTIES_FILE = "ratings.properties.file";
     private static final String SYSTEM_PROPERTIES_PATH;
@@ -32,32 +29,37 @@ public final class MovieRatingsAppProperties {
     }
 
     /**
+     * The path of the database file.  An appropriate extension will be given
+     * to the file.
      * 
-     * @return 
+     * @return path of the database file
      */
     public static Path databasePath() {
        return Paths.get(requiredProperty(DATABASE_PATH));
     }
     
     /**
+     * Database username used to log into the database
      * 
-     * @return 
+     * @return Database username
      */
     public static String databaseUserName() {
         return requiredProperty(DATABASE_USERNAME);
     }
     
     /**
+     * Database password used to log into the database
      * 
-     * @return 
+     * @return Database password
      */
     public static String databaseUserPassword() {
         return requiredProperty(DATABASE_PASSWORD);
     }
     
     /**
+     * Loads the properties from the Properties file specified in {@link MovieRatingsAppProperties#SYSTEM_PROPERTIES_FILE}
      * 
-     * @return 
+     * @return path to properties file
      */
     private static String loadProperties() {
         final String systemPropertiesPath = System.getProperty(SYSTEM_PROPERTIES_FILE);
@@ -73,9 +75,12 @@ public final class MovieRatingsAppProperties {
     }
     
     /**
+     * Searches for the property with the specified key in this property list. 
+     * If the key is not found in this property list, an IllegalArgumentException
+     * is thrown
      * 
-     * @param property
-     * @return 
+     * @param property the property key
+     * @return value of the property
      */
     private static String requiredProperty(final String property) {
         final String value = PROPERTIES.getProperty(property);
@@ -86,6 +91,8 @@ public final class MovieRatingsAppProperties {
     }
     
     /**
+     * The URL of the Title Basics dataset files can be accessed and downloaded 
+     * from https://datasets.imdbws.com/.
      * 
      * @return
      * @throws IOException 
@@ -95,6 +102,8 @@ public final class MovieRatingsAppProperties {
     }
     
     /**
+     * The URL of the Title Principals dataset files can be accessed and downloaded 
+     * from https://datasets.imdbws.com/.
      * 
      * @return
      * @throws IOException 
@@ -104,6 +113,8 @@ public final class MovieRatingsAppProperties {
     }
     
     /**
+     * The URL of the Title Ratings dataset files can be accessed and downloaded 
+     * from https://datasets.imdbws.com/.
      * 
      * @return
      * @throws IOException 
@@ -113,6 +124,8 @@ public final class MovieRatingsAppProperties {
     }
     
     /**
+     * The URL of the Title Episode dataset files can be accessed and downloaded 
+     * from https://datasets.imdbws.com/.
      * 
      * @return
      * @throws IOException 
@@ -121,11 +134,19 @@ public final class MovieRatingsAppProperties {
         return toURL(requiredProperty(IMBD_TITLE_EPISODE_URL));
     }
 
+    /**
+     * The URL of the Name Basic dataset files can be accessed and downloaded 
+     * from https://datasets.imdbws.com/.
+     * 
+     * @return
+     * @throws IOException 
+     */    
     public static URL nameBasicsURL() throws IOException {
         return toURL(requiredProperty(IMBD_NAME_BASICS_URL));
     }
     
     /**
+     * Returns the years of titles that should be persisted.
      * 
      * @return 
      */
@@ -134,6 +155,7 @@ public final class MovieRatingsAppProperties {
     }
     
     /**
+     * Converts the given string to URL
      * 
      * @param urlString
      * @return

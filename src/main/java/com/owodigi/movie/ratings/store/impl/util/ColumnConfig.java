@@ -1,14 +1,14 @@
 package com.owodigi.movie.ratings.store.impl.util;
 
 /**
- *
+ * Defines the configuration for a database column
  */
 public class ColumnConfig {
     private final String column;
     private final String type;
 
     /**
-     * 
+     * Creates a new ColumnConfig instance.
      * @param column
      * @param type 
      */
@@ -18,6 +18,7 @@ public class ColumnConfig {
     }
 
     /**
+     * Name of column.
      * 
      * @return 
      */
@@ -26,6 +27,7 @@ public class ColumnConfig {
     }
 
     /**
+     * Data type of the column.
      * 
      * @return 
      */

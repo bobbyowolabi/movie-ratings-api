@@ -7,9 +7,6 @@ import static com.owodigi.util.AssertUtils.newTitleRecord;
 import java.io.IOException;
 import org.junit.Test;
 
-/**
- *
- */
 public class TitleTableTest extends H2StoreTest {
        
     @Test

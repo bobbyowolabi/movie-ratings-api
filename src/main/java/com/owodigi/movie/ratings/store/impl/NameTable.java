@@ -12,18 +12,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- *
- */
 public class NameTable extends DatabaseTable implements NameStore {
     private static final String TABLE_NAME = "NAME_STORE";
     protected enum columns{nconst, primaryName}
 
-    /**
-     * 
-     * @param connection
-     * @throws IOException 
-     */
     public NameTable(final Connection connection) throws IOException {
         super(connection);
     }
@@ -46,11 +38,12 @@ public class NameTable extends DatabaseTable implements NameStore {
     }
 
     /**
+     * Executes the given query and returns the corresponding result.
      * 
      * @param sql
      * @return
      * @throws IOException 
-     */
+     */    
     private NameRecord executeQuery(final String sql) throws IOException {
         final NameRecord record = new NameRecord();
         final int resultCount = executeQuery(sql, new ResultCallback() {

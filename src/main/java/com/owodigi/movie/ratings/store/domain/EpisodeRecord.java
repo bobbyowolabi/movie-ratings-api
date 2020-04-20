@@ -1,8 +1,5 @@
 package com.owodigi.movie.ratings.store.domain;
 
-/**
- *
- */
 public class EpisodeRecord {
     /**
      * (string) - alphanumeric identifier of episode
@@ -24,19 +21,38 @@ public class EpisodeRecord {
      */
     private String episodeNumber;
     
-
+    /**
+     * alphanumeric identifier of the parent TV Series
+     * 
+     * @return 
+     */
     public String parentConst() {
         return parentTconst;
     }
 
+    /**
+     * alphanumeric identifier of episode
+     * 
+     * @return 
+     */
     public String tconst() {
         return tconst;
     }
 
+    /**
+     * season number the episode belongs to
+     * 
+     * @return 
+     */
     public String seasonNumber() {
         return seasonNumber;
     }
 
+    /**
+     * episode number of the tconst in the TV series
+     * 
+     * @return 
+     */
     public String episodeNumber() {
         return episodeNumber;
     }

@@ -24,7 +24,6 @@ import org.junit.Test;
 
 public class MovieRatingsAppTest extends MovieRatingsAppConfiguration {
     private static final String APP_URL = "http://localhost:8080/movie-ratings?title=";
-    
 
     @Test
     public void testMovieRatingsAPI() throws Exception {

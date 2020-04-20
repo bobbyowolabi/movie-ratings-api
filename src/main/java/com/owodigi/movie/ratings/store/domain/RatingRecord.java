@@ -1,8 +1,5 @@
 package com.owodigi.movie.ratings.store.domain;
 
-/**
- *
- */
 public class RatingRecord {
     /**
      * (string) - alphanumeric unique identifier of the title
@@ -14,10 +11,20 @@ public class RatingRecord {
      */
     private String averageRating;
 
+    /**
+     * alphanumeric unique identifier of the title
+     * 
+     * @return 
+     */
     public String getTconst() {
         return tconst;
     }
 
+    /**
+     * weighted average of all the individual user ratings
+     * 
+     * @return 
+     */
     public String averageRating() {
         return averageRating;
     }

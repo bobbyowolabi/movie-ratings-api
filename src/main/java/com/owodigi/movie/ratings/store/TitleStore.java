@@ -4,12 +4,10 @@ import com.owodigi.movie.ratings.store.domain.TitleRecord;
 import com.owodigi.movie.ratings.store.impl.DatasetStore;
 import java.io.IOException;
 
-/**
- *
- */
 public interface TitleStore extends DatasetStore {
 
     /**
+     * Adds the given title attributes to this Store.
      * 
      * @param tconst
      * @param titleType
@@ -19,6 +17,8 @@ public interface TitleStore extends DatasetStore {
     public void addTitle(String tconst, String titleType, String primaryTitle) throws IOException;
 
     /**
+     * Queries this store and returns the title associated with the given title
+     * identifier.
      * 
      * @param tconst
      * @return 
@@ -27,6 +27,8 @@ public interface TitleStore extends DatasetStore {
     public TitleRecord tconst(String tconst) throws IOException;
     
     /**
+     * Queries this store and returns the title associated with the given primary
+     * title.
      * 
      * @param primaryTitle
      * @return 

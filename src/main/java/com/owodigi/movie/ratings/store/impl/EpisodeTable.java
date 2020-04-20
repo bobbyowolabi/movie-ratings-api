@@ -12,22 +12,13 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- *
- */
 public class EpisodeTable extends DatabaseTable implements EpisodeStore {
     private static final String TABLE_NAME = "EPISODE_STORE";
     protected enum columns {tconst, parentTconst, seasonNumber, episodeNumber};
 
-    /**
-     * 
-     * @param connection
-     * @throws IOException 
-     */
     public EpisodeTable(final Connection connection) throws IOException {
         super(connection);
     }
-
     
     @Override
     public void add(String tconst, String parentTconst, String seasonNumber, String episodeNumber) throws IOException {
@@ -51,11 +42,12 @@ public class EpisodeTable extends DatabaseTable implements EpisodeStore {
     }
 
     /**
-     *
+     * Executes the given query and returns the corresponding result.
+     * 
      * @param sql
      * @return
-     * @throws IOException
-     */
+     * @throws IOException 
+     */    
     private LinkedList<EpisodeRecord> executeQuery(final String sql) throws IOException {
         final LinkedList<EpisodeRecord> records = new LinkedList<>();
         executeQuery(sql, new ResultCallback() {

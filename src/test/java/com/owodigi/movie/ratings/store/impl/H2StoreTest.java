@@ -11,9 +11,6 @@ import java.util.UUID;
 import org.junit.After;
 import org.junit.Before;
 
-/**
- *
- */
 public abstract class H2StoreTest {
     private static final String USER_NAME = "test_user";
     private static final String PASSWORD = "changeit";

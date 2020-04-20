@@ -1,4 +1,4 @@
-package com.owodigi.movie.ratings.store;
+package com.owodigi.movie.ratings.store.util;
 
 import java.io.IOException;
 

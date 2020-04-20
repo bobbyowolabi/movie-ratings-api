@@ -7,7 +7,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.Properties;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -18,9 +17,6 @@ import static org.mockserver.integration.ClientAndServer.startClientAndServer;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 
-/**
- *
- */
 public abstract class MovieRatingsAppConfiguration extends H2StoreTest {
     private static final Path UNIQUE_DB_PATH = uniqueDbPath();
     private static final Path APPLICATION_PROPERTIES_PATH = Paths.get("./target/test-data/ratings-app.properties");

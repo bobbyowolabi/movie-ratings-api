@@ -5,9 +5,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-/**
- *
- */
 public class H2Connection {
     private static final String DB_URL = "jdbc:h2:";
     private static final String DB_DRIVER = "org.h2.Driver";
@@ -15,6 +12,17 @@ public class H2Connection {
     
     protected H2Connection(){}
     
+    /**
+     * Attempts to establish a connection to the given database URL. 
+     * The DriverManager attempts to select an appropriate driver from the set 
+     * of registered JDBC drivers.
+     * 
+     * @param username
+     * @param password
+     * @param path
+     * @return
+     * @throws IOException 
+     */
     protected static Connection connection(final String username, final String password, final String path) throws IOException {
         loadDbDriver();
         try {
@@ -24,6 +32,12 @@ public class H2Connection {
         }        
     }
     
+    /**
+     * Retrieves whether this Connection object has been closed.
+     * 
+     * @return
+     * @throws IOException 
+     */
     private static boolean isClosed() throws IOException {
         try {
             return connection == null ? false : connection.isClosed();
@@ -33,7 +47,7 @@ public class H2Connection {
     }
     
     /**
-     *
+     * Loads the H2 DB driver.
      */
     private static void loadDbDriver() {
         try {
@@ -43,6 +57,15 @@ public class H2Connection {
         }
     }    
     
+    /**
+     * Returns singleton connection instance.
+     * 
+     * @param username
+     * @param password
+     * @param path
+     * @return
+     * @throws IOException 
+     */
     public static Connection instance(final String username, final String password, final String path) throws IOException {
         return (connection == null) || isClosed() ? (connection = connection(username, password, path)) : connection;
     }

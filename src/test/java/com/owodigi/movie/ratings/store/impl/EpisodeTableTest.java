@@ -9,9 +9,6 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
-/**
- *
- */
 public class EpisodeTableTest extends H2StoreTest {
        
     @Test
@@ -35,12 +32,6 @@ public class EpisodeTableTest extends H2StoreTest {
         AssertUtils.assertEquals(expected, actualRecords.iterator().next());
     }
     
-    /**
-     * 
-     * @param expected
-     * @param store
-     * @throws IOException 
-     */
     private void testAddTitle(final EpisodeRecord expected, final EpisodeStore store) throws IOException {
         store.add(expected.tconst(), expected.parentConst(), expected.seasonNumber(), expected.episodeNumber());
         final EpisodeRecord actual = store.tconst(expected.tconst());

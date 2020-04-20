@@ -17,24 +17,17 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-/**
- *
- */
 public abstract class DatabaseTable {
     private final Connection connection;
 
-    /**
-     *
-     * @param connection
-     * @throws IOException
-     */
     public DatabaseTable(final Connection connection) throws IOException {
         this.connection = connection;
         createTableIfNotExists();
     }
     
     /**
-     *
+     * Releases this Connection object's database and JDBC resources immediately
+     * instead of waiting for them to be automatically released.
      */
     public void close() {
         try {
@@ -54,17 +47,24 @@ public abstract class DatabaseTable {
     }    
     
     /**
-     *
+     * Returns the configuration of this Table's columns.
+     * 
      * @return
      */
     protected abstract List<ColumnConfig> columnConfigs();
 
+    /**
+     * Creates this Table in the database if it does not exist.
+     * 
+     * @throws IOException 
+     */
     private void createTableIfNotExists() throws IOException {
         executeUpdate(createTableIfNotExistsSQL(), NO_OP_RESULT_CALLBACK);
     }    
     
     /**
-     *
+     * Generates query to create this table if it does not exist.
+     * 
      * @return
      */
     private String createTableIfNotExistsSQL() {
@@ -78,12 +78,18 @@ public abstract class DatabaseTable {
         return statement.toString();
     }
 
+    /**
+     * Generates query to drop this table.
+     * 
+     * @throws IOException 
+     */
     private void dropTable() throws IOException {
         executeUpdate("DROP TABLE IF EXISTS " + tableName(), NO_OP_RESULT_CALLBACK);
     }
 
     /**
-     *
+     * Executes the given SQL statement, which may return multiple results.
+     * 
      * @param sql
      * @throws IOException
      */
@@ -92,7 +98,9 @@ public abstract class DatabaseTable {
     }
 
     /**
-     *
+     * Executes the given query against the database and provides hooks for clients
+     * to process the results and refine how the query to executed.
+     * 
      * @param sql
      * @param statementCallback
      * @param resultCallback
@@ -114,15 +122,32 @@ public abstract class DatabaseTable {
         }
     }
 
+    /**
+     * Executes the given SQL statement,
+     * 
+     * @param sql
+     * @param resultCallback
+     * @return
+     * @throws IOException 
+     */
     protected int executeQuery(final String sql, final ResultCallback resultCallback) throws IOException {
         return execute(sql, EXECUTE_QUERY, resultCallback);
     }
 
+    /**
+     * Executes the given SQL statement, which may be an INSERT, UPDATE, or 
+     * DELETE statement or an SQL statement that returns nothing, such as an SQL DDL statement
+     * 
+     * @param sql
+     * @throws IOException 
+     */
     protected void executeUpdate(final String sql) throws IOException {
         execute(sql, EXECUTE_UPDATE, NO_OP_RESULT_CALLBACK);
     }
     /**
-     *
+     * Executes the given SQL statement, which may be an INSERT, UPDATE, or 
+     * DELETE statement or an SQL statement that returns nothing, such as an SQL DDL statement
+     * 
      * @param sql
      * @param resultCallback
      * @throws IOException
@@ -131,12 +156,19 @@ public abstract class DatabaseTable {
         execute(sql, EXECUTE_UPDATE, resultCallback);
     }
 
+    /**
+     * Escape any single quotes in the value.
+     * 
+     * @param value
+     * @return 
+     */
     private String escape(final String value) {
         return value.replace("'", "''");
     }
     
     /**
-     *
+     * Generates query to insert values into this table
+     * 
      * @param values
      * @return
      */
@@ -164,7 +196,9 @@ public abstract class DatabaseTable {
     }
 
     /**
-     *
+     * Generates query to select values from this table based on the given 
+     * condition.
+     * 
      * @param column
      * @param value
      * @return
@@ -176,6 +210,14 @@ public abstract class DatabaseTable {
             .toString();
     }
 
+    /**
+     * Generates a query to select the rows of this table that have a given
+     * column value.
+     * 
+     * @param column
+     * @param values
+     * @return 
+     */
     protected String selectAllIn(String column, final Collection<String> values) {
         final StringBuilder sql = new StringBuilder()
             .append("SELECT * FROM ").append(tableName())
@@ -190,14 +232,15 @@ public abstract class DatabaseTable {
     }
     
     /**
-     *
+     * Returns the name of this table.
      *
      * @return
      */
     protected abstract String tableName();
 
     /**
-     *
+     * Generates query to update a value in this database table.
+     * 
      * @param column
      * @param value
      * @param conditionColumn
@@ -209,7 +252,8 @@ public abstract class DatabaseTable {
     }
 
     /**
-     *
+     * Generates query to update a value in this database table.
+     * 
      * @param conditionColumn
      * @param conditionValue
      * @param updateValues

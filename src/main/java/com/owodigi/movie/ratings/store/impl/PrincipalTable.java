@@ -12,9 +12,6 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- *
- */
 public class PrincipalTable extends DatabaseTable implements PrincipalStore {
     private static final String TABLE_NAME = "PRINCIPAL_STORE";
     protected enum columns {tconst, nconst, ordering}
@@ -32,6 +29,13 @@ public class PrincipalTable extends DatabaseTable implements PrincipalStore {
         );
     }
 
+    /**
+     * Executes the given query and returns the corresponding result.
+     * 
+     * @param sql
+     * @return
+     * @throws IOException 
+     */        
     private LinkedList<PrincipalRecord> executeQuery(final String sql) throws IOException {
         final LinkedList<PrincipalRecord> records = new LinkedList<>();
         executeQuery(sql, new ResultCallback() {

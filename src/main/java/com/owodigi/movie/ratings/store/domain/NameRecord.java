@@ -14,10 +14,20 @@ public class NameRecord {
      */
     private String primaryName;
 
+    /**
+     * alphanumeric unique identifier of the name/person
+     * 
+     * @return 
+     */
     public String nconst() {
         return nconst;
     }
 
+    /**
+     * name by which the person is most often credited
+     * 
+     * @return 
+     */
     public String primaryName() {
         return primaryName;
     }

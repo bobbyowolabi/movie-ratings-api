@@ -1,5 +1,6 @@
 package com.owodigi.movie.ratings.store.impl;
 
+import com.owodigi.movie.ratings.store.util.MovieStoreUpdateCallback;
 import com.owodigi.movie.ratings.store.PrincipalStore;
 import com.owodigi.movie.ratings.api.domain.Episode;
 import com.owodigi.movie.ratings.api.domain.MovieRecord;
@@ -16,7 +17,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.owodigi.movie.ratings.store.MovieStore;
-import com.owodigi.movie.ratings.store.MovieStoreUpdater;
+import com.owodigi.movie.ratings.store.util.MovieStoreUpdater;
 import com.owodigi.movie.ratings.store.RatingStore;
 import com.owodigi.movie.ratings.store.domain.PrincipalRecord;
 import com.owodigi.movie.ratings.store.domain.RatingRecord;

@@ -20,25 +20,26 @@ import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import org.junit.Assert;
 
-/**
- *
- */
 public class AssertUtils {
     /**
+     * Returns a fixed-size list of lists.
      * 
-     * @param <E>
-     * @param list
-     * @return 
+     * @param <E> the class of the objects in the List
+     * @param list the lists by which the list will be backed
+     * @return a fixed-size list backed by the specified lists.
      */
     public static <E> List<List<E>> asList(final List<E>...list) {
         return Arrays.asList(list);
     }
     
     /**
+     * Asserts that two TitleRecord are equal. 
+     * If they are not, an AssertionError is thrown with an appropriate message. 
+     * If expected and actual are null, they are considered equal
      * 
-     * @param expected
-     * @param actual
-     * @throws AssertionError 
+     * @param expected expected value
+     * @param actual the value to check against expected 
+     * @throws AssertionError if the two objects are not equal
      */
     public static void assertEquals(final TitleRecord expected, final TitleRecord actual) throws AssertionError {
         Assert.assertEquals("primaryTitle", expected.primaryTitle(), actual.primaryTitle());
@@ -47,9 +48,13 @@ public class AssertUtils {
     }    
     
     /**
+     * Asserts that two EpisodeRecord are equal. 
+     * If they are not, an AssertionError is thrown with an appropriate message. 
+     * If expected and actual are null, they are considered equal
      * 
-     * @param expected
-     * @param actual 
+     * @param expected expected value
+     * @param actual the value to check against expected 
+     * @throws AssertionError if the two objects are not equal
      */
     public static void assertEquals(final EpisodeRecord expected, final EpisodeRecord actual) {
         if (assertEqualsIfNull("EpisodeRecord", expected, actual)) {
@@ -61,6 +66,16 @@ public class AssertUtils {
         Assert.assertEquals("seasonNumber", expected.seasonNumber(), actual.seasonNumber());             
     }    
     
+    /**
+     * Asserts that both objects are either both null or both not null.
+     * If they are not, an AssertionError is thrown with an appropriate message. 
+     * 
+     * @param message the identifying message for the AssertionError (null okay)
+     * @param expected expected value
+     * @param actual the value to check against expected 
+     * @return true if both objects are null
+     * @throws AssertionError if the two objects are not equal
+     */    
     private static boolean assertEqualsIfNull(final String message, final Object expected, final Object actual) {
         if (expected == null) {
             Assert.assertNull("Actual is not null: " + message, actual);
@@ -71,9 +86,13 @@ public class AssertUtils {
     }
     
     /**
+     * Asserts that two NameRecord are equal. 
+     * If they are not, an AssertionError is thrown with an appropriate message. 
+     * If expected and actual are null, they are considered equal
      * 
-     * @param expected
-     * @param actual 
+     * @param expected expected value
+     * @param actual the value to check against expected 
+     * @throws AssertionError if the two objects are not equal
      */
     public static void assertEquals(final NameRecord expected, final NameRecord actual) {
         if(assertEqualsIfNull("NameRecord", expected, actual)) {
@@ -84,20 +103,27 @@ public class AssertUtils {
     }
     
     /**
+     * Asserts that a List of Strings and CSVRecord are equal in their values.
+     * If they are not, an AssertionError is thrown with an appropriate message. 
+     * If expected and actual are null, they are considered equal
      * 
-     * @param expected
-     * @param actual 
+     * @param expected expected value
+     * @param actual the value to check against expected 
+     * @throws AssertionError if the two objects are not equal
      */
     public static void assertEquals(final List<String> expected, final CSVRecord actual) throws AssertionError {
         Assert.assertEquals(expected, toList(actual));
     }
 
     /**
+     * Asserts that a List of List Strings and CSVParser are equal in their values.
+     * If they are not, an AssertionError is thrown with an appropriate message. 
+     * If expected and actual are null, they are considered equal
      * 
-     * @param expected
-     * @param actual
-     * @throws AssertionError 
-     */    
+     * @param expected expected value
+     * @param actual the value to check against expected 
+     * @throws AssertionError if the two objects are not equal
+     */
     public static void assertEquals(final List<List<String>> expected, final CSVParser actual) throws AssertionError {
         final Iterator<CSVRecord> actualRecords = actual.iterator();
         try {
@@ -114,6 +140,16 @@ public class AssertUtils {
         } 
     }
     
+    /**
+     * Executes the given request and compares the result with expected.
+     * If they are not equal, an AssertionError is thrown with an appropriate message. 
+     * If expected and actual are null, they are considered equal
+     * 
+     * @param message the identifying message for the AssertionError (null okay)
+     * @param url URL to request
+     * @param expected expected response value
+     * @throws IOException 
+     */
     public static void assertQuery(final String message, final String url, final String expected) throws IOException {
         HttpURLConnection connection = null;
         try {
@@ -153,6 +189,15 @@ public class AssertUtils {
         return value.toString();
     }     
     
+    /**
+     * Returns a new Episode Record Instance.
+     * 
+     * @param tconst
+     * @param parentTconst
+     * @param seasonNumber
+     * @param episodeNumber
+     * @return Returns a new Episode Record Instance.
+     */
     public static EpisodeRecord newEpisodeRecord(
             final String tconst, 
             final String parentTconst, 
@@ -166,6 +211,13 @@ public class AssertUtils {
         return record;
     }
     
+    /**
+     * Returns a new NameRecord Instance.
+     * 
+     * @param nconst
+     * @param primaryName
+     * @return Returns a new NameRecord Instance.
+     */
     public static NameRecord newNameRecord(final String nconst, final String primaryName) {
         final NameRecord record = new NameRecord();
         record.setNconst(nconst);
@@ -173,6 +225,14 @@ public class AssertUtils {
         return record;
     }
     
+    /**
+     * Returns a new TitleRecord Instance.
+     * 
+     * @param tcosnt
+     * @param titleType
+     * @param primaryTitle
+     * @return Returns a new TitleRecord Instance.
+     */
     public static TitleRecord newTitleRecord(final String tcosnt, final String titleType, final String primaryTitle) {
         final TitleRecord record = new TitleRecord();
         record.setTconst(tcosnt);
@@ -182,9 +242,10 @@ public class AssertUtils {
     }    
     
     /**
-     *
+     * Converts the given CSVRecord to a List of its values
+     * 
      * @param record
-     * @return
+     * @return given CSVRecord as a List of its values
      */
     public static List<String> toList(final CSVRecord record) {
         final List<String> list = new ArrayList<>(record.size());

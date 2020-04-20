@@ -1,8 +1,5 @@
 package com.owodigi.movie.ratings.api.domain;
 
-/**
- *
- */
 public class MovieRecord {
     private String title;
     private String type;

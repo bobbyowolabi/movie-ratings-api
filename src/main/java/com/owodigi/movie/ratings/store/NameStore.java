@@ -5,12 +5,10 @@ import com.owodigi.movie.ratings.store.impl.DatasetStore;
 import java.io.IOException;
 import java.util.List;
 
-/**
- *
- */
 public interface NameStore extends DatasetStore {
 
     /**
+     * Adds the given name attributes to this Store.
      * 
      * @param nconst
      * @param primaryName
@@ -18,9 +16,19 @@ public interface NameStore extends DatasetStore {
      */
     public void add(String nconst, String primaryName) throws IOException;
     
+    /**
+     * Queries this Store for all the given name identifiers and returns a 
+     * corresponding list of resolved primary names.
+     * 
+     * @param nconsts
+     * @return
+     * @throws IOException 
+     */
     public List<String> names(final List<String> nconsts) throws IOException;
     
     /**
+     * Queries this Store for the given name identifier and returns the corresponding
+     * record.
      * 
      * @param nconst
      * @return 

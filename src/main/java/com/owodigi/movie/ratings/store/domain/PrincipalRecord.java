@@ -1,8 +1,5 @@
 package com.owodigi.movie.ratings.store.domain;
 
-/**
- *
- */
 public class PrincipalRecord {
 
     /**
@@ -21,14 +18,29 @@ public class PrincipalRecord {
      */
     private String ordering;
 
+    /**
+     * alphanumeric unique identifier of the title
+     * 
+     * @return 
+     */
     public String getTconst() {
         return tconst;
     }
 
+    /**
+     * alphanumeric unique identifier of the name/person.
+     * 
+     * @return 
+     */
     public String getNconst() {
         return nconst;
     }
 
+    /**
+     * a number to uniquely identify rows for a given titleId.
+     * 
+     * @return 
+     */
     public String getOrdering() {
         return ordering;
     }

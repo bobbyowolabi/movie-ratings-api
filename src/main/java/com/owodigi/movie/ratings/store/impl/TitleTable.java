@@ -11,15 +11,12 @@ import com.owodigi.movie.ratings.store.impl.util.ResultCallback;
 import java.sql.Connection;
 import java.util.List;
 
-/**
- *
- */
 public class TitleTable extends DatabaseTable implements TitleStore {
     private static final String TABLE_NAME = "TITLE_STORE";
     protected enum columns {tconst, titleType, primaryTitle}
     
     /**
-     * 
+     * Creates a new TitleTable instance.
      * @param connection
      * @throws java.io.IOException
      */
@@ -47,6 +44,7 @@ public class TitleTable extends DatabaseTable implements TitleStore {
     }
 
     /**
+     * Executes the given query and returns a TitleRecord result.
      * 
      * @param sql
      * @return

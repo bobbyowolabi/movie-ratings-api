@@ -2,9 +2,6 @@ package com.owodigi.movie.ratings.store.impl;
 
 import java.io.IOException;
 
-/**
- *
- */
 public interface DatasetStore extends AutoCloseable {
 
     /**

@@ -12,12 +12,9 @@ import com.owodigi.imdb.util.IMDbTSVFormats.TitleRatingsFormat;
 import java.io.IOException;
 import org.apache.commons.csv.CSVRecord;
 import com.owodigi.movie.ratings.store.MovieStore;
-import com.owodigi.movie.ratings.store.MovieStoreUpdater;
-import com.owodigi.movie.ratings.store.impl.MovieStoreUpdateCallback;
+import com.owodigi.movie.ratings.store.util.MovieStoreUpdater;
+import com.owodigi.movie.ratings.store.util.MovieStoreUpdateCallback;
 
-/**
- *
- */
 public class IMDbDatasetProcessor {
     private final MovieStore store;
 
@@ -25,6 +22,11 @@ public class IMDbDatasetProcessor {
         this.store = store;
     }
 
+    /**
+     * Executes an update on the Underlying MovieStore.
+     * 
+     * @throws IOException 
+     */
     public void process() throws IOException {
         store.update(new MovieStoreUpdateCallback() {
 

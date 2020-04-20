@@ -11,9 +11,6 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
-/**
- *
- */
 public class GeneralTableTest extends H2StoreTest {
     
     @Test

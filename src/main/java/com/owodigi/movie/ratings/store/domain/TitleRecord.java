@@ -1,8 +1,5 @@
 package com.owodigi.movie.ratings.store.domain;
 
-/**
- *
- */
 public class TitleRecord {
 
     /**
@@ -22,15 +19,30 @@ public class TitleRecord {
      */
     private String primaryTitle;
     
-    
+    /**
+     * alphanumeric unique identifier of the title.
+     * 
+     * @return 
+     */
     public String tconst() {
         return tconst;
     }
 
+    /**
+     * the type/format of the title
+     * 
+     * @return 
+     */
     public String titleType() {
         return titleType;
     }
 
+    /**
+     * The more popular title / the title used by the filmmakers on
+     * promotional materials at the point of release.
+     * 
+     * @return 
+     */
     public String primaryTitle() {
         return primaryTitle;
     }
