@@ -15,7 +15,7 @@ import java.util.List;
 /**
  *
  */
-public class NameTable extends DatabaseStore implements NameStore {
+public class NameTable extends DatabaseTable implements NameStore {
     private static final String TABLE_NAME = "NAME_STORE";
     protected enum columns{nconst, primaryName}
 
@@ -29,17 +29,12 @@ public class NameTable extends DatabaseStore implements NameStore {
     }
 
     @Override
-    public void addNconst(final String nconst) throws IOException {
+    public void add(final String nconst, final String primaryName) throws IOException {
         final String sql = insertSql(
             nconst,
-            "NULL"
+            primaryName
         );
         executeUpdate(sql);        
-    }
-    
-    @Override
-    public void clear() throws IOException {
-        clearTable();
     }
     
     @Override
@@ -92,11 +87,5 @@ public class NameTable extends DatabaseStore implements NameStore {
     @Override
     protected String tableName() {
         return TABLE_NAME;
-    }
-
-    @Override
-    public void updateName(final String nconst, final String primaryName) throws IOException {
-        final String sql = updateSql(columns.primaryName.name(), primaryName, columns.nconst.name(), nconst);
-        executeUpdate(sql);
     }
 }

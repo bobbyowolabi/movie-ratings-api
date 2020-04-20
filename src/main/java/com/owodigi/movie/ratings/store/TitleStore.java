@@ -21,14 +21,6 @@ public interface TitleStore extends DatasetStore {
     /**
      * 
      * @param tconst
-     * @param nconst 
-     * @throws java.io.IOException 
-     */
-    public void addNconst(String tconst, String nconst) throws IOException;
-    
-    /**
-     * 
-     * @param tconst
      * @return 
      * @throws java.io.IOException 
      */
@@ -41,12 +33,4 @@ public interface TitleStore extends DatasetStore {
      * @throws java.io.IOException 
      */
     public TitleRecord title(String primaryTitle) throws IOException;
-    
-    /**
-     * 
-     * @param tconst
-     * @param averageRating 
-     * @throws java.io.IOException 
-     */
-    public void updateRating(String tconst, String averageRating) throws IOException;
 }

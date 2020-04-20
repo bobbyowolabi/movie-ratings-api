@@ -9,6 +9,8 @@ import com.owodigi.movie.ratings.store.NameStore;
 import com.owodigi.movie.ratings.store.TitleStore;
 import com.owodigi.movie.ratings.store.impl.EpisodeTable;
 import com.owodigi.movie.ratings.store.impl.NameTable;
+import com.owodigi.movie.ratings.store.impl.PrincipalTable;
+import com.owodigi.movie.ratings.store.impl.RatingTable;
 import com.owodigi.movie.ratings.store.impl.TitleTable;
 import static com.owodigi.movie.ratings.store.impl.util.ResultCallback.NO_OP_RESULT_CALLBACK;
 import com.owodigi.util.AssertUtils;
@@ -17,7 +19,6 @@ import static com.owodigi.util.AssertUtils.newNameRecord;
 import static com.owodigi.util.AssertUtils.newTitleRecord;
 import java.io.IOException;
 import java.sql.Connection;
-import java.util.Arrays;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -98,11 +99,9 @@ public class MovieRatingsAppTest extends MovieRatingsAppConfiguration {
     public void testGetTitle() throws IOException {
         final TitleStore store = new TitleTable(connection());
         final TitleRecord expected = newTitleRecord (
-            "6.5",
-            Arrays.asList("nm0721526", "nm5442194", "nm1335271", "nm5442200"),
-            "Pauvre Pierrot",
             "tt0000003",
-            "short");
+            "short",
+            "Pauvre Pierrot");
         final TitleRecord actual = store.title("Pauvre Pierrot");
         AssertUtils.assertEquals(expected, actual);
     }
@@ -112,13 +111,10 @@ public class MovieRatingsAppTest extends MovieRatingsAppConfiguration {
         final EpisodeRecord expected = newEpisodeRecord(
             "tt0041951",
             "tt0041038",
-            "The Tenderfeet",
-            "7.4",
             "1",
-            "9",
-            Arrays.asList("nm0156134","nm0138194","nm0798855","nm0071986","nm0112203","nm0782690","nm0872077","nm0289014","nm1080563","nm0834503")
+            "9"
         );
-        final EpisodeRecord actual = store.title("The Tenderfeet");
+        final EpisodeRecord actual = store.tconst(expected.tconst());
         AssertUtils.assertEquals(expected, actual);
     }
 
@@ -136,19 +132,21 @@ public class MovieRatingsAppTest extends MovieRatingsAppConfiguration {
         verifyNoDuplicateTitleRows();
         verifyNoDuplicateEpisodeRows();
         verifyNoDuplicateNameRows();
+        verifyNoDuplicatePrincipalRows();
+        verifyNoDuplicateRatingRows();
     }
 
     private void verifyNoDuplicateTitleRows() throws IOException {
-        final TestH2TitleStore store = new TestH2TitleStore(connection());
+        final TestTitleTable store = new TestTitleTable(connection());
         final String title = "Pauvre Pierrot";
         final int expected = 1;
         final int actual = store.titles(title);
         Assert.assertEquals("Number of rows in TitleStore with Title " + title, expected, actual);
     }
 
-    private class TestH2TitleStore extends TitleTable {
+    private class TestTitleTable extends TitleTable {
 
-        public TestH2TitleStore(final Connection connection) throws IOException {
+        public TestTitleTable(final Connection connection) throws IOException {
             super(connection);
         }
 
@@ -159,16 +157,16 @@ public class MovieRatingsAppTest extends MovieRatingsAppConfiguration {
     }
 
     private void verifyNoDuplicateEpisodeRows() throws IOException {
-        final TestH2EpisodeStore store = new TestH2EpisodeStore(connection());
+        final TestEpisodeTable store = new TestEpisodeTable(connection());
         final String tconst = "tt0041951";
         final int expected = 1;
         final int actual = store.getCount(tconst);
         Assert.assertEquals("Number of rows in EpisdoeStore with tconst " + tconst, expected, actual);
     }
 
-    private class TestH2EpisodeStore extends EpisodeTable {
+    private class TestEpisodeTable extends EpisodeTable {
 
-        public TestH2EpisodeStore(final Connection connection) throws IOException {
+        public TestEpisodeTable(final Connection connection) throws IOException {
             super(connection);
         }
 
@@ -179,22 +177,62 @@ public class MovieRatingsAppTest extends MovieRatingsAppConfiguration {
     }
 
     private void verifyNoDuplicateNameRows() throws IOException {
-        final TestH2NameStore store = new TestH2NameStore(connection());
+        final TestNameTableStore store = new TestNameTableStore(connection());
         final String nconst = "nm0005690";
         final int expected = 1;
         final int actual = store.nconsts(nconst);
         Assert.assertEquals("Number of rows in NameStore with nconst " + nconst, expected, actual);
     }
 
-    private class TestH2NameStore extends NameTable {
+    private class TestNameTableStore extends NameTable {
 
-        public TestH2NameStore(final Connection connection) throws IOException {
+        public TestNameTableStore(final Connection connection) throws IOException {
             super(connection);
         }
 
         public int nconsts(final String nconst) throws IOException {
-            final String sql = selectAllSql(NameTable.columns.nconst.name(), nconst);
+            final String sql = selectAllSql(columns.nconst.name(), nconst);
             return executeQuery(sql, NO_OP_RESULT_CALLBACK);
         }
     }
+
+    private void verifyNoDuplicatePrincipalRows() throws IOException {
+        final TestPrincipalTable store = new TestPrincipalTable(connection());
+        final String tconst = "tt0000001";
+        final int expected = 3;
+        final int actual = store.tconts(tconst);
+        Assert.assertEquals("Number of rows in PrincipalStore with tconst " + tconst, expected, actual);
+    }
+
+    private class TestPrincipalTable extends PrincipalTable {
+
+        public TestPrincipalTable(final Connection connection) throws IOException {
+            super(connection);
+        }
+
+        public int tconts(final String tconst) throws IOException {
+            final String sql = selectAllSql(columns.tconst.name(), tconst);
+            return executeQuery(sql, NO_OP_RESULT_CALLBACK);
+        }
+    }    
+    
+    private void verifyNoDuplicateRatingRows() throws IOException {
+        final TestRatingTable store = new TestRatingTable(connection());
+        final String tconst = "tt0000001";
+        final int expected = 1;
+        final int actual = store.tconts(tconst);
+        Assert.assertEquals("Number of rows in RatinglStore with tconst " + tconst, expected, actual);
+    }    
+    
+    private class TestRatingTable extends RatingTable {
+
+        public TestRatingTable(final Connection connection) throws IOException {
+            super(connection);
+        }
+
+        public int tconts(final String tconst) throws IOException {
+            final String sql = selectAllSql(columns.tconst.name(), tconst);
+            return executeQuery(sql, NO_OP_RESULT_CALLBACK);
+        }
+    }    
 }

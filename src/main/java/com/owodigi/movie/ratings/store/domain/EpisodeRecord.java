@@ -1,7 +1,5 @@
 package com.owodigi.movie.ratings.store.domain;
 
-import java.util.List;
-
 /**
  *
  */
@@ -17,16 +15,6 @@ public class EpisodeRecord {
     private String parentTconst;
     
     /**
-     * (string) – the more popular title / the title used by the filmmakers on promotional materials at the point of release
-     */
-    private String primaryTitle;  
-    
-    /**
-     * weighted average of all the individual user ratings
-     */
-    private String averageRating;    
-    
-    /**
      * (integer) – season number the episode belongs to
      */
     private String seasonNumber;
@@ -36,29 +24,13 @@ public class EpisodeRecord {
      */
     private String episodeNumber;
     
-    /**
-     * (string) - List of alphanumeric unique identifier of the name/person
-     */
-    private List<String> nconstList;
-    
+
     public String parentConst() {
         return parentTconst;
     }
 
     public String tconst() {
         return tconst;
-    }
-
-    public String primaryTitle() {
-        return primaryTitle;
-    }
-
-    public String averageRating() {
-        return averageRating;
-    }
-
-    public List<String> nconstList() {
-        return nconstList;
     }
 
     public String seasonNumber() {
@@ -75,18 +47,6 @@ public class EpisodeRecord {
 
     public void setTconst(String tconst) {
         this.tconst = tconst;
-    }
-
-    public void setPrimaryTitle(String primaryTitle) {
-        this.primaryTitle = primaryTitle;
-    }
-
-    public void setAverageRating(String averageRating) {
-        this.averageRating = averageRating;
-    }
-
-    public void setNconstList(List<String> nconstList) {
-        this.nconstList = nconstList;
     }
 
     public void setSeasonNumber(String seasonNumber) {

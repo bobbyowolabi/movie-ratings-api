@@ -14,7 +14,7 @@ import org.junit.Test;
 /**
  *
  */
-public class GeneralH2StoreTest extends H2StoreTest {
+public class GeneralTableTest extends H2StoreTest {
     
     @Test
     public void dbDirectoryDoesNotExist() throws IOException {
@@ -22,7 +22,7 @@ public class GeneralH2StoreTest extends H2StoreTest {
         final Path databaseFile = Paths.get(databasePath.toString() + DATABASE_FILE_SUFFIX);
         Files.deleteIfExists(databaseFile);
         try {
-            final DatabaseStore store = new DatabaseStore(connection(databasePath.toString())) {
+            final DatabaseTable store = new DatabaseTable(connection(databasePath.toString())) {
                 
                 @Override
                 protected List<ColumnConfig> columnConfigs() {

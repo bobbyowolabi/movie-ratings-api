@@ -12,6 +12,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -19,7 +20,7 @@ import java.util.Map;
 /**
  *
  */
-public abstract class DatabaseStore {
+public abstract class DatabaseTable {
     private final Connection connection;
 
     /**
@@ -27,7 +28,7 @@ public abstract class DatabaseStore {
      * @param connection
      * @throws IOException
      */
-    public DatabaseStore(final Connection connection) throws IOException {
+    public DatabaseTable(final Connection connection) throws IOException {
         this.connection = connection;
         createTableIfNotExists();
     }
@@ -47,7 +48,7 @@ public abstract class DatabaseStore {
      * 
      * @throws IOException 
      */
-    protected void clearTable() throws IOException {
+    public void clear() throws IOException {
         dropTable();
         createTableIfNotExists();
     }    
@@ -109,7 +110,7 @@ public abstract class DatabaseStore {
             }
             return size;
         } catch (final SQLException ex) {
-            throw new IOException("Unable to query Title Store due to " + ex.getMessage(), ex);
+            throw new IOException("Unable to query " + tableName() + " due to " + ex.getMessage(), ex);
         }
     }
 
@@ -175,6 +176,19 @@ public abstract class DatabaseStore {
             .toString();
     }
 
+    protected String selectAllIn(String column, final Collection<String> values) {
+        final StringBuilder sql = new StringBuilder()
+            .append("SELECT * FROM ").append(tableName())
+            .append(" WHERE ").append(column).append(" IN (");
+        for (final String value : values) {
+            sql.append("'").append(value).append("', ");
+        }
+        sql
+            .delete(sql.length() - 2, sql.length())
+            .append(");");
+        return sql.toString();
+    }
+    
     /**
      *
      *

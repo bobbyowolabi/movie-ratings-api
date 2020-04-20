@@ -1,7 +1,5 @@
 package com.owodigi.movie.ratings.store.domain;
 
-import java.util.List;
-
 /**
  *
  */
@@ -24,20 +22,6 @@ public class TitleRecord {
      */
     private String primaryTitle;
     
-    /**
-     * weighted average of all the individual user ratings
-     */
-    private String averageRating;
-    
-    /**
-     * 
-     */
-    private List<String> nconstList;
-
-    
-    public String averageRating() {
-        return averageRating;
-    }
     
     public String tconst() {
         return tconst;
@@ -51,10 +35,6 @@ public class TitleRecord {
         return primaryTitle;
     }
 
-    public List<String> nconstList() {
-        return nconstList;
-    }
-
     public void setTconst(String tconst) {
         this.tconst = tconst;
     }
@@ -65,13 +45,5 @@ public class TitleRecord {
 
     public void setPrimaryTitle(String primaryTitle) {
         this.primaryTitle = primaryTitle;
-    }
-
-    public void setAverageRating(String averageRating) {
-        this.averageRating = averageRating;
-    }
-
-    public void setNconstList(List<String> nconstList) {
-        this.nconstList = nconstList;
     }
 }

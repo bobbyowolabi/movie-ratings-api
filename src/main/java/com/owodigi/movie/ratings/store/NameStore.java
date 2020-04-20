@@ -12,17 +12,12 @@ public interface NameStore extends DatasetStore {
 
     /**
      * 
-     * @param nconst 
-     * @throws java.io.IOException 
-     */
-    public void addNconst(final String nconst) throws IOException;
-    
-    /**
-     * 
-     * @param nconsts
-     * @return
+     * @param nconst
+     * @param primaryName
      * @throws IOException 
      */
+    public void add(String nconst, String primaryName) throws IOException;
+    
     public List<String> names(final List<String> nconsts) throws IOException;
     
     /**
@@ -32,12 +27,4 @@ public interface NameStore extends DatasetStore {
      * @throws java.io.IOException 
      */
     public NameRecord nconst(final String nconst) throws IOException;
-    
-    /**
-     * 
-     * @param nconst
-     * @param primaryName 
-     * @throws java.io.IOException 
-     */
-    public void updateName(final String nconst, final String primaryName) throws IOException;
 }

@@ -9,18 +9,14 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import com.owodigi.movie.ratings.store.impl.util.ResultCallback;
 import java.sql.Connection;
-import java.util.ArrayList;
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
  */
-public class TitleTable extends DatabaseStore implements TitleStore {
-    private static final Logger LOGGER = LoggerFactory.getLogger(TitleTable.class);
+public class TitleTable extends DatabaseTable implements TitleStore {
     private static final String TABLE_NAME = "TITLE_STORE";
-    protected enum columns {tconst, primaryTitle, averageRating, titleType, nconstList}
+    protected enum columns {tconst, titleType, primaryTitle}
     
     /**
      * 
@@ -32,47 +28,21 @@ public class TitleTable extends DatabaseStore implements TitleStore {
     }
 
     @Override
-    public void addNconst(final String tconst, final String nconst) throws IOException {
-        final TitleRecord record = tconst(tconst);
-        if (record == null) {
-            LOGGER.debug("Unable to add nconst " + nconst + " to this Store because tconst " + tconst + " does not exists");
-        }
-        final List<String> nconstList = record.nconstList();
-        final List<String> updatedNconstList;
-        if (nconstList == null) {
-            updatedNconstList = Arrays.asList(nconst);
-        } else {
-            updatedNconstList = new ArrayList<>(nconstList);
-            updatedNconstList.add(nconst);
-        }
-        updateNconstList(tconst, updatedNconstList);
-    }    
-    
-    @Override
     public void addTitle(final String tconst, final String titleType, final String primaryTitle) throws IOException {
         final String sql = insertSql(
             tconst,
-            primaryTitle,
             titleType,
-            "NULL",
-            "NULL"
+            primaryTitle
         );
         executeUpdate(sql);
     }
-    
-    @Override
-    public void clear() throws IOException {
-        clearTable();
-    }     
 
     @Override
     protected List<ColumnConfig> columnConfigs() {
         return Arrays.asList(
             new ColumnConfig(columns.tconst.name(), "VARCHAR(255)"),
-            new ColumnConfig(columns.primaryTitle.name(), "VARCHAR(512)"),
             new ColumnConfig(columns.titleType.name(), "VARCHAR(255)"),
-            new ColumnConfig(columns.averageRating.name(), "VARCHAR(255)"),
-            new ColumnConfig(columns.nconstList.name(), "VARCHAR(255)")
+            new ColumnConfig(columns.primaryTitle.name(), "VARCHAR(512)")
         );
     }
 
@@ -88,9 +58,6 @@ public class TitleTable extends DatabaseStore implements TitleStore {
             
             @Override
             public void process(final ResultSet result) throws SQLException {
-                record.setAverageRating(result.getString(columns.averageRating.name()));
-                final String nconstList = result.getString(columns.nconstList.name());
-                record.setNconstList(nconstList == null ? null : Arrays.asList(nconstList.split("[,]")));
                 record.setPrimaryTitle(result.getString(columns.primaryTitle.name()));
                 record.setTitleType(result.getString(columns.titleType.name()));
                 record.setTconst(result.getString(columns.tconst.name()));
@@ -114,21 +81,5 @@ public class TitleTable extends DatabaseStore implements TitleStore {
     public TitleRecord title(final String title) throws IOException {
         final String sql = selectAllSql(columns.primaryTitle.name(), title);
         return executeQuery(sql);
-    }
-    
-    /**
-     * 
-     * @param tconst
-     * @param updatedNconstList 
-     */
-    private void updateNconstList(final String tconst, final List<String> nconstList) throws IOException {
-        final String sql = updateSql(columns.nconstList.name(), String.join(",", nconstList), columns.tconst.name(), tconst);
-        executeUpdate(sql);
-    }    
-    
-    @Override
-    public void updateRating(final String tconst, final String averageRating) throws IOException {
-        final String sql = updateSql(columns.averageRating.name(), averageRating, columns.tconst.name(), tconst);
-        executeUpdate(sql);
     }
 }

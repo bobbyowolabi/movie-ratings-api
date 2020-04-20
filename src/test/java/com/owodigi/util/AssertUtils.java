@@ -41,11 +41,9 @@ public class AssertUtils {
      * @throws AssertionError 
      */
     public static void assertEquals(final TitleRecord expected, final TitleRecord actual) throws AssertionError {
-        Assert.assertEquals("averageRating", expected.averageRating(), actual.averageRating());
         Assert.assertEquals("primaryTitle", expected.primaryTitle(), actual.primaryTitle());
         Assert.assertEquals("tconst", expected.tconst(), actual.tconst());
         Assert.assertEquals("titleType", expected.titleType(), actual.titleType());
-        Assert.assertEquals("nConstList", expected.nconstList(), actual.nconstList());
     }    
     
     /**
@@ -59,11 +57,8 @@ public class AssertUtils {
         }
         Assert.assertEquals("tconst", expected.tconst(), actual.tconst());
         Assert.assertEquals("parentConst", expected.parentConst(), actual.parentConst());  
-        Assert.assertEquals("primaryTitle", expected.primaryTitle(), actual.primaryTitle());
-        Assert.assertEquals("averageRating", expected.averageRating(), actual.averageRating());
         Assert.assertEquals("episodeNumber", expected.episodeNumber(), actual.episodeNumber());        
         Assert.assertEquals("seasonNumber", expected.seasonNumber(), actual.seasonNumber());             
-        Assert.assertEquals("nConstList", expected.nconstList(), actual.nconstList());
     }    
     
     private static boolean assertEqualsIfNull(final String message, final Object expected, final Object actual) {
@@ -161,36 +156,19 @@ public class AssertUtils {
     public static EpisodeRecord newEpisodeRecord(
             final String tconst, 
             final String parentTconst, 
-            final String primaryTitle, 
-            final String averageRating, 
             final String seasonNumber, 
-            final String episodeNumber, 
-            final List<String> nConstList){
+            final String episodeNumber){
         final EpisodeRecord record = new EpisodeRecord();
-        record.setAverageRating(averageRating);
         record.setEpisodeNumber(episodeNumber);
-        record.setNconstList(nConstList);
         record.setParentConst(parentTconst);
         record.setSeasonNumber(seasonNumber);
         record.setTconst(tconst);
-        record.setPrimaryTitle(primaryTitle);
-        return record;
-    }
-    
-    /**
-     * 
-     * @param nconst
-     * @param primaryName
-     * @return 
-     */
-    public static NameRecord newNameRecord(final String nconst) {
-        final NameRecord record = new NameRecord();
-        record.setNconst(nconst);
         return record;
     }
     
     public static NameRecord newNameRecord(final String nconst, final String primaryName) {
-        final NameRecord record = newNameRecord(nconst);
+        final NameRecord record = new NameRecord();
+        record.setNconst(nconst);
         record.setPrimaryName(primaryName);
         return record;
     }
@@ -199,34 +177,6 @@ public class AssertUtils {
         final TitleRecord record = new TitleRecord();
         record.setTconst(tcosnt);
         record.setTitleType(titleType);
-        record.setPrimaryTitle(primaryTitle);
-        return record;
-    }    
-    
-    public static TitleRecord newTitleRecord (
-            final String averageRating, 
-            final List<String> nConstList, 
-            final String primaryTitle, 
-            final String tconst, 
-            final String titleType) {
-        final TitleRecord record = new TitleRecord();
-        record.setAverageRating(averageRating);
-        record.setNconstList(nConstList);
-        record.setPrimaryTitle(primaryTitle);
-        record.setTconst(tconst);
-        record.setTitleType(titleType); 
-        return record;
-    }    
-    
-    /**
-     * 
-     * @param tconst
-     * @param primaryTitle
-     * @return 
-     */
-    public static EpisodeRecord newEpisodeRecord(final String tconst, final String primaryTitle) {
-        final EpisodeRecord record = new EpisodeRecord();
-        record.setTconst(tconst);
         record.setPrimaryTitle(primaryTitle);
         return record;
     }    

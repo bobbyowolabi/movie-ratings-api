@@ -9,17 +9,17 @@ import com.owodigi.imdb.util.IMDbTSVFormats.TitleBasicsFormat;
 import com.owodigi.imdb.util.IMDbTSVFormats.TitleEpisodeFormat;
 import com.owodigi.imdb.util.IMDbTSVFormats.TitlePrincipalsFormat;
 import com.owodigi.imdb.util.IMDbTSVFormats.TitleRatingsFormat;
-import com.owodigi.movie.ratings.store.domain.RatingStore;
 import java.io.IOException;
 import org.apache.commons.csv.CSVRecord;
+import com.owodigi.movie.ratings.store.MovieStore;
 
 /**
  *
  */
 public class IMDbDatasetProcessor {
-    private final RatingStore store;
+    private final MovieStore store;
     
-    public IMDbDatasetProcessor(final RatingStore store) {
+    public IMDbDatasetProcessor(final MovieStore store) {
         this.store = store;
     }
     
@@ -54,7 +54,7 @@ public class IMDbDatasetProcessor {
             public void read(final CSVRecord record) throws IOException {
                 final String tconst = record.get(TitleRatingsFormat.headers.tconst);
                 final String averageRating = record.get(TitleRatingsFormat.headers.averageRating);
-                store.updateRating(tconst, averageRating);
+                store.addRating(tconst, averageRating);
             }
         });
     }
@@ -66,7 +66,8 @@ public class IMDbDatasetProcessor {
             public void read(final CSVRecord record) throws IOException {
                 final String tconst = record.get(TitlePrincipalsFormat.headers.tconst);
                 final String nconst = record.get(TitlePrincipalsFormat.headers.nconst);
-                store.addNconst(tconst, nconst);
+                final String ordering = record.get(TitlePrincipalsFormat.headers.ordering);
+                store.addPrincipal(tconst, nconst, ordering);
             }
         });
     }
@@ -80,7 +81,7 @@ public class IMDbDatasetProcessor {
                 final String parentTconst = record.get(IMDbTSVFormats.TitleEpisodeFormat.header.parentTconst);
                 final String episodeNumber = record.get(IMDbTSVFormats.TitleEpisodeFormat.header.episodeNumber);
                 final String seasonNumber = record.get(IMDbTSVFormats.TitleEpisodeFormat.header.seasonNumber);
-                store.updateEpisode(tconst, parentTconst, seasonNumber, episodeNumber);
+                store.addEpisode(tconst, parentTconst, seasonNumber, episodeNumber);
             }
         });
     }
@@ -92,7 +93,7 @@ public class IMDbDatasetProcessor {
             public void read(final CSVRecord record) throws IOException {
                 final String nconst = record.get(IMDbTSVFormats.NameBasicFormat.headers.nconst);
                 final String primaryName = record.get(IMDbTSVFormats.NameBasicFormat.headers.primaryName);
-                store.updateName(nconst, primaryName);
+                store.addName(nconst, primaryName);
             }
         });
     }    
