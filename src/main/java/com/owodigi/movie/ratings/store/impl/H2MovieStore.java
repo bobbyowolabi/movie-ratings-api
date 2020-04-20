@@ -20,6 +20,8 @@ import com.owodigi.movie.ratings.store.MovieStoreUpdater;
 import com.owodigi.movie.ratings.store.RatingStore;
 import com.owodigi.movie.ratings.store.domain.PrincipalRecord;
 import com.owodigi.movie.ratings.store.domain.RatingRecord;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
 
 /**
@@ -32,6 +34,7 @@ public class H2MovieStore implements MovieStore {
     private final PrincipalStore principalStore;
     private final EpisodeStore episodeStore;
     private final NameStore nameStore;
+    final ReadWriteLock lock = new ReentrantReadWriteLock();
 
     public H2MovieStore(final String username, final String password, final Path path) throws IOException {
         final Connection connection = H2Connection.instance(username, password, path.toString());
@@ -40,43 +43,62 @@ public class H2MovieStore implements MovieStore {
         LOGGER.info("Creating RatingStore");
         this.ratingStore = new RatingTable(connection);
         LOGGER.info("Creating Principal");
-        this.principalStore = new PrincipalTable(connection);        
+        this.principalStore = new PrincipalTable(connection);
         LOGGER.info("Creating EpisodeStore");
         this.episodeStore = new EpisodeTable(connection);
         LOGGER.info("Creating NameRecordStore");
         this.nameStore = new NameTable(connection);
     }
-    
+
     @Override
     public void clear() throws IOException {
-        titleStore.clear();
-        episodeStore.clear();
-        nameStore.clear();
-        principalStore.clear();
-        ratingStore.clear();
-    }    
-    
+        lock.writeLock().lock();
+        try {
+            titleStore.clear();
+            episodeStore.clear();
+            nameStore.clear();
+            principalStore.clear();
+            ratingStore.clear();
+        } finally {
+            lock.writeLock().unlock();
+        }
+    }
+
     @Override
     public void close() throws Exception {
-        titleStore.close();
-        episodeStore.close();
-        nameStore.close();
-        principalStore.close();
-        ratingStore.close();        
-    }    
+        lock.writeLock().lock();
+        try {
+            titleStore.close();
+            episodeStore.close();
+            nameStore.close();
+            principalStore.close();
+            ratingStore.close();
+        } finally {
+            lock.writeLock().unlock();
+        }
+    }
 
     @Override
     public MovieRecord title(final String tile) throws IOException {
-        final TitleRecord titleRecord = titleStore.title(tile);
-        return titleRecord == null ? null : toRatingRecord(titleRecord);
+        lock.readLock().lock();
+        try {
+            final TitleRecord titleRecord = titleStore.title(tile);
+            return titleRecord == null ? null : toRatingRecord(titleRecord);
+        } finally {
+            lock.readLock().unlock();
+        }
     }
-    
-    
+
     @Override
     public void update(MovieStoreUpdateCallback callback) throws IOException {
-        callback.update(updater);
+        lock.writeLock().lock();
+        try {
+            callback.update(updater);
+        } finally {
+            lock.writeLock().unlock();
+        }
     }
-    
+
     private String calculateAverageRating(final List<RatingRecord> ratings) {
         return ratings
             .stream()
@@ -86,7 +108,7 @@ public class H2MovieStore implements MovieStore {
             .collect(Collectors.averagingDouble(d -> d))
             .toString();
     }
-    
+
     private List<RatingRecord> ratings(final List<EpisodeRecord> episodes) throws IOException {
         return ratingStore.ratings(
                 episodes
@@ -95,15 +117,15 @@ public class H2MovieStore implements MovieStore {
                     .collect(Collectors.toList())
         );
     }
-    
+
     private Episode toEpisode(final EpisodeRecord episodeRecord) throws IOException {
         final Episode episode = new Episode();
         final TitleRecord episodeTitleRecord = titleStore.tconst(episodeRecord.tconst());
         final String episodeTitle = episodeTitleRecord == null ? null : episodeTitleRecord.primaryTitle();
-        episode.setTitle(episodeTitle); 
+        episode.setTitle(episodeTitle);
         episode.setUserRating(userRating(episodeRecord.tconst()));
         final List<PrincipalRecord> principalRecords = principalStore.tconst(episodeRecord.tconst());
-        final List<String> nconstList = 
+        final List<String> nconstList =
             principalRecords
                 .stream()
                 .map(record -> record.getNconst())
@@ -113,12 +135,12 @@ public class H2MovieStore implements MovieStore {
         episode.setSeasonNumber(episodeRecord.seasonNumber());
         return episode;
     }
-    
+
     private String userRating(final String tconst) throws IOException {
         final RatingRecord record = ratingStore.rating(tconst);
         return record == null ? null : record.averageRating();
     }
-    
+
     private MovieRecord toRatingRecord(final TitleRecord titleRecord) throws IOException {
         final MovieRecord ratingRecord = new MovieRecord();
         ratingRecord.setTitle(titleRecord.primaryTitle());
@@ -139,7 +161,7 @@ public class H2MovieStore implements MovieStore {
         ratingRecord.setUserRating(userRating(titleRecord.tconst()));
         return ratingRecord;
     }
-    
+
     private final MovieStoreUpdater updater = new MovieStoreUpdater() {
 
         @Override
@@ -166,5 +188,5 @@ public class H2MovieStore implements MovieStore {
         public void addTitle(final String tconst, final String titleType, final String primaryTitle) throws IOException {
             titleStore.addTitle(tconst, titleType, primaryTitle);
         }
-    };    
+    };
 }
