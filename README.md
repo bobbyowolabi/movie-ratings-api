@@ -8,8 +8,11 @@ The Internet Movie Database (IMDB) provides access to their [datasets][imdb-data
 
 ## Dependencies
 [Commons CSV][commons-csv]	
+
 [Spring Boot][spring-boot]	
+
 [H2][h2]	
+
 [Logback Classic][logback-classic]
 
 # How to Run
